@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Form</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <h1>Create Customer</h1>
+      <form @submit.prevent="createCustomer">
+        <!-- Form inputs -->
+        <div class="mb-3">
+          <label for="firstNameInput" class="form-label">First Name</label>
+          <input v-model="firstName" type="text" class="form-control" id="firstNameInput" placeholder="First Name" required>
+        </div>
+        <div class="mb-3">
+          <label for="lastNameInput" class="form-label">Last Name</label>
+          <input v-model="lastName" type="text" class="form-control" id="lastNameInput" placeholder="Last Name" required>
+        </div>
+        <div class="mb-3">
+          <label for="phoneNumberInput" class="form-label">Phone Number</label>
+          <input v-model="phoneNumber" type="number" class="form-control" id="phoneNumberInput" placeholder="Phone Number" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+    <!-- Display the list of customers -->
+    <div class="container mt-5">
+        <h2>Customers</h2>
+        <ul>
+            <li v-for="customer in customers" :key="customer.id">
+            {{ customer.firstName }} {{ customer.lastName }} - {{ customer.phoneNumber }}
+            </li>
+        </ul>
+    </div>
+  </div>
+  
+
+  <!-- Vue.js -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+  <!-- Axios -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data() {
+        return {
+          firstName: '',
+          lastName: '',
+          phoneNumber: '',
+          customers: []
+        };
+      },
+      mounted() {
+        this.getCustomers();
+        console.log("success");
+      },
+      methods: {
+        async createCustomer() {
+          try {
+            const response = await axios.post('http://localhost:8080/customers', {
+              firstName: this.firstName,
+              lastName: this.lastName,
+              phoneNumber: this.phoneNumber
+            });
+            console.log(response.data);
+            alert('Customer created successfully!');
+            // Reset form fields
+            this.firstName = '';
+            this.lastName = '';
+            this.phoneNumber = '';
+          } catch (error) {
+            console.error('Error creating customer:', error);
+            alert('Error creating customer. Please try again.');
+          }
+        },
+        async getCustomers() {
+            try {
+                const response = await axios.get('http://localhost:8080/customers');
+                this.customers = response.data;
+            } catch (error) {
+                console.error('Error getting customers:', error);
+            }
+        }
+      },
+    });
+  </script>
+</body>
+</html>
