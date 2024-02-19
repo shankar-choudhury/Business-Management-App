@@ -96,6 +96,16 @@ public class Customer {
 
     public static Customer from(Customer c) {
         return new Customer(
+                c.getFirstName(),
+                c.getLastName(),
+                c.getEmail(),
+                c.getPhoneNumber(),
+                c.getAddressList(),
+                c.getCreditCardList());
+    }
+
+    public static Customer fromDeleted(Customer c) {
+        return new Customer(
                 c.getId(),
                 c.getFirstName(),
                 c.getLastName(),

@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/addresses")
-public class AddressController implements BaseController<Address,Integer>{
+public class AddressController implements BaseController<Address>{
 
     private final BaseService<Address> addressService;
 
@@ -27,7 +27,7 @@ public class AddressController implements BaseController<Address,Integer>{
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Address> getById(@PathVariable Integer id) {
+    public ResponseEntity<Address> getById(@PathVariable int id) {
         Address address = addressService.getById(id);
         return address.getBuildingNumber() == 0 ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(address, HttpStatus.OK);
@@ -41,7 +41,7 @@ public class AddressController implements BaseController<Address,Integer>{
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<Address> update(@PathVariable Integer id, @RequestBody Address address) {
+    public ResponseEntity<Address> update(@PathVariable int id, @RequestBody Address address) {
         Address updatedAddress = addressService.update(id,address);
         return updatedAddress.getBuildingNumber() == 0 ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(updatedAddress, HttpStatus.OK);
@@ -49,7 +49,7 @@ public class AddressController implements BaseController<Address,Integer>{
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<Address> delete(@PathVariable Integer id) {
+    public ResponseEntity<Address> delete(@PathVariable int id) {
         var deletedAddress = addressService.delete(id);
         return deletedAddress.getId() == 0 ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(deletedAddress, HttpStatus.OK);

@@ -1,9 +1,12 @@
 package com.spring2024project.Scheduler.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "generator")
+@Getter
+@Setter
 public class Generator {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,33 +33,6 @@ public class Generator {
         this.installInstructions = installInstructions;
     }
 
-    public int getId() {
-        return id;
-    }
-    public String getManufacturer() {
-        return manufacturer;
-    }
-
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
-    }
-
-    public int getkWSize() {
-        return kWSize;
-    }
-
-    public void setkWSize(int kWSize) {
-        this.kWSize = kWSize;
-    }
-
-    public String getInstallInstructions() {
-        return installInstructions;
-    }
-
-    public void setInstallInstructions(String installInstructions) {
-        this.installInstructions = installInstructions;
-    }
-
     public static Generator defaultGenerator() {
         return new Generator("",0,"");
     }
@@ -66,7 +42,7 @@ public class Generator {
     }
 
     public static Generator from(Generator g) {
-        return new Generator(g.getManufacturer(), g.getkWSize(), g.getInstallInstructions());
+        return new Generator(g.getManufacturer(), g.getKWSize(), g.getInstallInstructions());
     }
 
 }
