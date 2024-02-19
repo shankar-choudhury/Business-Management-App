@@ -1,7 +1,6 @@
 package com.spring2024project.Scheduler.service;
 
 import com.spring2024project.Scheduler.entity.Address;
-import com.spring2024project.Scheduler.entity.Customer;
 import com.spring2024project.Scheduler.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

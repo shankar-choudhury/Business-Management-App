@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/addresses")
-public class AddressController {
+public class AddressController implements BaseController<Address,Integer>{
 
     private final AddressService addressService;
 
@@ -21,20 +21,20 @@ public class AddressController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Address>> getAllAddresses() {
+    public ResponseEntity<List<Address>> getAll() {
         List<Address> addresses = addressService.getAllAddresses();
         return new ResponseEntity<>(addresses, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Address> getAddressById(@PathVariable int id) {
+    public ResponseEntity<Address> getById(@PathVariable Integer id) {
         Address address = addressService.getAddressById(id);
         return address.getBuildingNumber() == 0 ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(address, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Address> createAddress(@RequestBody Address address) {
+    public ResponseEntity<Address> create(@RequestBody Address address) {
         Address createdAddress =
                 addressService
                         .createAddress(
@@ -46,15 +46,17 @@ public class AddressController {
         return new ResponseEntity<>(createdAddress, HttpStatus.CREATED);
     }
 
+    @Override
     @PutMapping("/{id}")
-    public ResponseEntity<Address> updateAddress(@PathVariable int id, @RequestBody Address address) {
+    public ResponseEntity<Address> update(@PathVariable Integer id, @RequestBody Address address) {
         Address updatedAddress = addressService.updateAddress(id, address.getBuildingNumber(), address.getStreet(), address.getCity(), address.getState(), address.getZipcode());
         return updatedAddress.getBuildingNumber() == 0 ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(updatedAddress, HttpStatus.OK);
     }
 
+    @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<Address> deleteAddress(@PathVariable int id) {
+    public ResponseEntity<Address> delete(@PathVariable Integer id) {
         var deletedAddress = addressService.deleteAddress(id);
         return deletedAddress.getId() == 0 ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(deletedAddress, HttpStatus.OK);

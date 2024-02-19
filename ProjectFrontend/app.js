@@ -25,13 +25,7 @@ new Vue({
     },
     methods: {
         async validateAndCreateCustomer() {
-            if (this.customerFieldsFilled) {
-                // If all fields are filled, create the customer
-                await this.createCustomer();
-            } else {
-                // If any field is empty, show an alert
-                alert('Please fill in all customer fields before submitting.');
-            }
+            this.customerFieldsFilled ? await this.createCustomer() : alert('Please fill in all customer fields before submitting.');
         },
         async createCustomer() {
             try {
@@ -97,7 +91,7 @@ new Vue({
                 console.log(response.data);
                 alert('Credit card created successfully');
                 // Push onto createdCards
-                this.createdCards.push(response.data); // Fixed here
+                this.createdCards.push(response.data); 
                 // Reset form fields
                 this.cardNumber = '';
                 this.expMonth = '';
