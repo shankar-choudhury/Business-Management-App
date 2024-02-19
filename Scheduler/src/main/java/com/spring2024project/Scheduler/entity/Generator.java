@@ -37,10 +37,6 @@ public class Generator {
         return new Generator("",0,"");
     }
 
-    public static Generator of(String manufacturer, int kWSize, String installInstructions) {
-        return new Generator(manufacturer, kWSize, installInstructions);
-    }
-
     public static Generator from(Generator g) {
         return new Generator(g.getManufacturer(), g.getKWSize(), g.getInstallInstructions());
     }

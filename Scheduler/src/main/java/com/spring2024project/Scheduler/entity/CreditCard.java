@@ -1,10 +1,8 @@
 package com.spring2024project.Scheduler.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "creditcard")
@@ -43,10 +41,6 @@ public class CreditCard {
         this.number = number;
         this.expMonth = expMonth;
         this.expYear = expYear;
-    }
-
-    public static CreditCard of(long number, int expMonth, int expYear) {
-        return new CreditCard(number, expMonth, expYear);
     }
 
     public static CreditCard defaultCC() {

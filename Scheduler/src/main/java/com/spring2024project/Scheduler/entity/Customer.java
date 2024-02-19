@@ -85,15 +85,6 @@ public class Customer {
         return new Customer("","","",0, List.of(), List.of());
     }
 
-    public static Customer of(String firstName,
-                              String lastName,
-                              String email,
-                              long phoneNumber,
-                              List<Address> addressList,
-                              List<CreditCard> creditCardList) {
-        return new Customer(firstName, lastName, email, phoneNumber, addressList, creditCardList);
-    }
-
     public static Customer from(Customer c) {
         return new Customer(
                 c.getFirstName(),

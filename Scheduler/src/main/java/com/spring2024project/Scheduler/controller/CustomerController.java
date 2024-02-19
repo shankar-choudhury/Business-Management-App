@@ -2,7 +2,6 @@ package com.spring2024project.Scheduler.controller;
 
 import com.spring2024project.Scheduler.entity.Customer;
 import com.spring2024project.Scheduler.service.BaseService;
-import com.spring2024project.Scheduler.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

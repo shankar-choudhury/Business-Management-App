@@ -22,10 +22,6 @@ public class CreditCardService implements BaseService<CreditCard>{
         return (List<CreditCard>) cr.findAll();
     }
 
-    public CreditCard create(long number, int expMonth, int expYear) {
-        return cr.save(of(number, expMonth, expYear));
-    }
-
     @Override
     public CreditCard getById(int id) {
         return cr.findById(id).orElse(defaultCC());

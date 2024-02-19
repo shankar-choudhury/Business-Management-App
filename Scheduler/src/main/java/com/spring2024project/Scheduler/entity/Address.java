@@ -1,12 +1,8 @@
 package com.spring2024project.Scheduler.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.List;
+import lombok.*;
 
 @Entity
 @Table(uniqueConstraints = {
@@ -61,10 +57,6 @@ public class Address {
 
     public static Address defaultAddress() {
         return new Address(0, 0, "", "", "", 0);
-    }
-
-    public static Address of(int buildingNumber, String street, String city, String state, int zipcode) {
-        return new Address(buildingNumber, street, city, state, zipcode);
     }
 
     public static Address from(Address a) {
