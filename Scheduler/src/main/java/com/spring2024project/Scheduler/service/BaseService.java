@@ -1,11 +1,13 @@
 package com.spring2024project.Scheduler.service;
 
+import org.hibernate.service.Service;
+
 import java.util.List;
 
-public interface Service<T> {
+public interface BaseService<T> {
     List<T> getAll();
     T getById(int id);
-    T create(Object... objects);
-    T update(int id, Object... objects);
+    T create(T entity);
+    T update(int id, T entity);
     T delete(int id);
 }

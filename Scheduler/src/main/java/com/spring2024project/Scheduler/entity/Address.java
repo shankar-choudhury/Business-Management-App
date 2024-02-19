@@ -68,6 +68,15 @@ public class Address {
     }
 
     public static Address from(Address a) {
+        return new Address(
+                a.getBuildingNumber(),
+                a.getStreet(),
+                a.getCity(),
+                a.getState(),
+                a.getZipcode());
+    }
+
+    public static Address fromDeleted(Address a) {
         return new Address(a.getId(), a.getBuildingNumber(), a.getStreet(),
                 a.getCity(), a.getState(), a.getZipcode());
     }
