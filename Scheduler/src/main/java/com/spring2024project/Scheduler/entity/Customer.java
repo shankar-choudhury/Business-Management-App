@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents a Customer, with their required details for business management
@@ -18,38 +19,23 @@ import java.util.List;
 })
 @Getter
 @Setter
-public class Customer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @Column
-    private String firstName;
-    @Column
-    private String lastName;
-    @Column
-    private String email;
-    @Column
-    private long phoneNumber;
-
+public class Customer extends Person {
     @JsonManagedReference
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    List<Address> addressList;
+    private List<Address> addressList;
     @JsonManagedReference
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    List<CreditCard> creditCardList;
+    private List<CreditCard> creditCardList;
 
-    public Customer(){};
+    public Customer() {};
+
     private Customer(String firstName,
                      String lastName,
                      String email,
                      long phoneNumber,
                      List<Address> addressList,
                      List<CreditCard> creditCardList) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
+        super(firstName, lastName, email, phoneNumber);
         this.addressList = addressList;
         this.creditCardList = creditCardList;
     }
@@ -61,11 +47,7 @@ public class Customer {
                      long phoneNumber,
                      List<Address> addressList,
                      List<CreditCard> creditCardList) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
+        super(id, firstName, lastName, email, phoneNumber);
         this.addressList = addressList;
         this.creditCardList = creditCardList;
     }
@@ -82,7 +64,7 @@ public class Customer {
     }
 
     public static Customer defaultCustomer() {
-        return new Customer("","","",0, List.of(), List.of());
+        return new Customer(0,"", "", "", 0, List.of(), List.of());
     }
 
     public static Customer from(Customer c) {
@@ -96,6 +78,7 @@ public class Customer {
     }
 
     public static Customer fromDeleted(Customer c) {
+
         return new Customer(
                 c.getId(),
                 c.getFirstName(),
@@ -105,4 +88,5 @@ public class Customer {
                 c.getAddressList(),
                 c.getCreditCardList());
     }
+
 }

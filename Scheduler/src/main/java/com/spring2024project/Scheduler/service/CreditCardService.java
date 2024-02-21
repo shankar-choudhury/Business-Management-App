@@ -37,9 +37,7 @@ public class CreditCardService implements BaseService<CreditCard>{
     public CreditCard update(int id, CreditCard cc) {
         CreditCard toUpdate = getById(id);
         if (toUpdate.getId() != 0) {
-            toUpdate.setNumber(cc.getNumber());
-            toUpdate.setExpMonth(cc.getExpMonth());
-            toUpdate.setExpYear(cc.getExpYear());
+            toUpdate = from(cc);
             return cr.save(toUpdate);
         }
         return toUpdate;

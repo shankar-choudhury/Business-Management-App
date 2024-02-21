@@ -20,12 +20,14 @@ public class AddressController implements BaseController<Address>{
         this.addressService = addressService;
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<List<Address>> getAll() {
         List<Address> addresses = addressService.getAll();
         return new ResponseEntity<>(addresses, HttpStatus.OK);
     }
 
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<Address> getById(@PathVariable int id) {
         Address address = addressService.getById(id);
@@ -33,6 +35,7 @@ public class AddressController implements BaseController<Address>{
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(address, HttpStatus.OK);
     }
 
+    @Override
     @PostMapping
     public ResponseEntity<Address> create(@RequestBody Address address) {
         Address createdAddress = addressService.create(address);

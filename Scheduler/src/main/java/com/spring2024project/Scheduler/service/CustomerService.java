@@ -46,13 +46,9 @@ public class CustomerService implements BaseService<Customer> {
     @Override
     public Customer update(int id, Customer entity) {
         Customer toUpdate = getById(id);
-        if (toUpdate.getId() == 0) {
-            toUpdate.setFirstName(entity.getFirstName());
-            toUpdate.setLastName(entity.getLastName());
-            toUpdate.setEmail(entity.getEmail());
-            toUpdate.setPhoneNumber(entity.getPhoneNumber());
-            toUpdate.setAddressList(entity.getAddressList());
-            toUpdate.setCreditCardList(entity.getCreditCardList());
+        if (toUpdate.getId() != 0) {
+            toUpdate = from(entity);
+            return cr.save(toUpdate);
         }
         return toUpdate;
     }
