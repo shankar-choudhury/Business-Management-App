@@ -19,17 +19,17 @@ public abstract class Person {
     @Column
     private String email;
     @Column
-    private long phoneNumber;
+    private String phoneNumber;
 
 
-    protected Person(String firstName, String lastName, String email, long phoneNumber) {
+    protected Person(String firstName, String lastName, String email, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
     }
 
-    protected Person(int id, String firstName, String lastName, String email, long phoneNumber) {
+    protected Person(int id, String firstName, String lastName, String email, String phoneNumber) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

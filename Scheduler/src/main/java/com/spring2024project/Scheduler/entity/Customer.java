@@ -32,7 +32,7 @@ public class Customer extends Person {
     private Customer(String firstName,
                      String lastName,
                      String email,
-                     long phoneNumber,
+                     String phoneNumber,
                      List<Address> addressList,
                      List<CreditCard> creditCardList) {
         super(firstName, lastName, email, phoneNumber);
@@ -44,7 +44,7 @@ public class Customer extends Person {
                      String firstName,
                      String lastName,
                      String email,
-                     long phoneNumber,
+                     String phoneNumber,
                      List<Address> addressList,
                      List<CreditCard> creditCardList) {
         super(id, firstName, lastName, email, phoneNumber);
@@ -64,7 +64,7 @@ public class Customer extends Person {
     }
 
     public static Customer defaultCustomer() {
-        return new Customer(0,"", "", "", 0, List.of(), List.of());
+        return new Customer(0,"", "", "", "", List.of(), List.of());
     }
 
     public static Customer from(Customer c) {

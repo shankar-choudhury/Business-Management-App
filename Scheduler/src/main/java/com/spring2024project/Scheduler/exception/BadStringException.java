@@ -62,33 +62,4 @@ public class BadStringException extends Exception {
     public String badString() {
         return badString;
     }
-
-    /**
-     * Performs basic checks on the given string, including null, empty, and blank checks.
-     * @param toCheck The string to check.
-     * @return The input string if it passes all checks.
-     * @throws IllegalArgumentException if any check fails.
-     */
-    public static String basicCheck(String toCheck) {
-        validate(toCheck, Objects::nonNull, Cause.NULL);
-        validate(toCheck, String::isEmpty, Cause.EMPTY);
-        validate(toCheck, String::isBlank, Cause.BLANK);
-        return toCheck;
-    }
-
-    /**
-     * Validates the format of the given email address.
-     * @param email The email address to validate.
-     * @return The input email address if it is in a valid format.
-     * @throws IllegalArgumentException if the email format is incorrect.
-     */
-    public static String emailFormCheck(String email) {
-        validate(email, e -> e.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"), Cause.FORMAT);
-        return email;
-    }
-
-    private static void validate(String toCheck, Predicate<String> p, Cause cause) {
-        if (!p.test(toCheck))
-            throw new IllegalArgumentException(new BadStringException(toCheck, cause));
-    }
 }
