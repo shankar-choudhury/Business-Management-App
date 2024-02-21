@@ -1,8 +1,5 @@
 package com.spring2024project.Scheduler.service;
 
-import com.spring2024project.Scheduler.entity.Customer;
-import org.hibernate.service.Service;
-
 import java.util.List;
 
 public interface BaseService<T> {
