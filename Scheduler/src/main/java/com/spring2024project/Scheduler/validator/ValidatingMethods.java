@@ -33,6 +33,10 @@ public final class ValidatingMethods {
         return toCheck;
     }
 
+    public static void verifyNonNullEmptyOrBlank(String... toCheck) {
+        Arrays.stream(toCheck).forEach(ValidatingMethods::verifyNonNullEmptyOrBlank);
+    }
+
     /**
      * Validates the format of the given email address.
      * @param email The email address to validate.
