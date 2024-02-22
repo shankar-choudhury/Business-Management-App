@@ -31,7 +31,7 @@ public class CreditCardController implements BaseController<CreditCard> {
     @GetMapping("/{id}")
     public ResponseEntity<CreditCard> getById(@PathVariable int id) {
         CreditCard creditCard = creditCardService.getById(id);
-        return creditCard.getNumber() == 0 ?
+        return creditCard.getNumber().isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(creditCard, HttpStatus.OK);
     }
 
@@ -46,7 +46,7 @@ public class CreditCardController implements BaseController<CreditCard> {
     @PutMapping("/{id}")
     public ResponseEntity<CreditCard> update(@PathVariable int id, @RequestBody CreditCard creditCard) {
         CreditCard updatedCreditCard = creditCardService.update(id, creditCard);
-        return updatedCreditCard.getNumber() == 0 ?
+        return updatedCreditCard.getNumber().isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(updatedCreditCard, HttpStatus.OK);
     }
 
@@ -54,7 +54,7 @@ public class CreditCardController implements BaseController<CreditCard> {
     @DeleteMapping("/{id}")
     public ResponseEntity<CreditCard> delete(@PathVariable int id) {
         CreditCard deletedCreditCard = creditCardService.delete(id);
-        return deletedCreditCard.getNumber() == 0 ?
+        return deletedCreditCard.getNumber().isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(deletedCreditCard, HttpStatus.OK);
     }
 

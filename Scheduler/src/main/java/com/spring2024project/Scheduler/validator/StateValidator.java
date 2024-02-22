@@ -9,7 +9,6 @@ public class StateValidator implements ConstraintValidator<ValidState, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        // Check if the provided state name is valid
         return State.find(value.trim().toUpperCase()) != State.EMPTY;
     }
 }

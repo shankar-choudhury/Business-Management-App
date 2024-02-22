@@ -12,7 +12,7 @@ public class StringValidationException extends Exception {
      */
     public enum Cause {
         NULL("String cannot be null"),
-        EMPTY("String cannot be blank"),
+        EMPTY("String cannot be empty"),
         BLANK("String cannot be blank"),
         FORMAT("String has incorrect format");
 

@@ -1,6 +1,7 @@
 package com.spring2024project.Scheduler.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.spring2024project.Scheduler.validator.ValidMonth;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,17 +9,22 @@ import lombok.*;
 @Table(name = "creditcard")
 @Getter
 @Setter
+@NoArgsConstructor
 @Cacheable
 public class CreditCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column
-    private long number;
+    private String number;
     @Column
+    @ValidMonth
     private int expMonth;
     @Column
     private int expYear;
+    @OneToOne
+    private Address billingAddress;
+
     // Version field for optimistic locking
     @Version
     private Long version;
@@ -28,15 +34,13 @@ public class CreditCard {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    private CreditCard(){};
-
-    private CreditCard(long number, int expMonth, int expYear) {
+    private CreditCard(String number, int expMonth, int expYear) {
         this.number = number;
         this.expMonth = expMonth;
         this.expYear = expYear;
     }
 
-    private CreditCard(int id, long number, int expMonth, int expYear) {
+    private CreditCard(int id, String number, int expMonth, int expYear) {
         this.id = id;
         this.number = number;
         this.expMonth = expMonth;
@@ -44,7 +48,7 @@ public class CreditCard {
     }
 
     public static CreditCard defaultCC() {
-        return new CreditCard(0,0, 0, 0);
+        return new CreditCard(0,"", 0, 0);
     }
 
     public static CreditCard from(CreditCard c) {

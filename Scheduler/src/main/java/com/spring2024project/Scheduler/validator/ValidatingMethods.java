@@ -27,7 +27,7 @@ public final class ValidatingMethods {
      * @throws IllegalArgumentException if any check fails.
      */
     public static String verifyNonNullEmptyOrBlank(String toCheck) {
-        validateString(toCheck, Objects::nonNull, StringValidationException.Cause.NULL);
+        validateString(toCheck, Objects::isNull, StringValidationException.Cause.NULL);
         validateString(toCheck, String::isEmpty, StringValidationException.Cause.EMPTY);
         validateString(toCheck, String::isBlank, StringValidationException.Cause.BLANK);
         return toCheck;
@@ -60,8 +60,8 @@ public final class ValidatingMethods {
         return phoneNumber;
     }
 
-    private static void validateString(String toCheck, Predicate<String> p, StringValidationException.Cause cause) {
-        if (!p.test(toCheck))
+    public static void validateString(String toCheck, Predicate<String> p, StringValidationException.Cause cause) {
+        if (p.test(toCheck))
             throw new IllegalArgumentException(new StringValidationException(toCheck, cause));
     }
 }
