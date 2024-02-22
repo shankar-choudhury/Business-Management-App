@@ -44,7 +44,7 @@ public class ZipCodeData {
             String timezone) {
         return new ZipCodeData(
                 verifyNonNullEmptyOrBlank(zip),
-                verifyNonNullEmptyOrBlank(primaryCity),
+                verifyNonNullEmptyOrBlank(primaryCity).trim(),
                 setOf(Objects.requireNonNull(cities)),
                 verifyNonNullEmptyOrBlank(state),
                 verifyNonNullEmptyOrBlank(timezone));

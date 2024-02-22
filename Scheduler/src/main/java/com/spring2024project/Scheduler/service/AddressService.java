@@ -2,10 +2,9 @@ package com.spring2024project.Scheduler.service;
 
 import com.spring2024project.Scheduler.entity.Address;
 import com.spring2024project.Scheduler.repository.AddressRepository;
+import com.spring2024project.Scheduler.validator.ZipCodeValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import static com.spring2024project.Scheduler.entity.Address.*;
 
 import java.util.List;
 
@@ -17,14 +16,16 @@ import java.util.List;
 @Service
 public class AddressService implements BaseService<Address> {
     private AddressRepository ar;
+    private ZipCodeValidator v;
 
     /**
      * Constructs an AddressService instance with the given AddressRepository.
      * @param ar The AddressRepository to be used by the service.
      */
     @Autowired
-    public AddressService(AddressRepository ar) {
+    public AddressService(AddressRepository ar, ZipCodeValidator v) {
         this.ar = ar;
+        this.v = v;
     }
 
     /**
@@ -43,7 +44,7 @@ public class AddressService implements BaseService<Address> {
      */
     @Override
     public Address getById(int id) {
-        return ar.findById(id).orElse(Address.defaultAddress());
+        return ar.findById(id).orElse(Address.emptyAddress());
     }
 
     /**
@@ -53,7 +54,7 @@ public class AddressService implements BaseService<Address> {
      */
     @Override
     public Address create(Address entity) {
-        Address address = Address.from(entity);
+        Address address = Address.from(entity, v);
         return ar.save(address);
     }
 

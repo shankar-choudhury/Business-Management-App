@@ -3,8 +3,11 @@ package com.spring2024project.Scheduler.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.spring2024project.Scheduler.validator.ValidState;
 import com.spring2024project.Scheduler.validator.ValidZipCode;
+import com.spring2024project.Scheduler.validator.ZipCodeValidator;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Objects;
 
 @Entity
 @Table(uniqueConstraints = {
@@ -62,8 +65,19 @@ public class Address {
         this.zipcode = zipcode;
     }
 
-    public static Address defaultAddress() {
+    public static Address emptyAddress() {
         return new Address();
+    }
+
+    public static Address from(Address a, ZipCodeValidator validator) {
+        if (!validator.mapsTo(Objects.requireNonNull(a).getZipcode(), a.getCity(), a.getState()))
+            return emptyAddress();
+        return new Address(
+                a.getBuildingNumber(),
+                a.getStreet(),
+                a.getCity(),
+                a.getState(),
+                a.getZipcode());
     }
 
     public static Address from(Address a) {
