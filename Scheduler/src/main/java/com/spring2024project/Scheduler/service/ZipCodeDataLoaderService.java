@@ -1,7 +1,10 @@
 package com.spring2024project.Scheduler.service;
 
+import static com.spring2024project.Scheduler.entity.ZipCodeData.*;
+
 import com.spring2024project.Scheduler.entity.ZipCodeData;
 import com.spring2024project.Scheduler.repository.ZipCodeDataRepository;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -19,8 +22,7 @@ public class ZipCodeDataLoaderService {
         this.zipCodeDataRepository = zipCodeDataRepository;
     }
 
-
-
+    @PostConstruct
     public void loadZipCodeData() {
         try(var reader = new BufferedReader(
                 new InputStreamReader(

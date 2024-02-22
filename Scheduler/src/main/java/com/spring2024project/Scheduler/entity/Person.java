@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 
 @Getter
 @Setter
@@ -15,15 +16,20 @@ public abstract class Person {
     private int id;
 
     @Column
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "Last name cannot contain non-alphabetic characters")
     private String firstName;
+
     @Column
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "Last name cannot contain non-alphabetic characters")
     private String lastName;
+
     @Column
     @Email(regexp = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\\\.[A-Za-z0-9-]+)*(\\\\.[A-Za-z]{2,})$")
     private String email;
-    @Column
-    private String phoneNumber;
 
+    @Column
+    @Pattern(regexp = "^\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}$")
+    private String phoneNumber;
 
     protected Person(String firstName, String lastName, String email, String phoneNumber) {
         this.firstName = firstName;

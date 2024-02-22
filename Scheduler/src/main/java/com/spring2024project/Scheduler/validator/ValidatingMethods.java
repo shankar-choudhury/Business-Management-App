@@ -60,7 +60,7 @@ public final class ValidatingMethods {
         return phoneNumber;
     }
 
-    public static void validateString(String toCheck, Predicate<String> p, StringValidationException.Cause cause) {
+    private static void validateString(String toCheck, Predicate<String> p, StringValidationException.Cause cause) {
         if (!p.test(toCheck))
             throw new IllegalArgumentException(new StringValidationException(toCheck, cause));
     }

@@ -50,6 +50,8 @@ public class ZipCodeData {
                 verifyNonNullEmptyOrBlank(timezone));
     }
 
-
+    public static ZipCodeData emptyZipCodeData() {
+        return new ZipCodeData("","",Set.of(),"","");
+    }
 
 }

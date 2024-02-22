@@ -2,6 +2,7 @@ package com.spring2024project.Scheduler.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.spring2024project.Scheduler.validator.ValidState;
+import com.spring2024project.Scheduler.validator.ValidZipCode;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,16 +18,22 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column
     private String buildingNumber;
-    @Column
+
+    @Column()
     private String street;
+
     @Column
     private String city;
+
     @Column
     @ValidState
     private String state;
+
     @Column
+    @ValidZipCode
     private String zipcode;
 
     // Version field for optimistic locking
