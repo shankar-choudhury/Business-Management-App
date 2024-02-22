@@ -1,6 +1,6 @@
 package com.spring2024project.Scheduler.validator;
 
-import com.spring2024project.Scheduler.enumValues.State;
+import com.spring2024project.Scheduler.constantValues.State;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

@@ -1,4 +1,4 @@
-package com.spring2024project.Scheduler.enumValues;
+package com.spring2024project.Scheduler.constantValues;
 
 import java.util.*;
 
