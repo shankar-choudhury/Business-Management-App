@@ -31,7 +31,7 @@ public class AddressController implements BaseController<Address>{
     @GetMapping("/{id}")
     public ResponseEntity<Address> getById(@PathVariable int id) {
         Address address = addressService.getById(id);
-        return address.getBuildingNumber() == 0 ?
+        return address.getBuildingNumber().isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(address, HttpStatus.OK);
     }
 
@@ -46,7 +46,7 @@ public class AddressController implements BaseController<Address>{
     @PutMapping("/{id}")
     public ResponseEntity<Address> update(@PathVariable int id, @RequestBody Address address) {
         Address updatedAddress = addressService.update(id,address);
-        return updatedAddress.getBuildingNumber() == 0 ?
+        return updatedAddress.getBuildingNumber().isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(updatedAddress, HttpStatus.OK);
     }
 

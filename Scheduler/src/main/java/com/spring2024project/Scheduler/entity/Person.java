@@ -3,6 +3,8 @@ package com.spring2024project.Scheduler.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import javax.validation.constraints.Email;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,6 +19,7 @@ public abstract class Person {
     @Column
     private String lastName;
     @Column
+    @Email(regexp = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\\\.[A-Za-z0-9-]+)*(\\\\.[A-Za-z]{2,})$")
     private String email;
     @Column
     private String phoneNumber;

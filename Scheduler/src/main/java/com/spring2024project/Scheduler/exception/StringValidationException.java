@@ -1,14 +1,12 @@
 package com.spring2024project.Scheduler.exception;
 
-import java.util.Objects;
-import java.util.function.Predicate;
 
 /**
  * This class represents a set of utility methods for checking String values for various bad inputs.
  * It provides methods for basic string checks such as null, empty, and blank, as well as email format validation.
  * @Author Shankar Choudhury
  */
-public class BadStringException extends Exception {
+public class StringValidationException extends Exception {
     /**
      * Enum representing the possible causes of bad string inputs.
      */
@@ -35,6 +33,7 @@ public class BadStringException extends Exception {
     }
 
     private final String badString;
+    private final Cause cause;
     private final String explanation;
 
     /**
@@ -42,8 +41,9 @@ public class BadStringException extends Exception {
      * @param badString The bad string that caused the exception.
      * @param cause The cause of the exception.
      */
-    public BadStringException(String badString, Cause cause) {
+    public StringValidationException(String badString, Cause cause) {
         this.badString = badString;
+        this.cause = cause;
         this.explanation = Cause.getDescription(cause);
     }
 
@@ -53,6 +53,14 @@ public class BadStringException extends Exception {
      */
     public String explanation() {
         return explanation;
+    }
+
+    /**
+     * Return the cause of this exception
+     * @return The cause of this exception
+     */
+    public Cause cause() {
+        return cause;
     }
 
     /**

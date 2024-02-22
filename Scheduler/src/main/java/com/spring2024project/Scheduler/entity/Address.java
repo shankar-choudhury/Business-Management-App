@@ -1,6 +1,7 @@
 package com.spring2024project.Scheduler.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.spring2024project.Scheduler.validator.ValidState;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,21 +11,23 @@ import lombok.*;
 })
 @Getter
 @Setter
+@NoArgsConstructor
 @Cacheable
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column
-    private int buildingNumber;
+    private String buildingNumber;
     @Column
     private String street;
     @Column
     private String city;
     @Column
+    @ValidState
     private String state;
     @Column
-    private int zipcode;
+    private String zipcode;
 
     // Version field for optimistic locking
     @Version
@@ -35,10 +38,7 @@ public class Address {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    public Address() {
-    }
-
-    private Address(int buildingNumber, String street, String city, String state, int zipcode) {
+    private Address(String buildingNumber, String street, String city, String state, String zipcode) {
         this.buildingNumber = buildingNumber;
         this.street = street;
         this.city = city;
@@ -46,7 +46,7 @@ public class Address {
         this.zipcode = zipcode;
     }
 
-    private Address(int id, int buildingNumber, String street, String city, String state, int zipcode) {
+    private Address(int id, String buildingNumber, String street, String city, String state, String zipcode) {
         this.id = id;
         this.buildingNumber = buildingNumber;
         this.street = street;
@@ -56,7 +56,7 @@ public class Address {
     }
 
     public static Address defaultAddress() {
-        return new Address(0, 0, "", "", "", 0);
+        return new Address();
     }
 
     public static Address from(Address a) {
