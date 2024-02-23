@@ -1,7 +1,6 @@
 package com.spring2024project.Scheduler.constantValues;
 
-import com.spring2024project.Scheduler.exception.StringValidationException;
-import com.spring2024project.Scheduler.validator.ValidatingMethods;
+import static com.spring2024project.Scheduler.validator.ValidatingMethods.*;
 
 import java.util.*;
 
@@ -68,9 +67,10 @@ public enum State {
     }
 
     public static State find(String key) {
-        ValidatingMethods.verifyNonNullEmptyOrBlank(key);
-        ValidatingMethods.validateString(key, k -> k.matches("^[A-Za-z\\s]+$"), StringValidationException.Cause.FORMAT);
-        return getState(normalize(key));
+        return getState(
+                normalize(
+                        correctStateFormat(
+                                verifyNonNullEmptyOrBlank(key))));
     }
 
     private static State getState(String normalizedKey) {

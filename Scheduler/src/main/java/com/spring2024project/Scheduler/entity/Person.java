@@ -6,6 +6,8 @@ import lombok.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 
+
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,11 +26,26 @@ public abstract class Person {
     private String lastName;
 
     @Column
-    @Email(regexp = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\\\.[A-Za-z0-9-]+)*(\\\\.[A-Za-z]{2,})$")
+    @Email(regexp = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\\\.[A-Za-z0-9-]+)*(\\\\.[A-Za-z]{2,})$",
+            message = "Email must adhere to following format rules:\nThe local part (before the \"@\") can contain alphanumeric characters, underscores (_), and hyphens (-).\n" +
+                    "1. The local part can have a dot (.) followed by more alphanumeric characters, underscores (_), and hyphens (-).\n This pattern can repeat zero or more times.\n" +
+                    "2. The domain part cannot start with a hyphen (-).\n" +
+                    "3. The domain part can contain alphanumeric characters, hyphens (-), and dots (.).\n" +
+                    "4. The domain part can have a dot (.) followed by more alphanumeric characters and hyphens. This pattern can repeat zero or more times.\n" +
+                    "5. The domain part must end with a dot (.) followed by at least two alphabetical characters (e.g., \".com\", \".org\").\n" +
+                    "Some valid email examples are: \"example@example.com\", \"user123@example.co.uk\", and \"my.email@example-domain.com\"")
     private String email;
 
     @Column
-    @Pattern(regexp = "^\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}$")
+    @Pattern(regexp = "^(\\(?\\d{3}\\)?[-.\\s]?)?\\d{3}[-.\\s]?\\d{4}$",
+            message = "Phone number can be in following format:\n" +
+                    "1. (123) 456-7890\n" +
+                    "2. (123)456-7890\n" +
+                    "3. 123-456-7890\n" +
+                    "4. 123.456.7890\n" +
+                    "5. 123 456 7890\n" +
+                    "6. 1234567890\n" +
+                    "Or have as many spaces between the digits")
     private String phoneNumber;
 
     protected Person(String firstName, String lastName, String email, String phoneNumber) {

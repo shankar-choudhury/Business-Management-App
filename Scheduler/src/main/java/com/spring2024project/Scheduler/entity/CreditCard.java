@@ -34,26 +34,33 @@ public class CreditCard {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    private CreditCard(String number, int expMonth, int expYear) {
+    private CreditCard(String number, int expMonth, int expYear, Address billingAddress) {
         this.number = number;
         this.expMonth = expMonth;
         this.expYear = expYear;
+        this.billingAddress = billingAddress;
     }
 
-    private CreditCard(int id, String number, int expMonth, int expYear) {
+    private CreditCard(int id, String number, int expMonth, int expYear, Address billingAddress) {
         this.id = id;
         this.number = number;
         this.expMonth = expMonth;
         this.expYear = expYear;
+        this.billingAddress = billingAddress;
     }
 
-    public static CreditCard defaultCC() {
-        return new CreditCard(0,"", 0, 0);
+    public static CreditCard emptyCreditCard() {
+        return new CreditCard(0,"",0, 0, Address.emptyAddress());
     }
 
     public static CreditCard from(CreditCard c) {
+        return new CreditCard(c.getNumber(),
+                c.getExpMonth(), c.getExpYear(), c.getBillingAddress());
+    }
+
+    public static CreditCard fromDeleted(CreditCard c) {
         return new CreditCard(c.getId(), c.getNumber(),
-                c.getExpMonth(), c.getExpYear());
+                c.getExpMonth(), c.getExpYear(), c.getBillingAddress());
     }
 
 }

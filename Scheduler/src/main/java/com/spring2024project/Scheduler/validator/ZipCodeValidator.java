@@ -18,7 +18,7 @@ public class ZipCodeValidator implements ConstraintValidator<ValidZipCode, Strin
         return Objects.nonNull(zipCode) && repository.existsById(zipCode);
     }
 
-    public boolean mapsTo(String zipCode, String city, String state) {
+    public boolean isMatchingCityAndState(String zipCode, String city, String state) {
         return repository.findById(zipCode)
                 .filter(zip -> zip.getPrimaryCity().equals(city) && zip.getState().equals(state))
                 .isPresent();

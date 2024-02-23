@@ -43,7 +43,7 @@ public class CreditCardService implements BaseService<CreditCard>{
      */
     @Override
     public CreditCard getById(int id) {
-        return cr.findById(id).orElse(defaultCC());
+        return cr.findById(id).orElse(emptyCreditCard());
     }
 
     /**
@@ -82,7 +82,7 @@ public class CreditCardService implements BaseService<CreditCard>{
     public CreditCard delete(int id) {
         CreditCard toDelete = getById(id);
         if (toDelete.getId() != 0) {
-            CreditCard deleted = from(toDelete);
+            CreditCard deleted = fromDeleted(toDelete);
             cr.deleteById(id);
             return deleted;
         }

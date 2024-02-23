@@ -70,8 +70,9 @@ public class Address {
     }
 
     public static Address from(Address a, ZipCodeValidator validator) {
-        if (!validator.mapsTo(Objects.requireNonNull(a).getZipcode(), a.getCity(), a.getState()))
+        if (!validator.isMatchingCityAndState(Objects.requireNonNull(a).getZipcode(), a.getCity(), a.getState()))
             return emptyAddress();
+
         return new Address(
                 a.getBuildingNumber(),
                 a.getStreet(),

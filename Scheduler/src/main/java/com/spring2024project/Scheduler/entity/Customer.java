@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import static com.spring2024project.Scheduler.validator.ValidatingMethods.*;
+
 import java.util.List;
 
 /**
@@ -67,11 +69,14 @@ public class Customer extends Person {
     }
 
     public static Customer from(Customer c) {
-        return new Customer(
+        verifyNonNullEmptyOrBlank(
                 c.getFirstName(),
-                c.getLastName(),
-                c.getEmail(),
-                c.getPhoneNumber(),
+                c.getLastName());
+        return new Customer(
+                correctNameFormat(c.getFirstName()),
+                correctNameFormat(c.getLastName()),
+                correctEmailFormat(c.getEmail()),
+                correctPhoneNumberFormat(c.getPhoneNumber()),
                 c.getAddressList(),
                 c.getCreditCardList());
     }
