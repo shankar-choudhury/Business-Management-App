@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * This service class provides functionality to perform CRUD operations on Customer entities.
+ * @Author Shankar Choudhury
  */
 @Service
 @Transactional

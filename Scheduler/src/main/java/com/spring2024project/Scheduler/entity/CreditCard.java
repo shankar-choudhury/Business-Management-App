@@ -13,6 +13,10 @@ import java.util.Objects;
 import static com.spring2024project.Scheduler.validatingMethods.StringValidator.*;
 import static com.spring2024project.Scheduler.validatingMethods.GeneralValidator.*;
 
+/**
+ * Entity class representing a Credit Card.
+ * TODO: Customer has many-to-one relationship with Address, ensure functionality is demonstrated with CRUD operations
+ */
 @Entity
 @Table(name = "credit_card")
 @Getter
@@ -66,10 +70,19 @@ public class CreditCard {
         this.billingAddress = billingAddress;
     }
 
+    /**
+     * Constructor for creating an empty CreditCard instance.
+     * @return An empty CreditCard instance.
+     */
     public static CreditCard emptyCreditCard() {
         return new CreditCard(0,"",0, 0, Address.emptyAddress());
     }
 
+    /**
+     * Creates a new CreditCard instance from an existing one.
+     * @param c The existing CreditCard instance.
+     * @return A new CreditCard instance.
+     */
     public static CreditCard from(CreditCard c) {
         return new CreditCard(
                 correctCCNumberFormat(c.getNumber()),
@@ -78,6 +91,11 @@ public class CreditCard {
                 Objects.requireNonNull(c.getBillingAddress()));
     }
 
+    /**
+     * Creates a new CreditCard instance from a deleted one.
+     * @param c The deleted CreditCard instance.
+     * @return A new CreditCard instance.
+     */
     public static CreditCard fromDeleted(CreditCard c) {
         var checked = from(c);
         return new CreditCard(

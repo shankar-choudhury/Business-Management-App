@@ -4,6 +4,11 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.time.Year;
 
+/**
+ * A custom validation class to validate a given year. Primarily used for validating bean with annotation tags
+ * TODO: implement java.time when creating scheduler interface
+ * @Author Shankar Choudhury
+ */
 public class YearValidator implements ConstraintValidator<ValidYearRange, Integer> {
     @Override
     public boolean isValid(Integer year, ConstraintValidatorContext context) {

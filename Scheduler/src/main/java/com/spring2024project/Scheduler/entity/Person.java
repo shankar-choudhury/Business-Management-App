@@ -7,7 +7,12 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 
 
-
+/**
+ * This class represents a skeletal implementation that holds common features and methods of entities representing people.
+ * Future entities like OfficeEmployees, FieldTechnicians, Electricians, or Mechanics should extend this class.
+ * @Author Shankar Choudhury
+ * TODO: Add the following entities: OfficeEmployee, FieldTechnician, Electrician, and Mechanic
+ */
 @Getter
 @Setter
 @NoArgsConstructor

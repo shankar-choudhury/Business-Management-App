@@ -6,6 +6,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
+/**
+ * This interface represents common Controller operations that are required for baseline activities. Future controllers
+ * should implement BaseController. Developers should consider adding abstract method to BaseController if other
+ * controllers share similar methods
+ * @param <T> Type of entity controller uses for persistence.
+ */
 public interface BaseController<T> {
 
     /**

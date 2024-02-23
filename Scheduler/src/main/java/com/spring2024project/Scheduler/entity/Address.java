@@ -80,10 +80,25 @@ public class Address {
         this.zipcode = zipcode;
     }
 
+    /**
+     * Constructor for creating an empty Address instance.
+     * @return An empty Address instance.
+     */
     public static Address emptyAddress() {
         return new Address();
     }
 
+    /**
+     * Creates a new Address instance from an existing one using a ZipCodeValidator. This method should be used primarily
+     * to check that the zipcode of an address is a correct one, i.e it exists and it contains a mapping to a city and state
+     * that corresponds with this Address's city and state.
+     * // TODO: Add functionality so that when creating an address, a temporary address is created, and then is checked for
+     * // TODO: correct zipcode-city-state mapping. If correct, add address to database. If not correct, save fields back
+     * // TODO: into text boxes of window, destroy address, and prompt user to try again with a correct zipcode-city-state mapping.
+     * @param a The existing Address instance.
+     * @param validator The ZipCodeValidator to use.
+     * @return A new Address instance.
+     */
     public static Address from(Address a, ZipCodeValidator validator) {
         if (!validator.isMatchingCityAndState(
                 Objects.requireNonNull(a).getZipcode(), a.getCity(), correctState(a.getState()))) {
@@ -92,6 +107,11 @@ public class Address {
         return from(a);
     }
 
+    /**
+     * Creates a new Address instance from an existing one.
+     * @param a The existing Address instance.
+     * @return A new Address instance.
+     */
     public static Address from(Address a) {
         verifyNonNull(a);
         verifyNonNullEmptyOrBlank(a.getBuildingNumber(), a.getCity(), a.getStreet(), a.getState(), a.getZipcode());
@@ -103,6 +123,13 @@ public class Address {
                 a.getZipcode());
     }
 
+    /**
+     * Creates a new Address instance from a deleted one. The intention of this method is to return a copy of the deleted
+     * Address for the sake of reference.
+     * TODO: implement this so that when a user deletes an address, it can be saved on a stack to recall.
+     * @param a The deleted Address instance.
+     * @return A new Address instance.
+     */
     public static Address fromDeleted(Address a) {
         var checked = from(a);
         return new Address(checked.getId(),

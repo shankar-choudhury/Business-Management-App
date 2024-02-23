@@ -9,17 +9,29 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller class for managing Customer entities.
+ * @Author Shankar Choudhury
+ */
 @RestController
 @RequestMapping("/customers")
 public class CustomerController implements BaseController<Customer>{
 
     private final BaseService<Customer> customerService;
 
+    /**
+     * Constructor for CustomerController.
+     * @param customerService The service responsible for handling Customer-related operations.
+     */
     @Autowired
     public CustomerController(BaseService<Customer> customerService) {
         this.customerService = customerService;
     }
 
+    /**
+     * Retrieve all customers.
+     * @return ResponseEntity containing a list of Customer objects.
+     */
     @Override
     @GetMapping
     public ResponseEntity<List<Customer>> getAll() {
@@ -27,6 +39,11 @@ public class CustomerController implements BaseController<Customer>{
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
+    /**
+     * Retrieve a customer by its ID.
+     * @param id The ID of the customer to retrieve.
+     * @return ResponseEntity containing the retrieved Customer object.
+     */
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<Customer> getById(@PathVariable int id) {
@@ -35,6 +52,11 @@ public class CustomerController implements BaseController<Customer>{
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(customer, HttpStatus.OK);
     }
 
+    /**
+     * Create a new customer.
+     * @param customer The Customer object to create.
+     * @return ResponseEntity containing the created Customer object.
+     */
     @Override
     @PostMapping
     public ResponseEntity<Customer> create(@RequestBody Customer customer) {
@@ -42,6 +64,12 @@ public class CustomerController implements BaseController<Customer>{
         return new ResponseEntity<>(createdCustomer, HttpStatus.CREATED);
     }
 
+    /**
+     * Update an existing customer.
+     * @param id The ID of the customer to update.
+     * @param customer The updated Customer object.
+     * @return ResponseEntity containing the updated Customer object.
+     */
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<Customer> update(@PathVariable int id, @RequestBody Customer customer) {
@@ -50,6 +78,11 @@ public class CustomerController implements BaseController<Customer>{
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(updatedCustomer, HttpStatus.OK);
     }
 
+    /**
+     * Delete a customer by its ID.
+     * @param id The ID of the customer to delete.
+     * @return ResponseEntity containing the deleted Customer object.
+     */
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Customer> delete(@PathVariable int id) {

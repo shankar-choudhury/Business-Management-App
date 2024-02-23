@@ -11,16 +11,26 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.util.Objects;
 
+/**
+ * Service class for loading ZIP code data from a CSV file into the database.
+ */
 @Service
 public class ZipCodeDataLoaderService {
 
     private final ZipCodeDataRepository zipCodeDataRepository;
 
+    /**
+     * Constructor for ZipCodeDataLoaderService.
+     * @param zipCodeDataRepository The repository for ZIP code data.
+     */
     @Autowired
     public ZipCodeDataLoaderService(ZipCodeDataRepository zipCodeDataRepository) {
         this.zipCodeDataRepository = zipCodeDataRepository;
     }
 
+    /**
+     * Method invoked after construction to load ZIP code data from a CSV file into the database.
+     */
     @PostConstruct
     public void loadZipCodeData() {
         try(var reader = new BufferedReader(
@@ -31,7 +41,6 @@ public class ZipCodeDataLoaderService {
                 String[] data = line.split(",");
 
                 var zip = data[0];
-                System.out.println(zip);
                 var primary_city = data[1];
                 var acceptable_cities = data[2];
                 var state = data[3];

@@ -21,7 +21,7 @@ import java.util.List;
 })
 @Getter
 @Setter
-public class Customer extends Person {
+public final class Customer extends Person {
     @JsonManagedReference
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Address> addressList;

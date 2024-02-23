@@ -4,6 +4,10 @@ import com.spring2024project.Scheduler.validatingMethods.StringValidator;
 
 import java.util.*;
 
+/**
+ * Enum representing the states in the United States.
+ * @Author Shankar Choudhury
+ */
 public enum State {
     ALABAMA("AL", "ALABAMA"),
     ALASKA("AK", "ALASKA"),
@@ -56,16 +60,30 @@ public enum State {
     WISCONSIN("WI", "WISCONSIN"),
     WYOMING("WY", "WYOMING"),
     EMPTY("", "");
+
+    /**
+     * Constructor for State enum.
+     * @param abbreviation The abbreviation of the state.
+     * @param fullName The full name of the state.
+     */
     State(String abbreviation, String fullName) {
         Holder.ABBREVIATION_MAP.put(abbreviation, this);
         Holder.FULLNAME_MAP.put(fullName, this);
     }
 
+    /**
+     * Holder class for storing abbreviation and full name mappings.
+     */
     private static class Holder {
         static final Map<String,State> FULLNAME_MAP = new HashMap<>();
         static final Map<String,State> ABBREVIATION_MAP = new HashMap<>();
     }
 
+    /**
+     * Find a State enum by its abbreviation or full name.
+     * @param key The abbreviation or full name of the state.
+     * @return The corresponding State enum, or EMPTY if not found.
+     */
     public static State find(String key) {
         return getState(
                 normalize(
@@ -73,6 +91,11 @@ public enum State {
                                 StringValidator.verifyNonNullEmptyOrBlank(key))));
     }
 
+    /**
+     * Get the State enum corresponding to the normalized key.
+     * @param normalizedKey The normalized abbreviation or full name of the state.
+     * @return The corresponding State enum, or EMPTY if not found.
+     */
     private static State getState(String normalizedKey) {
         assert Objects.nonNull(normalizedKey);
         assert !normalizedKey.isEmpty();
@@ -86,6 +109,11 @@ public enum State {
                         State.EMPTY));
     }
 
+    /**
+     * Normalize the input key by trimming and converting to uppercase.
+     * @param key The input key to normalize.
+     * @return The normalized key.
+     */
     private static String normalize(String key) {
         assert Objects.nonNull(key);
         assert !key.isEmpty();

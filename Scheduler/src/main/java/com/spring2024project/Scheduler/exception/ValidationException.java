@@ -3,6 +3,13 @@ package com.spring2024project.Scheduler.exception;
 
 import java.util.Objects;
 
+/**
+ * This class represents a skeletal implementation of various custom exceptions. The purpose for this is to aid implementation
+ * of other custom exceptions to enhance failure-capture information when developing this application. It is expected that
+ * future custom exceptions extend this class, and the developer adds necessary values to Cause that enhances the specificity
+ * of the exception.
+ * @Author Shankar Choudhury
+ */
 public abstract class ValidationException extends Exception {
     public enum Cause {
         NULL_STRING("String cannot be null"),
