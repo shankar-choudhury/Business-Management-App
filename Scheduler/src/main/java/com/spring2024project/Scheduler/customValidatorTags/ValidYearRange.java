@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = YearValidator.class)
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidYear {
+public @interface ValidYearRange {
     String message() default "Year is outside of valid range";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

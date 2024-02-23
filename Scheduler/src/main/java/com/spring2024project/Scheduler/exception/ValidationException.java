@@ -12,7 +12,8 @@ public abstract class ValidationException extends Exception {
         NULL_LIST("List cannot be null"),
         EMPTY_LIST("List cannot be empty"),
         NULL_ELEMENTS("This element is null: "),
-        INVALID_ELEMENTS("This element is invalid: ");
+        INVALID_ELEMENTS("This element is invalid: "),
+        NONEXISTING("Element does not exist");
 
         private final String description;
 

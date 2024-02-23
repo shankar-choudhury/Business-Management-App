@@ -2,7 +2,7 @@ package com.spring2024project.Scheduler.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.spring2024project.Scheduler.customValidatorTags.ValidMonth;
-import com.spring2024project.Scheduler.customValidatorTags.ValidYear;
+import com.spring2024project.Scheduler.customValidatorTags.ValidYearRange;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,10 +34,12 @@ public class CreditCard {
     private int expMonth;
 
     @Column
-    @ValidYear
+    @ValidYearRange
     private int expYear;
 
-    @OneToOne
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "address_id")
     private Address billingAddress;
 
     // Version field for optimistic locking
@@ -47,7 +49,7 @@ public class CreditCard {
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
-    private Customer customer;
+    private Customer customer = Customer.defaultCustomer();
 
     private CreditCard(String number, int expMonth, int expYear, Address billingAddress) {
         this.number = number;
@@ -77,12 +79,13 @@ public class CreditCard {
     }
 
     public static CreditCard fromDeleted(CreditCard c) {
+        var checked = from(c);
         return new CreditCard(
                 c.getId(),
-                correctCCNumberFormat(c.getNumber()),
-                verifyMonth(c.getExpMonth()),
-                verifyYearInRange(c.getExpYear(), 5),
-                Objects.requireNonNull(c.getBillingAddress()));
+                checked.getNumber(),
+                checked.getExpMonth(),
+                checked.getExpYear(),
+                checked.getBillingAddress());
     }
 
 }

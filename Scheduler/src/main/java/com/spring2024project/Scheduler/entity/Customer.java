@@ -86,15 +86,15 @@ public class Customer extends Person {
     }
 
     public static Customer fromDeleted(Customer c) {
-
+        var checked = from(c);
         return new Customer(
                 c.getId(),
-                c.getFirstName(),
-                c.getLastName(),
-                c.getEmail(),
-                c.getPhoneNumber(),
-                c.getAddressList(),
-                c.getCreditCardList());
+                checked.getFirstName(),
+                checked.getLastName(),
+                checked.getEmail(),
+                checked.getPhoneNumber(),
+                checked.getAddressList(),
+                checked.getCreditCardList());
     }
 
 }

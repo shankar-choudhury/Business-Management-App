@@ -4,7 +4,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.time.Year;
 
-public class YearValidator implements ConstraintValidator<ValidYear, Integer> {
+public class YearValidator implements ConstraintValidator<ValidYearRange, Integer> {
     @Override
     public boolean isValid(Integer year, ConstraintValidatorContext context) {
         if (year == null) {

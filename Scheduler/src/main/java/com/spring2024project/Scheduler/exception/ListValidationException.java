@@ -6,12 +6,8 @@ import java.util.List;
 
 @Getter
 public class ListValidationException extends ValidationException {
-    private List<?> invalidList = List.of();
+    private List<?> invalidList;
     private List<?> invalidElements = List.of();
-
-    public ListValidationException(Cause cause) {
-        super(cause);
-    }
 
     public ListValidationException(List<?> invalidList, Cause cause) {
         super(cause);

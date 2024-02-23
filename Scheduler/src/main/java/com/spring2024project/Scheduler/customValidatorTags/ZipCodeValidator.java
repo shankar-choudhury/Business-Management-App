@@ -7,6 +7,8 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.Objects;
 
+import static com.spring2024project.Scheduler.validatingMethods.StringValidator.verifyNonNullEmptyOrBlank;
+
 public class ZipCodeValidator implements ConstraintValidator<ValidZipCode, String> {
     private final ZipCodeDataRepository repository;
     @Autowired
@@ -19,6 +21,7 @@ public class ZipCodeValidator implements ConstraintValidator<ValidZipCode, Strin
     }
 
     public boolean isMatchingCityAndState(String zipCode, String city, String state) {
+        verifyNonNullEmptyOrBlank(zipCode, city, state);
         return repository.findById(zipCode)
                 .filter(zip -> zip.getPrimaryCity().equals(city) && zip.getState().equals(state))
                 .isPresent();
