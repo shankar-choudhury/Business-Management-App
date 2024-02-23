@@ -1,12 +1,20 @@
 package com.spring2024project.Scheduler.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.spring2024project.Scheduler.validator.ValidMonth;
+import com.spring2024project.Scheduler.customValidatorTags.ValidMonth;
+import com.spring2024project.Scheduler.customValidatorTags.ValidYear;
 import jakarta.persistence.*;
 import lombok.*;
 
+import javax.validation.constraints.*;
+
+import java.util.Objects;
+
+import static com.spring2024project.Scheduler.validatingMethods.StringValidator.*;
+import static com.spring2024project.Scheduler.validatingMethods.GeneralValidator.*;
+
 @Entity
-@Table(name = "creditcard")
+@Table(name = "credit_card")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,12 +24,19 @@ public class CreditCard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column
+    @Pattern(regexp = "/^(?:4[0-9]{12}(?:[0-9]{3})?|[25][1-7][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\\d{3})\\d{11})$/",
+            message = "Credit Card number must match the following formats:\n" +
+                        "1. Visa\n2. MasterCard\n3. American Express\n4. Diners Club\n5. Discover\n6. JCB")
     private String number;
+
     @Column
     @ValidMonth
     private int expMonth;
+
     @Column
+    @ValidYear
     private int expYear;
+
     @OneToOne
     private Address billingAddress;
 
@@ -54,13 +69,20 @@ public class CreditCard {
     }
 
     public static CreditCard from(CreditCard c) {
-        return new CreditCard(c.getNumber(),
-                c.getExpMonth(), c.getExpYear(), c.getBillingAddress());
+        return new CreditCard(
+                correctCCNumberFormat(c.getNumber()),
+                verifyMonth(c.getExpMonth()),
+                verifyYearInRange(c.getExpYear(), 5),
+                Objects.requireNonNull(c.getBillingAddress()));
     }
 
     public static CreditCard fromDeleted(CreditCard c) {
-        return new CreditCard(c.getId(), c.getNumber(),
-                c.getExpMonth(), c.getExpYear(), c.getBillingAddress());
+        return new CreditCard(
+                c.getId(),
+                correctCCNumberFormat(c.getNumber()),
+                verifyMonth(c.getExpMonth()),
+                verifyYearInRange(c.getExpYear(), 5),
+                Objects.requireNonNull(c.getBillingAddress()));
     }
 
 }

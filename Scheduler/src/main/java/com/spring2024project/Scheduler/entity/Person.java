@@ -18,11 +18,11 @@ public abstract class Person {
     private int id;
 
     @Column
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Last name cannot contain non-alphabetic characters")
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "First name can only contain alphabetic characters")
     private String firstName;
 
     @Column
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Last name cannot contain non-alphabetic characters")
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "Last name can only contain alphabetic characters")
     private String lastName;
 
     @Column

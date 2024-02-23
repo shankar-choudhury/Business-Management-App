@@ -1,8 +1,7 @@
-package com.spring2024project.Scheduler.validator;
+package com.spring2024project.Scheduler.customValidatorTags;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.Objects;
 
 public class MonthValidator implements ConstraintValidator<ValidMonth, Integer> {
     @Override

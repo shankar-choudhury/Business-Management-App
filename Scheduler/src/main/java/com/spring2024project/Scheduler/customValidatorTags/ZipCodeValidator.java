@@ -1,4 +1,4 @@
-package com.spring2024project.Scheduler.validator;
+package com.spring2024project.Scheduler.customValidatorTags;
 
 import com.spring2024project.Scheduler.repository.ZipCodeDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;

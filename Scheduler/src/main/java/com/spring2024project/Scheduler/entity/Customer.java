@@ -1,10 +1,11 @@
 package com.spring2024project.Scheduler.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import static com.spring2024project.Scheduler.validatingMethods.StringValidator.*;
+import static com.spring2024project.Scheduler.validatingMethods.ListValidator.*;
+import static com.spring2024project.Scheduler.validatingMethods.GeneralValidator.*;
 import jakarta.persistence.*;
 import lombok.*;
-
-import static com.spring2024project.Scheduler.validator.ValidatingMethods.*;
 
 import java.util.List;
 
@@ -71,14 +72,17 @@ public class Customer extends Person {
     public static Customer from(Customer c) {
         verifyNonNullEmptyOrBlank(
                 c.getFirstName(),
-                c.getLastName());
+                c.getLastName(),
+                c.getEmail(),
+                c.getPhoneNumber());
+        verifyNonNull(c.getAddressList(), c.getCreditCardList());
         return new Customer(
                 correctNameFormat(c.getFirstName()),
                 correctNameFormat(c.getLastName()),
                 correctEmailFormat(c.getEmail()),
                 correctPhoneNumberFormat(c.getPhoneNumber()),
-                c.getAddressList(),
-                c.getCreditCardList());
+                verifyNonNullElements(c.getAddressList()),
+                verifyNonNullElements(c.getCreditCardList()));
     }
 
     public static Customer fromDeleted(Customer c) {

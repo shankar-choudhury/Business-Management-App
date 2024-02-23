@@ -1,6 +1,6 @@
 package com.spring2024project.Scheduler.constantValues;
 
-import static com.spring2024project.Scheduler.validator.ValidatingMethods.*;
+import com.spring2024project.Scheduler.validatingMethods.StringValidator;
 
 import java.util.*;
 
@@ -69,8 +69,8 @@ public enum State {
     public static State find(String key) {
         return getState(
                 normalize(
-                        correctStateFormat(
-                                verifyNonNullEmptyOrBlank(key))));
+                        StringValidator.correctStateFormat(
+                                StringValidator.verifyNonNullEmptyOrBlank(key))));
     }
 
     private static State getState(String normalizedKey) {

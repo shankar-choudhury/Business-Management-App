@@ -1,8 +1,8 @@
 package com.spring2024project.Scheduler.entity;
 
-import static com.spring2024project.Scheduler.validator.ValidatingMethods.*;
 import static lombok.AccessLevel.*;
 
+import static com.spring2024project.Scheduler.validatingMethods.StringValidator.*;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,7 +29,7 @@ public class ZipCodeData {
     @Column
     private String timezone;
 
-    private static Set<String> setOf(String cities) {
+    private static Set<String> toSet(String cities) {
         assert cities != null;
         return Arrays.stream(cities.split(","))
                 .map(String::trim)
@@ -45,7 +45,7 @@ public class ZipCodeData {
         return new ZipCodeData(
                 verifyNonNullEmptyOrBlank(zip),
                 verifyNonNullEmptyOrBlank(primaryCity).trim(),
-                setOf(Objects.requireNonNull(cities)),
+                toSet(verifyNonNullEmptyOrBlank(cities)),
                 verifyNonNullEmptyOrBlank(state),
                 verifyNonNullEmptyOrBlank(timezone));
     }

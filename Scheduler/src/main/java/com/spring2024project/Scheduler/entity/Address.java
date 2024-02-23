@@ -1,9 +1,9 @@
 package com.spring2024project.Scheduler.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.spring2024project.Scheduler.validator.ValidState;
-import com.spring2024project.Scheduler.validator.ValidZipCode;
-import com.spring2024project.Scheduler.validator.ZipCodeValidator;
+import com.spring2024project.Scheduler.customValidatorTags.ValidState;
+import com.spring2024project.Scheduler.customValidatorTags.ValidZipCode;
+import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidator;
 import jakarta.persistence.*;
 import lombok.*;
 
