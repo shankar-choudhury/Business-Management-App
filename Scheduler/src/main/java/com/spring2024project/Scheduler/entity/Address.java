@@ -12,6 +12,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import javax.validation.constraints.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -60,8 +61,8 @@ public class Address {
     private Customer customer = Customer.defaultCustomer();
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "creditcard", cascade = CascadeType.ALL)
-    private CreditCard creditCard = CreditCard.emptyCreditCard();
+    @OneToMany(mappedBy = "billingAddress", cascade = CascadeType.ALL)
+    private List<CreditCard> creditCard;
 
     private Address(String buildingNumber, String street, String city, String state, String zipcode) {
         this.buildingNumber = buildingNumber;

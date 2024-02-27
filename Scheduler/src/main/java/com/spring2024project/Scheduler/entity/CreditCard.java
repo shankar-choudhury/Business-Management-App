@@ -42,7 +42,7 @@ public class CreditCard {
     private int expYear;
 
     @JsonBackReference
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     private Address billingAddress;
 

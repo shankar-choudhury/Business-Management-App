@@ -56,6 +56,11 @@
 			<version>2.0.1.Final</version>
 		</dependency>
 		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.cddcore</groupId>
 			<artifactId>constraint_2.10</artifactId>
 			<version>1.8.5.17</version>
@@ -75,6 +80,28 @@
 						</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.3.0</version>
+				<configuration>
+					<!-- Customize the JavaDoc output format -->
+					<doclint>none</doclint>
+					<links>
+						<!-- Add links to external JavaDoc documentation -->
+						<link>https://docs.oracle.com/en/java/javase/11/docs/api/</link>
+						<!-- Add links to other external documentation if needed -->
+					</links>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

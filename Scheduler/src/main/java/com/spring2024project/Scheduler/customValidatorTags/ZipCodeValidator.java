@@ -2,6 +2,7 @@ package com.spring2024project.Scheduler.customValidatorTags;
 
 import com.spring2024project.Scheduler.repository.ZipCodeDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -15,6 +16,7 @@ import static com.spring2024project.Scheduler.validatingMethods.StringValidator.
  * See Address::from method for future implementation TODOs
  * @Author Shankar Choudhury
  */
+@Component
 public class ZipCodeValidator implements ConstraintValidator<ValidZipCode, String> {
 
     private final ZipCodeDataRepository repository;

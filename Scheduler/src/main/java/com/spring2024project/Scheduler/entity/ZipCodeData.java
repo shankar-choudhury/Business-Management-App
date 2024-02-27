@@ -55,7 +55,6 @@ public final class ZipCodeData {
 
     /**
      * Creates a new ZipCodeData instance with the provided attributes.
-     *
      * @param zip         The ZIP code.
      * @param primaryCity The primary city.
      * @param cities      The acceptable cities.
@@ -72,7 +71,7 @@ public final class ZipCodeData {
         return new ZipCodeData(
                 verifyNonNullEmptyOrBlank(zip),
                 verifyNonNullEmptyOrBlank(primaryCity).trim(),
-                toSet(verifyNonNullEmptyOrBlank(cities)),
+                toSet(cities),
                 verifyNonNullEmptyOrBlank(state),
                 verifyNonNullEmptyOrBlank(timezone));
     }
