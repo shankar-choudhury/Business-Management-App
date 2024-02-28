@@ -8,6 +8,9 @@ import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidator;
 
 import static com.spring2024project.Scheduler.validatingMethods.GeneralValidator.verifyNonNull;
 import static com.spring2024project.Scheduler.validatingMethods.StringValidator.*;
+
+import com.spring2024project.Scheduler.exception.AddressValidationException;
+import com.spring2024project.Scheduler.exception.ValidationException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -101,9 +104,10 @@ public class Address {
      * @return A new Address instance.
      */
     public static Address from(Address a, ZipCodeValidator validator) {
-        if (!validator.isMatchingCityAndState(
-                Objects.requireNonNull(a).getZipcode(), a.getCity(), correctState(a.getState()))) {
-            return emptyAddress();
+        if (!validator.isValidAddress(Objects.requireNonNull(a))) {
+            throw new IllegalArgumentException(
+                    new AddressValidationException(
+                            a, ValidationException.Cause.NONEXISTING));
         }
         return from(a);
     }

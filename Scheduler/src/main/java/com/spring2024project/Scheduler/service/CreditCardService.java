@@ -1,5 +1,6 @@
 package com.spring2024project.Scheduler.service;
 
+import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidator;
 import com.spring2024project.Scheduler.entity.CreditCard;
 import com.spring2024project.Scheduler.repository.CreditCardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +19,15 @@ import static com.spring2024project.Scheduler.entity.CreditCard.*;
 @Service
 public class CreditCardService implements BaseService<CreditCard>{
     private CreditCardRepository cr;
+    private ZipCodeValidator v;
 
     /**
      * Constructs a CreditCardService instance with the given CreditCardRepository.
      * @param cr The CreditCardRepository to be used by the service.
      */
     @Autowired
-    public CreditCardService(CreditCardRepository cr) {
-        this.cr = cr;
+    public CreditCardService(CreditCardRepository cr, ZipCodeValidator v) {
+        this.cr = cr; this.v = v;
     }
 
     /**
@@ -54,7 +56,7 @@ public class CreditCardService implements BaseService<CreditCard>{
      */
     @Override
     public CreditCard create(CreditCard entity) {
-        CreditCard newCard = from(entity);
+        CreditCard newCard = checkedFrom(entity, v);
         return cr.save(newCard);
     }
 

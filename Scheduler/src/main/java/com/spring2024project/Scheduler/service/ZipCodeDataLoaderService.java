@@ -65,4 +65,8 @@ public class ZipCodeDataLoaderService {
         }
     }
 
+    public static boolean matchingZipCode(String zipToCheck, ZipCodeData zipCode) {
+        return zipToCheck.equals(zipCode.getZip());
+    }
+
 }

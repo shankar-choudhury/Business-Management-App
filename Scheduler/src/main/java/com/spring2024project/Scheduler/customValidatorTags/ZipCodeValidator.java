@@ -1,5 +1,6 @@
 package com.spring2024project.Scheduler.customValidatorTags;
 
+import com.spring2024project.Scheduler.entity.Address;
 import com.spring2024project.Scheduler.repository.ZipCodeDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,16 +43,20 @@ public class ZipCodeValidator implements ConstraintValidator<ValidZipCode, Strin
     }
 
     /**
-     * Checks if the provided zip code matches the given city and state.
-     * @param zipCode The zip code to check.
-     * @param city    The city to match.
-     * @param state   The state to match.
+     * Checks if the provided zip code exists if it matches the given city and state.
+     * @param addressToCheck Address to check for existing and valid zip code
      * @return true if the zip code matches the city and state, false otherwise.
      */
-    public boolean isMatchingCityAndState(String zipCode, String city, String state) {
-        verifyNonNullEmptyOrBlank(zipCode, city, state);
-        return repository.findById(zipCode)
-                .filter(zip -> zip.getPrimaryCity().equals(city) && zip.getState().equals(state))
+    public boolean isValidAddress(Address addressToCheck) {
+        String toCheckZipCode = addressToCheck.getZipcode();
+        verifyNonNullEmptyOrBlank(
+                toCheckZipCode,
+                addressToCheck.getCity(),
+                addressToCheck.getState());
+        return repository.findById(toCheckZipCode)
+                .filter(zip -> zip.getPrimaryCity().equals(addressToCheck.getCity())
+                        && zip.getState().equals(addressToCheck.getState()))
                 .isPresent();
     }
+
 }

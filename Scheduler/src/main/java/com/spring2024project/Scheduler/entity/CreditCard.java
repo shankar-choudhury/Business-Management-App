@@ -3,6 +3,9 @@ package com.spring2024project.Scheduler.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.spring2024project.Scheduler.customValidatorTags.ValidMonth;
 import com.spring2024project.Scheduler.customValidatorTags.ValidYearRange;
+import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidator;
+import com.spring2024project.Scheduler.exception.AddressValidationException;
+import com.spring2024project.Scheduler.exception.ValidationException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -82,6 +85,7 @@ public class CreditCard {
      * Creates a new CreditCard instance from an existing one.
      * @param c The existing CreditCard instance.
      * @return A new CreditCard instance.
+     * @throws IllegalArgumentException with
      */
     public static CreditCard from(CreditCard c) {
         return new CreditCard(
@@ -89,6 +93,22 @@ public class CreditCard {
                 verifyMonth(c.getExpMonth()),
                 verifyYearInRange(c.getExpYear(), 5),
                 Objects.requireNonNull(c.getBillingAddress()));
+    }
+
+    /**
+     * Checks the credit card to create a new CreditCard instance from has a valid address. This method should be used
+     * when persisting a CreditCard during communication with the frontend and when attempting to store in the database.
+     * @param c The existing CreditCard instance
+     * @param v The ZipCodeValidator to use
+     * @return A new Credit Card with a valid address
+     */
+    public static CreditCard checkedFrom(CreditCard c, ZipCodeValidator v) {
+        if (!v.isValidAddress(Objects.requireNonNull(c).getBillingAddress())) {
+            throw new IllegalArgumentException(
+                    new AddressValidationException(
+                            c.getBillingAddress(), ValidationException.Cause.NONEXISTING));
+        }
+        return from(c);
     }
 
     /**
