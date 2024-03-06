@@ -58,7 +58,7 @@ public class AddressController implements BaseController<Address>{
      * @return ResponseEntity containing the created Address object.
      */
     @Override
-    @PostMapping
+    @PostMapping(consumes = {"application/json"})
     public ResponseEntity<Address> create(@RequestBody Address address) {
         Address createdAddress = addressService.create(address);
         return new ResponseEntity<>(createdAddress, HttpStatus.CREATED);

@@ -37,29 +37,32 @@ public enum State {
     MONTANA("MT", "MONTANA"),
     NEBRASKA("NE", "NEBRASKA"),
     NEVADA("NV", "NEVADA"),
-    NEW_HAMPSHIRE("NH", "NEWHAMPSHIRE"),
-    NEW_JERSEY("NJ", "NEWJERSEY"),
-    NEW_MEXICO("NM", "NEWMEXICO"),
-    NEW_YORK("NY", "NEWYORK"),
-    NORTH_CAROLINA("NC", "NORTHCAROLINA"),
-    NORTH_DAKOTA("ND", "NORTHDAKOTA"),
+    NEW_HAMPSHIRE("NH", "NEW HAMPSHIRE"),
+    NEW_JERSEY("NJ", "NEW JERSEY"),
+    NEW_MEXICO("NM", "NEW MEXICO"),
+    NEW_YORK("NY", "NEW YORK"),
+    NORTH_CAROLINA("NC", "NORTH CAROLINA"),
+    NORTH_DAKOTA("ND", "NORTH DAKOTA"),
     OHIO("OH", "OHIO"),
     OKLAHOMA("OK", "OKLAHOMA"),
     OREGON("OR", "OREGON"),
     PENNSYLVANIA("PA", "PENNSYLVANIA"),
-    RHODE_ISLAND("RI", "RHODEISLAND"),
-    SOUTH_CAROLINA("SC", "SOUTHCAROLINA"),
-    SOUTH_DAKOTA("SD", "SOUTHDAKOTA"),
+    RHODE_ISLAND("RI", "RHODE ISLAND"),
+    SOUTH_CAROLINA("SC", "SOUTH CAROLINA"),
+    SOUTH_DAKOTA("SD", "SOUTH DAKOTA"),
     TENNESSEE("TN", "TENNESSEE"),
     TEXAS("TX", "TEXAS"),
     UTAH("UT", "UTAH"),
     VERMONT("VT", "VERMONT"),
     VIRGINIA("VA", "VIRGINIA"),
     WASHINGTON("WA", "WASHINGTON"),
-    WEST_VIRGINIA("WV", "WESTVIRGINIA"),
+    WEST_VIRGINIA("WV", "WEST VIRGINIA"),
     WISCONSIN("WI", "WISCONSIN"),
     WYOMING("WY", "WYOMING"),
     EMPTY("", "");
+
+    private final String abbreviation;
+    private final String fullName;
 
     /**
      * Constructor for State enum.
@@ -67,8 +70,18 @@ public enum State {
      * @param fullName The full name of the state.
      */
     State(String abbreviation, String fullName) {
+        this.abbreviation = abbreviation;
+        this.fullName = fullName;
         Holder.ABBREVIATION_MAP.put(abbreviation, this);
         Holder.FULLNAME_MAP.put(fullName, this);
+    }
+
+    public String abbreviation() {
+        return abbreviation;
+    }
+
+    public String fullName() {
+        return fullName;
     }
 
     /**
@@ -89,6 +102,10 @@ public enum State {
                 normalize(
                         StringValidator.correctStateFormat(
                                 StringValidator.verifyNonNullEmptyOrBlank(key))));
+    }
+
+    public static void main(String[] args) {
+        System.out.println(find("new hampshire"));
     }
 
     /**

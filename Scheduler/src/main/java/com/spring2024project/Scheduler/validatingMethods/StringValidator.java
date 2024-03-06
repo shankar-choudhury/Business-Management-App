@@ -21,15 +21,15 @@ import java.util.function.Predicate;
 public class StringValidator {
 
     /**
-     * Validates a string against a given condition and throws an exception if the condition is met.
+     * Validates a string against a given condition and throws an exception if the condition is not met.
      * @param toCheck The string to check.
-     * @param invalidCondition The condition to check against.
+     * @param validCondition The condition to check against.
      * @param cause The cause of the validation exception.
      * @return The input string if it passes the validation.
-     * @throws IllegalArgumentException if the validation condition is met.
+     * @throws IllegalArgumentException if the validation condition is not met.
      */
-    private static String validateString(String toCheck, Predicate<String> invalidCondition, ValidationException.Cause cause) {
-        if (invalidCondition.test(toCheck))
+    private static String validateString(String toCheck, Predicate<String> validCondition, ValidationException.Cause cause) {
+        if (!validCondition.test(toCheck))
             throw new IllegalArgumentException(new StringValidationException(toCheck, cause));
         return toCheck;
     }
@@ -41,7 +41,8 @@ public class StringValidator {
      * @throws IllegalArgumentException if the state abbreviation is not valid.
      */
     private static String validateState(String stateToCheck) {
-        if (!State.find(stateToCheck).name().equals(stateToCheck.trim().toUpperCase()))
+        if (!State.find(stateToCheck).abbreviation().equals(stateToCheck.trim().toUpperCase())
+        || !State.find(stateToCheck).fullName().equals(stateToCheck.trim().toUpperCase()))
             throw new IllegalArgumentException(new StateValidationException(stateToCheck, NONEXISTING));
         return stateToCheck;
     }
@@ -54,9 +55,9 @@ public class StringValidator {
      * @throws IllegalArgumentException if any check fails.
      */
     public static String verifyNonNullEmptyOrBlank(String toCheck) {
-        validateString(toCheck, Objects::isNull, NULL_STRING);
-        validateString(toCheck, String::isEmpty, EMPTY_STRING);
-        validateString(toCheck, String::isBlank, BLANK_STRING);
+        validateString(toCheck, Objects::nonNull, NULL_STRING);
+        validateString(toCheck, string -> !string.isEmpty(), EMPTY_STRING);
+        validateString(toCheck, string -> !string.isBlank(), BLANK_STRING);
         return toCheck;
     }
 

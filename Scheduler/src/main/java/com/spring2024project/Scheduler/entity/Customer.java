@@ -7,6 +7,7 @@ import static com.spring2024project.Scheduler.validatingMethods.GeneralValidator
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +32,7 @@ public final class Customer extends Person {
 
     public Customer() {};
 
-    private Customer(String firstName,
+    public Customer(String firstName,
                      String lastName,
                      String email,
                      String phoneNumber,
@@ -86,15 +87,15 @@ public final class Customer extends Person {
     }
 
     public static Customer fromDeleted(Customer c) {
-        var checked = from(c);
+        //var checked = from(c);
         return new Customer(
                 c.getId(),
-                checked.getFirstName(),
-                checked.getLastName(),
-                checked.getEmail(),
-                checked.getPhoneNumber(),
-                checked.getAddressList(),
-                checked.getCreditCardList());
+                c.getFirstName(),
+                c.getLastName(),
+                c.getEmail(),
+                c.getPhoneNumber(),
+                new ArrayList<>(c.getAddressList()),
+                new ArrayList<>(c.getCreditCardList()));
     }
 
 }

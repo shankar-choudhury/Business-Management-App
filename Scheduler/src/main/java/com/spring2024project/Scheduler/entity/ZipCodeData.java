@@ -1,7 +1,5 @@
 package com.spring2024project.Scheduler.entity;
 
-import static lombok.AccessLevel.*;
-
 import static com.spring2024project.Scheduler.validatingMethods.StringValidator.*;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,17 +20,15 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public final class ZipCodeData {
 
     @Id
     @Column(name = "zip_code")
     private String zip;
 
-    @Column(name = "primary_city", length = 50, nullable = false)
-    private String primaryCity;
-
-    @Column(name = "acceptable_cities")
-    private Set<String> acceptableCities;
+    @Column(name = "cities")
+    private Set<String> acceptableCities = new HashSet<>();
 
     @Column
     private String state;
@@ -41,22 +37,8 @@ public final class ZipCodeData {
     private String timezone;
 
     /**
-     * Converts a comma-separated string of cities to a set of strings.
-     *
-     * @param cities The comma-separated string of cities.
-     * @return A set containing the individual cities.
-     */
-    private static Set<String> toSet(String cities) {
-        assert cities != null;
-        return Arrays.stream(cities.split(","))
-                .map(String::trim)
-                .collect(Collectors.toSet());
-    }
-
-    /**
      * Creates a new ZipCodeData instance with the provided attributes.
      * @param zip         The ZIP code.
-     * @param primaryCity The primary city.
      * @param cities      The acceptable cities.
      * @param state       The state.
      * @param timezone    The timezone.
@@ -64,14 +46,12 @@ public final class ZipCodeData {
      */
     public static ZipCodeData of(
             String zip,
-            String primaryCity,
-            String cities,
+            Set<String> cities,
             String state,
             String timezone) {
         return new ZipCodeData(
                 verifyNonNullEmptyOrBlank(zip),
-                verifyNonNullEmptyOrBlank(primaryCity).trim(),
-                toSet(cities),
+                cities,
                 verifyNonNullEmptyOrBlank(state),
                 verifyNonNullEmptyOrBlank(timezone));
     }
@@ -82,7 +62,7 @@ public final class ZipCodeData {
      * @return An empty ZipCodeData instance.
      */
     public static ZipCodeData emptyZipCodeData() {
-        return new ZipCodeData("", "", Set.of(), "", "");
+        return new ZipCodeData("", Set.of(), "", "");
     }
 }
 

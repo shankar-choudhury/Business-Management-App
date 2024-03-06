@@ -48,13 +48,14 @@ public class ZipCodeValidator implements ConstraintValidator<ValidZipCode, Strin
      * @return true if the zip code matches the city and state, false otherwise.
      */
     public boolean isValidAddress(Address addressToCheck) {
-        String toCheckZipCode = addressToCheck.getZipcode();
         verifyNonNullEmptyOrBlank(
-                toCheckZipCode,
+                addressToCheck.getZipcode(),
                 addressToCheck.getCity(),
                 addressToCheck.getState());
+        String toCheckZipCode = addressToCheck.getZipcode();
+        String toCheckCity = addressToCheck.getCity();
         return repository.findById(toCheckZipCode)
-                .filter(zip -> zip.getPrimaryCity().equals(addressToCheck.getCity())
+                .filter(zip -> zip.getAcceptableCities().contains(toCheckCity)
                         && zip.getState().equals(addressToCheck.getState()))
                 .isPresent();
     }

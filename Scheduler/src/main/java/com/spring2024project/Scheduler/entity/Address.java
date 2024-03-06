@@ -65,7 +65,7 @@ public class Address {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "billingAddress", cascade = CascadeType.ALL)
-    private List<CreditCard> creditCard;
+    private List<CreditCard> creditCardList;
 
     private Address(String buildingNumber, String street, String city, String state, String zipcode) {
         this.buildingNumber = buildingNumber;
@@ -136,12 +136,16 @@ public class Address {
      * @return A new Address instance.
      */
     public static Address fromDeleted(Address a) {
-        var checked = from(a);
-        return new Address(checked.getId(),
-                checked.getBuildingNumber(),
-                checked.getStreet(),
-                checked.getCity(),
-                checked.getState(),
-                checked.getZipcode());
+        //var checked = from(a);
+        return new Address(a.getId(),
+                a.getBuildingNumber(),
+                a.getStreet(),
+                a.getCity(),
+                a.getState(),
+                a.getZipcode());
+    }
+
+    public static void main(String[] args) {
+
     }
 }

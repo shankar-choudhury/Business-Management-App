@@ -58,7 +58,7 @@ public class CreditCardController implements BaseController<CreditCard> {
      * @return ResponseEntity containing the created CreditCard object.
      */
     @Override
-    @PostMapping
+    @PostMapping(consumes = {"application/json"})
     public ResponseEntity<CreditCard> create(@RequestBody CreditCard creditCard) {
         CreditCard createdCreditCard = creditCardService.create(creditCard);
         return new ResponseEntity<>(createdCreditCard, HttpStatus.CREATED);

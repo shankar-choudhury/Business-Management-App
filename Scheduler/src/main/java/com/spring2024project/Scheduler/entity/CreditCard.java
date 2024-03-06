@@ -1,6 +1,7 @@
 package com.spring2024project.Scheduler.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring2024project.Scheduler.customValidatorTags.ValidMonth;
 import com.spring2024project.Scheduler.customValidatorTags.ValidYearRange;
 import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidator;
@@ -46,7 +47,7 @@ public class CreditCard {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id")
+    @JoinColumn(name = "billingAddress")
     private Address billingAddress;
 
     // Version field for optimistic locking

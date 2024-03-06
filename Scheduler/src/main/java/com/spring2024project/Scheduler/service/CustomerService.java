@@ -1,6 +1,9 @@
 package com.spring2024project.Scheduler.service;
 
+import com.spring2024project.Scheduler.entity.CreditCard;
 import com.spring2024project.Scheduler.entity.Customer;
+import com.spring2024project.Scheduler.repository.AddressRepository;
+import com.spring2024project.Scheduler.repository.CreditCardRepository;
 import com.spring2024project.Scheduler.repository.CustomerRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -19,6 +22,8 @@ import java.util.List;
 @Transactional
 public class CustomerService implements BaseService<Customer> {
     private CustomerRepository cr;
+    private CreditCardRepository ccr;
+    private AddressRepository ar;
     private final EntityManager em;
 
     /**
@@ -27,8 +32,10 @@ public class CustomerService implements BaseService<Customer> {
      * @param em The EntityManager to be used by the service.
      */
     @Autowired
-    public CustomerService(CustomerRepository cr, EntityManager em) {
+    public CustomerService(CustomerRepository cr, CreditCardRepository ccr, AddressRepository ar, EntityManager em) {
         this.cr = cr;
+        this.ccr = ccr;
+        this.ar = ar;
         this.em = em;
     }
 
@@ -92,6 +99,18 @@ public class CustomerService implements BaseService<Customer> {
         Customer toDelete = getById(id);
         if (!toDelete.getFirstName().isEmpty()) {
             Customer save = Customer.fromDeleted(toDelete);
+            for (CreditCard creditCard : toDelete.getCreditCardList()) {
+                ccr.delete(creditCard);
+            }
+            // Clear credit card list from customer
+            toDelete.getCreditCardList().clear();
+            // Deassociate customer with their addresses, and then clear their address list
+            toDelete.getAddressList().forEach(
+                    address -> {
+                        address.setCustomer(null);
+                        ar.save(address);});
+            toDelete.getAddressList().clear();
+            // Delete customer.
             cr.deleteById(id);
             return save;
         }
