@@ -13,6 +13,6 @@ public class StateValidatorTag implements ConstraintValidator<ValidState, String
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return State.find(value.trim().toUpperCase()) != State.EMPTY;
+        return State.getState(value) != State.EMPTY;
     }
 }

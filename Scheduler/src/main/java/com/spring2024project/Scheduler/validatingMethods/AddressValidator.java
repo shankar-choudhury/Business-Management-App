@@ -20,10 +20,12 @@ public class AddressValidator {
                 "Matches a valid street name with optional street suffixes. Examples: '123 Main St', '45 Elm Avenue', '1001 Oak Blvd'"),
         VALID_CITY_PATTERN("^[a-zA-Z\\u0080-\\u024F]+(?:. |-| |')*([1-9a-zA-Z\\u0080-\\u024F]+(?:. |-| |'))*[a-zA-Z\\u0080-\\u024F]*$",
                 "Matches a valid city name. Examples: 'New York', 'Los Angeles', 'San Francisco'"),
-        VALID_STATE_PATTERN("^(?:[a-zA-Z]{2}|[a-zA-Z]+(?:\\s+[a-zA-Z]+)?)$",
+        VALID_STATE_PATTERN("^[a-zA-Z ]+$",
                 "Matches a valid state abbreviation or full name. Examples: 'CA', 'New York', 'TX'"),
         VALID_BUILDING_NUM_PATTERN("^\\d+\\w*$",
-                "Matches a valid building number. Examples: '123', '100A', '22B'");
+                "Matches a valid building number. Examples: '123', '100A', '22B'"),
+        VALID_ZIPCODE_PATTERN("^\\d{5}$",
+        "Matches a valid zip code format. Examples: '0000', '12345', '99999'");
 
         private final String regex;
         private final String description;
@@ -100,6 +102,16 @@ public class AddressValidator {
         return validateState(state);
     }
 
+    /**
+     * Validates the format of the given zip code.
+     * @param zipCode The zipcode to validate.
+     * @return The input state name if it is in a valid format.
+     * @throws IllegalArgumentException if the state name format is incorrect.
+     */
+    public static String correctZipCodeFormat(String zipCode) {
+        return validateString(zipCode, string -> string.matches(AddressValidationPattern.VALID_ZIPCODE_PATTERN.getRegex()), FORMAT);
+    }
+
     private static String validateState(String stateToCheck) {
         var correctFormat = correctStateFormat(stateToCheck);
         if (correctFormat.length() == 2)
@@ -111,7 +123,7 @@ public class AddressValidator {
 
     private static void validateState(String state, Function<State, String> getStateProperty) {
         String stateTrimmed = state.trim().toUpperCase();
-        if (!getStateProperty.apply(State.find(state)).equals(stateTrimmed)) {
+        if (!getStateProperty.apply(State.getState(state)).equals(stateTrimmed)) {
             throw new IllegalArgumentException(new StateValidationException(state, NONEXISTING));
         }
     }

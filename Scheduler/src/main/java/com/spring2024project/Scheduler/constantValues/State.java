@@ -1,5 +1,6 @@
 package com.spring2024project.Scheduler.constantValues;
 
+import com.spring2024project.Scheduler.exception.StringValidationException;
 import com.spring2024project.Scheduler.validatingMethods.AddressValidator;
 import com.spring2024project.Scheduler.validatingMethods.StringValidator;
 
@@ -99,31 +100,26 @@ public enum State {
      * @return The corresponding State enum, or EMPTY if not found.
      */
     public static State find(String key) {
-        return getState(
-                normalize(
-                        AddressValidator.correctStateFormat(
-                                StringValidator.verifyNonNullEmptyOrBlank(key))));
+        return getState(key);
     }
 
-    public static void main(String[] args) {
-        System.out.println(find("new hampshire"));
-    }
 
     /**
      * Get the State enum corresponding to the normalized key.
-     * @param normalizedKey The normalized abbreviation or full name of the state.
+     * @param key The normalized abbreviation or full name of the state.
      * @return The corresponding State enum, or EMPTY if not found.
      */
-    private static State getState(String normalizedKey) {
-        assert Objects.nonNull(normalizedKey);
-        assert !normalizedKey.isEmpty();
-        assert !normalizedKey.isBlank();
-        assert normalizedKey.matches("^[A-Za-z\\s]+$");
+    public static State getState(String key) {
+        assert Objects.nonNull(key);
+        assert !key.isEmpty();
+        assert !key.isBlank();
+
+        var normalized = normalize(key);
 
         return Objects.requireNonNullElse(
-                Holder.ABBREVIATION_MAP.get(normalizedKey),
+                Holder.ABBREVIATION_MAP.get(normalized),
                 Objects.requireNonNullElse(
-                        Holder.FULLNAME_MAP.get(normalizedKey),
+                        Holder.FULLNAME_MAP.get(normalized),
                         State.EMPTY));
     }
 

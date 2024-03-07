@@ -8,6 +8,7 @@ import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
 
 import static com.spring2024project.Scheduler.validatingMethods.GeneralValidator.verifyNonNull;
 import static com.spring2024project.Scheduler.validatingMethods.StringValidator.*;
+import static com.spring2024project.Scheduler.validatingMethods.AddressValidator.*;
 
 import com.spring2024project.Scheduler.exception.AddressValidationException;
 import com.spring2024project.Scheduler.exception.ValidationException;
@@ -122,11 +123,11 @@ public class Address {
         verifyNonNull(a);
         verifyNonNullEmptyOrBlank(a.getBuildingNumber(), a.getCity(), a.getStreet(), a.getState(), a.getZipcode());
         return new Address(
-                AddressValidator.correctBuildingNumFormat(a.getBuildingNumber()),
-                AddressValidator.correctStreetFormat(a.getStreet()),
-                AddressValidator.correctCityFormat(a.getCity()),
-                AddressValidator.correctState(AddressValidator.correctStateFormat(a.getState())),
-                a.getZipcode());
+                correctBuildingNumFormat(a.getBuildingNumber()),
+                correctStreetFormat(a.getStreet()),
+                correctCityFormat(a.getCity()),
+                correctState(correctStateFormat(a.getState())),
+                correctZipCodeFormat(a.getZipcode()));
     }
 
     /**
@@ -146,7 +147,4 @@ public class Address {
                 a.getZipcode());
     }
 
-    public static void main(String[] args) {
-
-    }
 }
