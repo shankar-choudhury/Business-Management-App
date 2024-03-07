@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import static com.spring2024project.Scheduler.validatingMethods.StringValidator.*;
 import static com.spring2024project.Scheduler.validatingMethods.ListValidator.*;
 import static com.spring2024project.Scheduler.validatingMethods.GeneralValidator.*;
+
+import com.spring2024project.Scheduler.validatingMethods.PersonValidator;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -78,10 +80,10 @@ public final class Customer extends Person {
                 c.getPhoneNumber());
         verifyNonNull(c.getAddressList(), c.getCreditCardList());
         return new Customer(
-                correctNameFormat(c.getFirstName()),
-                correctNameFormat(c.getLastName()),
-                correctEmailFormat(c.getEmail()),
-                correctPhoneNumberFormat(c.getPhoneNumber()),
+                PersonValidator.correctNameFormat(c.getFirstName()),
+                PersonValidator.correctNameFormat(c.getLastName()),
+                PersonValidator.correctEmailFormat(c.getEmail()),
+                PersonValidator.correctPhoneNumberFormat(c.getPhoneNumber()),
                 verifyNonNullElements(c.getAddressList()),
                 verifyNonNullElements(c.getCreditCardList()));
     }

@@ -3,7 +3,7 @@ package com.spring2024project.Scheduler.service;
 import com.spring2024project.Scheduler.entity.Address;
 
 import com.spring2024project.Scheduler.repository.AddressRepository;
-import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidator;
+import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +17,14 @@ import java.util.List;
 @Service
 public class AddressService implements BaseService<Address> {
     private AddressRepository ar;
-    private ZipCodeValidator v;
+    private ZipCodeValidatorTag v;
 
     /**
      * Constructs an AddressService instance with the given AddressRepository.
      * @param ar The AddressRepository to be used by the service.
      */
     @Autowired
-    public AddressService(AddressRepository ar, ZipCodeValidator v) {
+    public AddressService(AddressRepository ar, ZipCodeValidatorTag v) {
         this.ar = ar;
         this.v = v;
     }

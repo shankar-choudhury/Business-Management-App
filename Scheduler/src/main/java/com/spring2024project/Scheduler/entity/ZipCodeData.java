@@ -1,11 +1,11 @@
 package com.spring2024project.Scheduler.entity;
 
+import static com.spring2024project.Scheduler.validatingMethods.GeneralValidator.getOrEmpty;
 import static com.spring2024project.Scheduler.validatingMethods.StringValidator.*;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Entity class representing ZIP code data. This is not to be used as a type for other entities to use as a field representing
@@ -33,27 +33,22 @@ public final class ZipCodeData {
     @Column
     private String state;
 
-    @Column
-    private String timezone;
 
     /**
      * Creates a new ZipCodeData instance with the provided attributes.
      * @param zip         The ZIP code.
      * @param cities      The acceptable cities.
      * @param state       The state.
-     * @param timezone    The timezone.
      * @return A new ZipCodeData instance.
      */
     public static ZipCodeData of(
             String zip,
             Set<String> cities,
-            String state,
-            String timezone) {
+            String state) {
         return new ZipCodeData(
                 verifyNonNullEmptyOrBlank(zip),
-                cities,
-                verifyNonNullEmptyOrBlank(state),
-                verifyNonNullEmptyOrBlank(timezone));
+                getOrEmpty(cities),
+                verifyNonNullEmptyOrBlank(state));
     }
 
     /**
@@ -62,7 +57,7 @@ public final class ZipCodeData {
      * @return An empty ZipCodeData instance.
      */
     public static ZipCodeData emptyZipCodeData() {
-        return new ZipCodeData("", Set.of(), "", "");
+        return new ZipCodeData("", Set.of(), "");
     }
 }
 

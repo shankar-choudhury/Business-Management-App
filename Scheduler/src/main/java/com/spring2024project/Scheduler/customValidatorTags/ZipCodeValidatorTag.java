@@ -1,8 +1,10 @@
 package com.spring2024project.Scheduler.customValidatorTags;
 
 import com.spring2024project.Scheduler.entity.Address;
+import com.spring2024project.Scheduler.entity.ZipCodeData;
 import com.spring2024project.Scheduler.repository.ZipCodeDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintValidator;
@@ -18,7 +20,7 @@ import static com.spring2024project.Scheduler.validatingMethods.StringValidator.
  * @Author Shankar Choudhury
  */
 @Component
-public class ZipCodeValidator implements ConstraintValidator<ValidZipCode, String> {
+public class ZipCodeValidatorTag implements ConstraintValidator<ValidZipCode, String> {
 
     private final ZipCodeDataRepository repository;
 
@@ -27,7 +29,7 @@ public class ZipCodeValidator implements ConstraintValidator<ValidZipCode, Strin
      * @param repository The repository used to access zip code data.
      */
     @Autowired
-    public ZipCodeValidator(ZipCodeDataRepository repository) {
+    public ZipCodeValidatorTag(ZipCodeDataRepository repository) {
         this.repository = repository;
     }
 
@@ -59,5 +61,7 @@ public class ZipCodeValidator implements ConstraintValidator<ValidZipCode, Strin
                         && zip.getState().equals(addressToCheck.getState()))
                 .isPresent();
     }
+
+    public CrudRepository<ZipCodeData,String> getRep() {return repository;}
 
 }

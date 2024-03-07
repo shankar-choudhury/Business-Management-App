@@ -9,7 +9,7 @@ import java.time.Year;
  * TODO: implement java.time when creating scheduler interface
  * @Author Shankar Choudhury
  */
-public class YearValidator implements ConstraintValidator<ValidYearRange, Integer> {
+public class YearValidatorTag implements ConstraintValidator<ValidYearRange, Integer> {
     @Override
     public boolean isValid(Integer year, ConstraintValidatorContext context) {
         if (year == null) {

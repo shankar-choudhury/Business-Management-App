@@ -1,6 +1,6 @@
 package com.spring2024project.Scheduler.service;
 
-import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidator;
+import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
 import com.spring2024project.Scheduler.entity.CreditCard;
 import com.spring2024project.Scheduler.repository.CreditCardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +19,14 @@ import static com.spring2024project.Scheduler.entity.CreditCard.*;
 @Service
 public class CreditCardService implements BaseService<CreditCard>{
     private CreditCardRepository cr;
-    private ZipCodeValidator v;
+    private ZipCodeValidatorTag v;
 
     /**
      * Constructs a CreditCardService instance with the given CreditCardRepository.
      * @param cr The CreditCardRepository to be used by the service.
      */
     @Autowired
-    public CreditCardService(CreditCardRepository cr, ZipCodeValidator v) {
+    public CreditCardService(CreditCardRepository cr, ZipCodeValidatorTag v) {
         this.cr = cr; this.v = v;
     }
 

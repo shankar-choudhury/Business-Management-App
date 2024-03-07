@@ -1,31 +1,59 @@
 package com.spring2024project.Scheduler;
 
-import com.spring2024project.Scheduler.repository.ZipCodeDataRepository;
-import com.spring2024project.Scheduler.service.ZipCodeDataLoaderService;
-import org.junit.Before;
+import com.spring2024project.Scheduler.entity.ZipCodeData;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = SchedulerApplication.class)
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class ZipCodeDataTests {
-    @Autowired
-    private ZipCodeDataLoaderService zipLoader;
-    @Autowired
-    private ZipCodeDataRepository zipRepo;
 
-    @Before
-    public void setup() {
-        zipLoader.loadZipCodeData();
+    @Test
+    public void testZipCodeDataCreation() {
+        // Test valid input
+        String zip = "12345";
+        Set<String> cities = Set.of("City1", "City2");
+        String state = "State";
+        ZipCodeData zipCodeData = ZipCodeData.of(zip, cities, state);
+        assertEquals(zip, zipCodeData.getZip());
+        assertEquals(cities, zipCodeData.getAcceptableCities());
+        assertEquals(state, zipCodeData.getState());
+
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNullZip() {
+        ZipCodeData.of(null, Set.of(), "State");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testEmptyZip() {
+        ZipCodeData.of("", Set.of(), "State");
+    }
+
+    @Test//(expected = IllegalArgumentException.class)
+    public void testNullCities() {
+        var newZ = ZipCodeData.of("12345", null, "State");
+        assertTrue(newZ.getAcceptableCities().isEmpty());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNullState() {
+        ZipCodeData.of("12345", Set.of(), null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testEmptyState() {
+        ZipCodeData.of("12345", Set.of(), "");
     }
 
     @Test
-    public void testEntries() {
-        var l = zipLoader.getZipCodeDataRepository().findById("1230");
-        System.out.println(l);
+    public void testEmptyZipCodeData() {
+        ZipCodeData emptyZipCodeData = ZipCodeData.emptyZipCodeData();
+        assertEquals("", emptyZipCodeData.getZip());
+        assertTrue(emptyZipCodeData.getAcceptableCities().isEmpty());
+        assertEquals("", emptyZipCodeData.getState());
     }
-
 }

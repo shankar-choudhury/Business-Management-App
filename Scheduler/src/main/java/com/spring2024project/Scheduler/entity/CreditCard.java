@@ -1,21 +1,18 @@
 package com.spring2024project.Scheduler.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring2024project.Scheduler.customValidatorTags.ValidMonth;
 import com.spring2024project.Scheduler.customValidatorTags.ValidYearRange;
-import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidator;
+import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
 import com.spring2024project.Scheduler.exception.AddressValidationException;
 import com.spring2024project.Scheduler.exception.ValidationException;
+import com.spring2024project.Scheduler.validatingMethods.CreditCardValidator;
 import jakarta.persistence.*;
 import lombok.*;
 
 import javax.validation.constraints.*;
 
 import java.util.Objects;
-
-import static com.spring2024project.Scheduler.validatingMethods.StringValidator.*;
-import static com.spring2024project.Scheduler.validatingMethods.GeneralValidator.*;
 
 /**
  * Entity class representing a Credit Card.
@@ -90,9 +87,9 @@ public class CreditCard {
      */
     public static CreditCard from(CreditCard c) {
         return new CreditCard(
-                correctCCNumberFormat(c.getNumber()),
-                verifyMonth(c.getExpMonth()),
-                verifyYearInRange(c.getExpYear(), 5),
+                CreditCardValidator.correctCCNumberFormat(c.getNumber()),
+                CreditCardValidator.verifyMonth(c.getExpMonth()),
+                CreditCardValidator.verifyYearInRange(c.getExpYear(), 5),
                 Objects.requireNonNull(c.getBillingAddress()));
     }
 
@@ -103,7 +100,7 @@ public class CreditCard {
      * @param v The ZipCodeValidator to use
      * @return A new Credit Card with a valid address
      */
-    public static CreditCard checkedFrom(CreditCard c, ZipCodeValidator v) {
+    public static CreditCard checkedFrom(CreditCard c, ZipCodeValidatorTag v) {
         if (!v.isValidAddress(Objects.requireNonNull(c).getBillingAddress())) {
             throw new IllegalArgumentException(
                     new AddressValidationException(

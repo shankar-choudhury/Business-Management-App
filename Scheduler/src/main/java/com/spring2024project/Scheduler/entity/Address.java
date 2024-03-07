@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.spring2024project.Scheduler.customValidatorTags.ValidState;
 import com.spring2024project.Scheduler.customValidatorTags.ValidZipCode;
-import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidator;
+import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
 
 import static com.spring2024project.Scheduler.validatingMethods.GeneralValidator.verifyNonNull;
 import static com.spring2024project.Scheduler.validatingMethods.StringValidator.*;
 
 import com.spring2024project.Scheduler.exception.AddressValidationException;
 import com.spring2024project.Scheduler.exception.ValidationException;
+import com.spring2024project.Scheduler.validatingMethods.AddressValidator;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -103,7 +104,7 @@ public class Address {
      * @param validator The ZipCodeValidator to use.
      * @return A new Address instance.
      */
-    public static Address from(Address a, ZipCodeValidator validator) {
+    public static Address from(Address a, ZipCodeValidatorTag validator) {
         if (!validator.isValidAddress(Objects.requireNonNull(a))) {
             throw new IllegalArgumentException(
                     new AddressValidationException(
@@ -121,10 +122,10 @@ public class Address {
         verifyNonNull(a);
         verifyNonNullEmptyOrBlank(a.getBuildingNumber(), a.getCity(), a.getStreet(), a.getState(), a.getZipcode());
         return new Address(
-                correctBuildingNumFormat(a.getBuildingNumber()),
-                correctStreetFormat(a.getStreet()),
-                correctCityFormat(a.getCity()),
-                correctState(a.getState()),
+                AddressValidator.correctBuildingNumFormat(a.getBuildingNumber()),
+                AddressValidator.correctStreetFormat(a.getStreet()),
+                AddressValidator.correctCityFormat(a.getCity()),
+                AddressValidator.correctState(AddressValidator.correctStateFormat(a.getState())),
                 a.getZipcode());
     }
 

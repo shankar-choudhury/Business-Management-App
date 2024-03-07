@@ -36,12 +36,9 @@ public class ZipCodeDataLoaderService {
 
     /**
      * Method invoked after construction to load ZIP code data from a CSV file into the database.
-     */
-    @PostConstruct
-    public void loadZipCodeData() {
-        try (var reader = new BufferedReader(
-                new InputStreamReader(
-                        new ClassPathResource("zip_code_database.csv").getInputStream()))) {
+     * */
+    public void loadZipCodeData(InputStreamReader i) {
+        try (var reader = new BufferedReader(i)) {
             String line;
             while (Objects.nonNull(line = reader.readLine())) {
                 String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
@@ -51,23 +48,34 @@ public class ZipCodeDataLoaderService {
                 var cities = parseAcceptableCities(acceptable_cities);
                 cities.add(primary_city);
                 var state = data[3].trim();
-                var timezone = data[4].trim();
+
 
                 zipCodeDataRepository.save(
                         ZipCodeData.of(zip,
                                 cities,
-                                state,
-                                timezone));
+                                state));
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (IllegalArgumentException i) {
-            if (i.getCause() instanceof StringValidationException s) {
+        } catch (IllegalArgumentException il) {
+            if (il.getCause() instanceof StringValidationException s) {
                 System.out.println(s.cause());
                 System.out.println(s.getBadString());
                 System.out.println(s.explanation());
             }
+        }
+    }
+
+    public void loadZipCodeData(String pathToCSV) {
+        summonFileStream(new ClassPathResource(pathToCSV));
+    }
+
+    public void summonFileStream(ClassPathResource c) {
+        try (var stream = new InputStreamReader(c.getInputStream())) {
+            loadZipCodeData(stream);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
