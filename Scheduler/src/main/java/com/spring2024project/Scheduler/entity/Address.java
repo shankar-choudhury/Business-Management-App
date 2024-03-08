@@ -28,6 +28,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @Cacheable
+@ToString
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -106,12 +107,13 @@ public class Address {
      * @return A new Address instance.
      */
     public static Address from(Address a, ZipCodeValidatorTag validator) {
-        if (!validator.isValidAddress(Objects.requireNonNull(a))) {
+        var formattedAddress = Address.from(a);
+        if (!validator.isValidAddress(formattedAddress)) {
             throw new IllegalArgumentException(
                     new AddressValidationException(
                             a, ValidationException.Cause.NONEXISTING));
         }
-        return from(a);
+        return formattedAddress;
     }
 
     /**
@@ -125,7 +127,7 @@ public class Address {
         return new Address(
                 correctBuildingNumFormat(a.getBuildingNumber()),
                 correctStreetFormat(a.getStreet()),
-                correctCityFormat(a.getCity()),
+                formatString(correctCityFormat(a.getCity())),
                 correctState(correctStateFormat(a.getState())),
                 correctZipCodeFormat(a.getZipcode()));
     }

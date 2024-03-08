@@ -17,8 +17,6 @@ import java.util.function.Predicate;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StringValidator {
-
-
     static String validateString(String toCheck, Predicate<String> validCondition, ValidationException.Cause cause) {
         if (!validCondition.test(toCheck))
             throw new IllegalArgumentException(new StringValidationException(toCheck, cause));
@@ -34,6 +32,10 @@ public class StringValidator {
 
     public static void verifyNonNullEmptyOrBlank(String... toCheck) {
         Arrays.stream(toCheck).forEach(StringValidator::verifyNonNullEmptyOrBlank);
+    }
+
+    public static String formatString(String toFormat) {
+        return verifyNonNullEmptyOrBlank(toFormat).trim().toUpperCase();
     }
 
 }

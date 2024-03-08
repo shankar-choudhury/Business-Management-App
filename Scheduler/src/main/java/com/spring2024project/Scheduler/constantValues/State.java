@@ -95,25 +95,11 @@ public enum State {
     }
 
     /**
-     * Find a State enum by its abbreviation or full name.
-     * @param key The abbreviation or full name of the state.
-     * @return The corresponding State enum, or EMPTY if not found.
-     */
-    public static State find(String key) {
-        return getState(key);
-    }
-
-
-    /**
      * Get the State enum corresponding to the normalized key.
      * @param key The normalized abbreviation or full name of the state.
      * @return The corresponding State enum, or EMPTY if not found.
      */
     public static State getState(String key) {
-        assert Objects.nonNull(key);
-        assert !key.isEmpty();
-        assert !key.isBlank();
-
         var normalized = normalize(key);
 
         return Objects.requireNonNullElse(

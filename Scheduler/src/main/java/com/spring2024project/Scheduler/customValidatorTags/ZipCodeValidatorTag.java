@@ -11,6 +11,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.Objects;
 
+import static com.spring2024project.Scheduler.constantValues.State.getState;
 import static com.spring2024project.Scheduler.validatingMethods.StringValidator.verifyNonNullEmptyOrBlank;
 
 /**
@@ -50,6 +51,7 @@ public class ZipCodeValidatorTag implements ConstraintValidator<ValidZipCode, St
      * @return true if the zip code matches the city and state, false otherwise.
      */
     public boolean isValidAddress(Address addressToCheck) {
+        Objects.requireNonNull(addressToCheck);
         verifyNonNullEmptyOrBlank(
                 addressToCheck.getZipcode(),
                 addressToCheck.getCity(),
@@ -58,7 +60,7 @@ public class ZipCodeValidatorTag implements ConstraintValidator<ValidZipCode, St
         String toCheckCity = addressToCheck.getCity();
         return repository.findById(toCheckZipCode)
                 .filter(zip -> zip.getAcceptableCities().contains(toCheckCity)
-                        && zip.getState().equals(addressToCheck.getState()))
+                        && zip.getState().equals(getState(addressToCheck.getState()).abbreviation()))
                 .isPresent();
     }
 

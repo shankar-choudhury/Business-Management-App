@@ -2,10 +2,10 @@ package com.spring2024project.Scheduler;
 
 import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
 import com.spring2024project.Scheduler.entity.Address;
-import com.spring2024project.Scheduler.exception.StateValidationException;
-import com.spring2024project.Scheduler.exception.StringValidationException;
+import com.spring2024project.Scheduler.exception.*;
 import com.spring2024project.Scheduler.exception.ValidationException.Cause;
 
+import static com.spring2024project.Scheduler.constantValues.State.getState;
 import static com.spring2024project.Scheduler.exception.ValidationException.Cause.*;
 import static com.spring2024project.Scheduler.entity.Address.*;
 
@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
@@ -25,6 +27,7 @@ public class AddressCreationAndValidationTests {
     @Autowired
     private ZipCodeValidatorTag zipVal;
     private Address testAddress;
+    private Address secondTestAddress;
 
     @Before
     public void setUp() {
@@ -35,6 +38,57 @@ public class AddressCreationAndValidationTests {
         testAddress.setCity("Hanover");
         testAddress.setState("NH");
         testAddress.setZipcode("03755");
+
+        secondTestAddress = new Address();
+        secondTestAddress.setId(2);
+        secondTestAddress.setBuildingNumber("35");
+        secondTestAddress.setStreet("School St");
+        secondTestAddress.setCity("Detroit");
+        secondTestAddress.setState("MI");
+        secondTestAddress.setZipcode("48202");
+    }
+
+    @Test
+    public void testValidAddress() {
+        var a1 = Address.from(testAddress);
+        var a2 = Address.from(secondTestAddress);
+        assertTrue(zipVal.isValidAddress(a1));
+        assertTrue(zipVal.isValidAddress(a2));
+    }
+
+    @Test
+    public void testInvalidMapping() {
+        testAddress.setCity("lebanon");
+        assertFalse(zipVal.isValidAddress(testAddress));
+        testAddress.setCity("hanover");
+        testAddress.setState("maine");
+        assertFalse(zipVal.isValidAddress(testAddress));
+        testAddress.setCity("asd");
+        assertFalse(zipVal.isValidAddress(testAddress));
+        testAddress.setCity("hanover");
+        testAddress.setState("new hampshire");
+        testAddress.setZipcode("03756");
+        assertFalse(zipVal.isValidAddress(testAddress));
+    }
+
+    @Test
+    public void testMultipleCityMapping() {
+        var multiCityAddress = new Address();
+        multiCityAddress.setBuildingNumber("02");
+        multiCityAddress.setStreet("roadhouse rd");
+        multiCityAddress.setCity("riverview");
+        multiCityAddress.setState("michigan");
+        multiCityAddress.setZipcode("48193");
+
+        var a = Address.from(multiCityAddress);
+
+        Set<String> acceptableCities = Set.of("RIVERVIEW", "BROWNSTWN TWP", "BROWNSTOWN", "WYANDOTTE", "BROWNSTOWN TOWNSHIP", "BROWNSTOWN TWP");
+
+        for (String city : acceptableCities) {
+            a.setCity(city);
+            assertTrue(zipVal.isValidAddress(a));
+        }
+
     }
 
     @Test
@@ -43,6 +97,7 @@ public class AddressCreationAndValidationTests {
             Address.from(testAddress);
             testAddress.setState("new hampshire");
             Address.from(testAddress);
+            Address.from(secondTestAddress);
         } catch (IllegalArgumentException i) {
             if (i.getCause() instanceof StringValidationException s) {
                 fail("Address elements should have correct format");;
@@ -50,6 +105,8 @@ public class AddressCreationAndValidationTests {
             else if (i.getCause() instanceof StateValidationException st) {
                 fail("Address State should exist");;
             }
+            else
+                fail("Another unaccounted IllegalArgument was thrown");
         } catch (Exception e) {
             fail("No other exception should have been thrown");
         }
@@ -208,7 +265,43 @@ public class AddressCreationAndValidationTests {
 
     @Test
     public void testCorrectZipCodeMapping() {
+        try {
+            Address.from(testAddress, zipVal);
+        } catch (Exception e) {
+            fail("no exception should be thrown");
+        }
+    }
 
+    @Test
+    public void testIncorrectZipCodeStateMapping() {
+        testAddress.setState("NY");
+        assertNoMappingZipToState(NONEXISTING);
+    }
+
+    @Test
+    public void testIncorrectZipCoedCityMapping() {
+        testAddress.setCity("lebanon");
+        assertNoMappingZipToCity(NONEXISTING);
+    }
+
+    private void assertNoMappingZipToState(Cause expectedCause) {
+        try {
+            Address.from(testAddress, zipVal);
+            fail("Exception should have been thrown for address with zip that doesn't map to state");
+        } catch (IllegalArgumentException i) {
+            assertTrue(i.getCause() instanceof AddressValidationException);
+            assertEquals(NONEXISTING, ((AddressValidationException) i.getCause()).cause());
+        }
+    }
+
+    private void assertNoMappingZipToCity(Cause expectedCause) {
+        try {
+            Address.from(testAddress, zipVal);
+            fail("Exception should have been thrown for address with zip that doesn't map to city");
+        } catch (IllegalArgumentException i) {
+            assertTrue(i.getCause() instanceof AddressValidationException);
+            assertEquals(NONEXISTING, ((AddressValidationException) i.getCause()).cause());
+        }
     }
 
 }

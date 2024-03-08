@@ -113,17 +113,16 @@ public class AddressValidator {
     }
 
     private static String validateState(String stateToCheck) {
-        var correctFormat = correctStateFormat(stateToCheck);
-        if (correctFormat.length() == 2)
-            validateState(correctFormat, State::abbreviation);
-        else if (correctFormat.length() > 2)
-            validateState(correctFormat, State::fullName);
-        return stateToCheck;
+        var formatted = correctStateFormat(stateToCheck).trim().toUpperCase();
+        if (formatted.length() == 2)
+            validateState(formatted, State::abbreviation);
+        else if (formatted.length() > 2)
+            validateState(formatted, State::fullName);
+        return formatted;
     }
 
     private static void validateState(String state, Function<State, String> getStateProperty) {
-        String stateTrimmed = state.trim().toUpperCase();
-        if (!getStateProperty.apply(State.getState(state)).equals(stateTrimmed)) {
+        if (!getStateProperty.apply(State.getState(state)).equals(state)) {
             throw new IllegalArgumentException(new StateValidationException(state, NONEXISTING));
         }
     }
