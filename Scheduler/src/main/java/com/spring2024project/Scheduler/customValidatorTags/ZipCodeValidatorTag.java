@@ -1,10 +1,8 @@
 package com.spring2024project.Scheduler.customValidatorTags;
 
 import com.spring2024project.Scheduler.entity.Address;
-import com.spring2024project.Scheduler.entity.ZipCodeData;
 import com.spring2024project.Scheduler.repository.ZipCodeDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintValidator;
@@ -51,7 +49,7 @@ public class ZipCodeValidatorTag implements ConstraintValidator<ValidZipCode, St
      * @return true if the zip code matches the city and state, false otherwise.
      */
     public boolean isValidAddress(Address addressToCheck) {
-        Objects.requireNonNull(addressToCheck);
+        //Objects.requireNonNull(addressToCheck);
         verifyNonNullEmptyOrBlank(
                 addressToCheck.getZipcode(),
                 addressToCheck.getCity(),
@@ -63,7 +61,4 @@ public class ZipCodeValidatorTag implements ConstraintValidator<ValidZipCode, St
                         && zip.getState().equals(getState(addressToCheck.getState()).abbreviation()))
                 .isPresent();
     }
-
-    public CrudRepository<ZipCodeData,String> getRep() {return repository;}
-
 }

@@ -2,8 +2,12 @@ package com.spring2024project.Scheduler.service;
 
 import com.spring2024project.Scheduler.entity.Address;
 
+import com.spring2024project.Scheduler.entity.CreditCard;
+import com.spring2024project.Scheduler.entity.Customer;
 import com.spring2024project.Scheduler.repository.AddressRepository;
 import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
+import com.spring2024project.Scheduler.repository.CreditCardRepository;
+import com.spring2024project.Scheduler.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,17 +20,27 @@ import java.util.List;
  */
 @Service
 public class AddressService implements BaseService<Address> {
-    private AddressRepository ar;
+    private final AddressRepository ar;
+    private final CustomerRepository cr;
+    private final CreditCardRepository ccr;
     private ZipCodeValidatorTag v;
 
     /**
-     * Constructs an AddressService instance with the given AddressRepository.
-     * @param ar The AddressRepository to be used by the service.
+     * Constructs an AddressService instance with the given repositories and validator.
+     * @param addressRepository The AddressRepository to be used by the service.
+     * @param zipCodeValidatorTag The ZipCodeValidatorTag to be used by the service.
+     * @param customerRepository The CustomerRepository to be used by the service.
+     * @param creditCardRepository The CreditCardRepository to be used by the service.
      */
     @Autowired
-    public AddressService(AddressRepository ar, ZipCodeValidatorTag v) {
-        this.ar = ar;
-        this.v = v;
+    public AddressService(AddressRepository addressRepository,
+                          CustomerRepository customerRepository,
+                          CreditCardRepository creditCardRepository,
+                          ZipCodeValidatorTag zipCodeValidatorTag) {
+        this.ar = addressRepository;
+        this.cr = customerRepository;
+        this.ccr = creditCardRepository;
+        this.v = zipCodeValidatorTag;
     }
 
     /**
@@ -67,12 +81,33 @@ public class AddressService implements BaseService<Address> {
      */
     @Override
     public Address update(int id, Address entity) {
-        Address toUpdate = getById(id);
-        if (toUpdate.getId() != 0) {
-            toUpdate = Address.from(entity);
-            return ar.save(toUpdate);
+        Address original = getById(id);
+        if (original.getId() != 0) {
+            var updated = Address.from(entity, v);
+            var oldCopy = delete(id);
+            var newCopy = ar.save(updated);
+            updateAssociatedEntities(oldCopy, newCopy);
         }
-        return toUpdate;
+        return original;
+    }
+
+    private void updateAssociatedEntities(Address originalAddress, Address updatedAddress) {
+        Customer customer = originalAddress.getCustomer();
+        if (customer != null) {
+            // Update the address in the associated customer entity
+            customer.getAddressList().remove(originalAddress);
+            customer.getAddressList().add(updatedAddress);
+            cr.save(customer);
+        }
+
+        List<CreditCard> creditCards = originalAddress.getCreditCardList();
+        if (creditCards != null) {
+            // Update the address in the associated credit card entities
+            for (CreditCard creditCard : creditCards) {
+                creditCard.setBillingAddress(updatedAddress);
+                ccr.save(creditCard);
+            }
+        }
     }
 
     /**
@@ -90,4 +125,6 @@ public class AddressService implements BaseService<Address> {
         }
         return toDelete;
     }
+
+
 }

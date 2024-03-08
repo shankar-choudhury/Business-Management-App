@@ -1,6 +1,5 @@
 package com.spring2024project.Scheduler;
 
-import com.spring2024project.Scheduler.entity.Address;
 import com.spring2024project.Scheduler.entity.ZipCodeData;
 import com.spring2024project.Scheduler.repository.ZipCodeDataRepository;
 import com.spring2024project.Scheduler.service.ZipCodeDataLoaderService;
@@ -9,10 +8,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -20,26 +24,26 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(classes = SchedulerApplication.class)
 public class ZipCodeDataLoaderTests {
     @Autowired
-    private ZipCodeDataRepository realZipRepo;
+    private ZipCodeDataRepository zipRepo;
     @Autowired
-    private ZipCodeDataLoaderService realZipLoader;
+    private ZipCodeDataLoaderService zipLoader;
 
 
     @Before
     public void setUp() {
-        realZipLoader.loadZipCodeData();
+        zipLoader.loadZipCodeData();
     }
 
     @Test
     public void testSuccessfulZipCodeImport() {
-        var repoData = (List<ZipCodeData>) realZipRepo.findAll();
+        var repoData = (List<ZipCodeData>) zipRepo.findAll();
         assertTrue(repoData.stream().allMatch(Objects::nonNull));
     }
 
     @Test
     public void multiCityZipCode() {
         Set<String> expected = Set.of("RIVERVIEW", "BROWNSTWN TWP", "BROWNSTOWN", "WYANDOTTE", "BROWNSTOWN TOWNSHIP", "BROWNSTOWN TWP");
-        var actual = realZipRepo.findById("48193")
+        var actual = zipRepo.findById("48193")
                 .map(ZipCodeData::getAcceptableCities)
                 .orElseGet(HashSet::new);
         assertTrue(expected.containsAll(actual));
@@ -47,7 +51,7 @@ public class ZipCodeDataLoaderTests {
 
     @Test
     public void allCitiesAndStatesCapitalized() {
-        var repoData = (List<ZipCodeData>) realZipRepo.findAll();
+        var repoData = (List<ZipCodeData>) zipRepo.findAll();
         String onlyTwoCapitalLetters = "^[A-Z]{2}$";
         String capitalLettersAndOther = "^[A-Z\\s\\S]+$";
         assertTrue(repoData.stream()
@@ -57,17 +61,33 @@ public class ZipCodeDataLoaderTests {
     }
 
     @Test
-    public void as() {
-        var multiCityAddress = new Address();
-        multiCityAddress.setBuildingNumber("02");
-        multiCityAddress.setStreet("roadhouse rd");
-        multiCityAddress.setCity("riverview");
-        multiCityAddress.setState("michigan");
-        multiCityAddress.setZipcode("48193");
+    public void testDataCompleteness() {
+        List<ZipCodeData> databaseRecords = (List<ZipCodeData>) zipRepo.findAll();
+        List<String> databaseZipCodes = databaseRecords.stream()
+                .map(ZipCodeData::getZip)
+                .toList();
+        List<String> csvZipCodes = extractFirstColumnValues("zip_code_database.csv");
+        assertEquals(csvZipCodes.size(), databaseRecords.size());
+        assertTrue(csvZipCodes.containsAll(databaseZipCodes));
+    }
 
-        var a = Address.from(multiCityAddress);
+    private static List<String> extractFirstColumnValues(String filePath) {
+        List<String> firstColumnValues = new ArrayList<>();
 
-        var z = realZipRepo.findById(a.getZipcode());
-        System.out.println(z);
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(
+                        new ClassPathResource(filePath).getInputStream()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(","); // Split by comma
+                if (values.length > 0) {
+                    firstColumnValues.add(values[0]); // Add the first value to the list
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return firstColumnValues;
     }
 }

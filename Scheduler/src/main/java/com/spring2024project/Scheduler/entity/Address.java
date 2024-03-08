@@ -28,7 +28,8 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @Cacheable
-@ToString
+@ToString(exclude = "creditCardList")
+@EqualsAndHashCode(of = {"buildingNumber", "street", "city", "state", "zipcode"})
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,7 +65,7 @@ public class Address {
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
-    private Customer customer = Customer.defaultCustomer();
+    private Customer customer;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "billingAddress", cascade = CascadeType.ALL)
@@ -140,13 +141,13 @@ public class Address {
      * @return A new Address instance.
      */
     public static Address fromDeleted(Address a) {
-        //var checked = from(a);
+        var checked = from(a);
         return new Address(a.getId(),
-                a.getBuildingNumber(),
-                a.getStreet(),
-                a.getCity(),
-                a.getState(),
-                a.getZipcode());
+                checked.getBuildingNumber(),
+                checked.getStreet(),
+                checked.getCity(),
+                checked.getState(),
+                checked.getZipcode());
     }
 
 }
