@@ -49,19 +49,13 @@ public class AddressServiceTest {
         invalidAddress.setZipcode("03755");
     }
 
-
-
     @Test
     public void testValidCreateAddress() {
         var formatted = Address.from(validAddress);
         Address createdAddress = as.create(validAddress);
 
         // Verify that the address was saved successfully
-        assertEquals(formatted.getBuildingNumber(), createdAddress.getBuildingNumber());
-        assertEquals(formatted.getStreet(), createdAddress.getStreet());
-        assertEquals(formatted.getCity(), createdAddress.getCity());
-        assertEquals(formatted.getState(), createdAddress.getState());
-        assertEquals(formatted.getZipcode(), createdAddress.getZipcode());
+        assertEquals(formatted, createdAddress);
     }
 
     @Test
@@ -79,6 +73,8 @@ public class AddressServiceTest {
         var formatted = Address.from(validAddress);
         Address createdAddress = as.create(validAddress);
         Address fetchedAddress = as.getById(1);
+        assertEquals(createdAddress, fetchedAddress);
+        assertEquals(formatted, fetchedAddress);
     }
 
     @Test
@@ -89,11 +85,7 @@ public class AddressServiceTest {
         var formatted = Address.from(validAddress);
         Address updatedAddress = as.update(1,validAddress);
 
-        assertEquals(formatted.getBuildingNumber(), updatedAddress.getBuildingNumber());
-        assertEquals(formatted.getStreet(), updatedAddress.getStreet());
-        assertEquals(formatted.getCity(), updatedAddress.getCity());
-        assertEquals(formatted.getState(), updatedAddress.getState());
-        assertEquals(formatted.getZipcode(), updatedAddress.getZipcode());
+        assertEquals(formatted, updatedAddress);
     }
 
     @Test

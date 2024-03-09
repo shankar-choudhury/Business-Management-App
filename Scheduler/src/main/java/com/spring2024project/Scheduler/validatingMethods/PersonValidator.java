@@ -2,6 +2,7 @@ package com.spring2024project.Scheduler.validatingMethods;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.commons.validator.routines.EmailValidator;
 
 import static com.spring2024project.Scheduler.exception.ValidationException.Cause.FORMAT;
 import static com.spring2024project.Scheduler.validatingMethods.StringValidator.*;
@@ -12,9 +13,7 @@ public class PersonValidator {
         VALID_NAME_PATTERN("\\p{Alpha}+",
                 "Matches a valid name containing alphabetic characters only. Examples: 'John', 'Alice', 'Smith'"),
         VALID_PHONE_NUMBER_PATTERN("^(\\(?(\\d{3})\\)?[-.\\s]?)?\\d{3}[-.\\s]?\\d{4}$",
-                "Matches a valid phone number in various formats. Examples: '123-456-7890', '(123) 456 7890', '123.456.7890'"),
-        VALID_EMAIL_PATTERN("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\\\.[A-Za-z0-9-]+)*(\\\\.[A-Za-z]{2,})$",
-                "Matches a valid email address. Examples: 'john@example.com', 'alice.smith@example.co.uk', 'info@company.com'");
+                "Matches a valid phone number in various formats. Examples: '123-456-7890', '(123) 456 7890', '123.456.7890'");
 
         private final String regex;
         private final String description;
@@ -38,7 +37,7 @@ public class PersonValidator {
     }
 
     public static String correctEmailFormat(String email) {
-        return validateString(StringValidator.verifyNonNullEmptyOrBlank(email), e -> e.matches(PersonValidationPattern.VALID_EMAIL_PATTERN.getRegex()), FORMAT);
+        return validateString(email, string -> EmailValidator.getInstance().isValid(string), FORMAT);
     }
 
     public static String correctPhoneNumberFormat(String phoneNumber) {

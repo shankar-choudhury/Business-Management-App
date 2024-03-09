@@ -13,7 +13,7 @@ public class YearValidatorTag implements ConstraintValidator<ValidYearRange, Int
     @Override
     public boolean isValid(Integer year, ConstraintValidatorContext context) {
         if (year == null) {
-            return true; // Let other validators handle null values
+            return true;
         }
 
         int currentYear = Year.now().getValue();

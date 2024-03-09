@@ -2,7 +2,11 @@ package com.spring2024project.Scheduler.service;
 
 import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
 import com.spring2024project.Scheduler.entity.CreditCard;
+import com.spring2024project.Scheduler.repository.AddressRepository;
 import com.spring2024project.Scheduler.repository.CreditCardRepository;
+import com.spring2024project.Scheduler.repository.CustomerRepository;
+
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,16 +22,24 @@ import static com.spring2024project.Scheduler.entity.CreditCard.*;
  */
 @Service
 public class CreditCardService implements BaseService<CreditCard>{
-    private CreditCardRepository cr;
-    private ZipCodeValidatorTag v;
+    private final AddressRepository ar;
+    private final CustomerRepository cr;
+    private final CreditCardRepository ccr;
+    private final ZipCodeValidatorTag zt;
 
     /**
      * Constructs a CreditCardService instance with the given CreditCardRepository.
      * @param cr The CreditCardRepository to be used by the service.
      */
     @Autowired
-    public CreditCardService(CreditCardRepository cr, ZipCodeValidatorTag v) {
-        this.cr = cr; this.v = v;
+    public CreditCardService(AddressRepository ar,
+                             CustomerRepository cr,
+                             CreditCardRepository ccr,
+                             ZipCodeValidatorTag zt) {
+        this.ar = ar;
+        this.cr = cr;
+        this.ccr = ccr;
+        this.zt = zt;
     }
 
     /**
@@ -36,7 +48,7 @@ public class CreditCardService implements BaseService<CreditCard>{
      */
     @Override
     public List<CreditCard> getAll() {
-        return (List<CreditCard>) cr.findAll();
+        return (List<CreditCard>) ccr.findAll();
     }
 
     /**
@@ -46,7 +58,7 @@ public class CreditCardService implements BaseService<CreditCard>{
      */
     @Override
     public CreditCard getById(int id) {
-        return cr.findById(id).orElse(emptyCreditCard());
+        return ccr.findById(id).orElse(emptyCreditCard());
     }
 
     /**
@@ -56,24 +68,22 @@ public class CreditCardService implements BaseService<CreditCard>{
      */
     @Override
     public CreditCard create(CreditCard entity) {
-        CreditCard newCard = checkedFrom(entity, v);
-        return cr.save(newCard);
+        CreditCard newCard = checkedFrom(entity, zt);
+        return ccr.save(newCard);
     }
 
-    /**
-     * Updates an existing credit card in the database.
-     * @param id The ID of the credit card to update.
-     * @param cc The updated credit card entity.
-     * @return The updated credit card.
-     */
     @Override
-    public CreditCard update(int id, CreditCard cc) {
-        CreditCard toUpdate = getById(id);
-        if (toUpdate.getId() != 0) {
-            toUpdate = from(cc);
-            return cr.save(toUpdate);
+    public CreditCard update(int id, CreditCard entity) {
+        var original = getById(id);
+        if (original.getId() != 0) {
+            var updated = CreditCard.checkedFrom(entity, zt);
+            // Delete the original credit card
+            ccr.deleteById(original.getId());
+            // Save the updated credit card, Hibernate will handle the associations
+            updated = ccr.save(updated);
+            return updated;
         }
-        return toUpdate;
+        return original;
     }
 
     /**
@@ -86,7 +96,7 @@ public class CreditCardService implements BaseService<CreditCard>{
         CreditCard toDelete = getById(id);
         if (toDelete.getId() != 0) {
             CreditCard deleted = fromDeleted(toDelete);
-            cr.deleteById(id);
+            //cr.deleteById(id);
             return deleted;
         }
         return toDelete;

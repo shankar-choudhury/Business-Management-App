@@ -12,13 +12,11 @@ import static com.spring2024project.Scheduler.validatingMethods.AddressValidator
 
 import com.spring2024project.Scheduler.exception.AddressValidationException;
 import com.spring2024project.Scheduler.exception.ValidationException;
-import com.spring2024project.Scheduler.validatingMethods.AddressValidator;
 import jakarta.persistence.*;
 import lombok.*;
 
 import javax.validation.constraints.*;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(uniqueConstraints = {
@@ -28,8 +26,8 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @Cacheable
-@ToString(exclude = "creditCardList")
-@EqualsAndHashCode(of = {"buildingNumber", "street", "city", "state", "zipcode"})
+@ToString(exclude = {"creditCardList", "customer"})
+@EqualsAndHashCode(exclude = {"id", "customer","creditCardList"}/*of = {"buildingNumber", "street", "city", "state", "zipcode"}*/)
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,17 +56,18 @@ public class Address {
     @ValidZipCode
     private String zipcode;
 
-    // Version field for optimistic locking
-    @Version
-    private Long version;
-
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "billingAddress", cascade = CascadeType.ALL)
+    @OneToMany(
+            mappedBy = "billingAddress",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true
+    )
     private List<CreditCard> creditCardList;
 
     private Address(String buildingNumber, String street, String city, String state, String zipcode) {

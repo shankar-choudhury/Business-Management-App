@@ -1,13 +1,12 @@
 package com.spring2024project.Scheduler.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import static com.spring2024project.Scheduler.validatingMethods.StringValidator.*;
-import static com.spring2024project.Scheduler.validatingMethods.ListValidator.*;
-import static com.spring2024project.Scheduler.validatingMethods.GeneralValidator.*;
-
 import com.spring2024project.Scheduler.validatingMethods.PersonValidator;
 import jakarta.persistence.*;
 import lombok.*;
+
+import static com.spring2024project.Scheduler.validatingMethods.StringValidator.*;
+import static com.spring2024project.Scheduler.validatingMethods.PersonValidator.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,17 +23,22 @@ import java.util.List;
 })
 @Getter
 @Setter
+@NoArgsConstructor
+@ToString(callSuper = true, of = {})
 public final class Customer extends Person {
     @JsonManagedReference
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
     private List<Address> addressList;
     @JsonManagedReference
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true)
     private List<CreditCard> creditCardList;
 
-    public Customer() {};
-
-    public Customer(String firstName,
+    private Customer(String firstName,
                      String lastName,
                      String email,
                      String phoneNumber,
@@ -78,26 +82,25 @@ public final class Customer extends Person {
                 c.getLastName(),
                 c.getEmail(),
                 c.getPhoneNumber());
-        verifyNonNull(c.getAddressList(), c.getCreditCardList());
         return new Customer(
-                PersonValidator.correctNameFormat(c.getFirstName()),
-                PersonValidator.correctNameFormat(c.getLastName()),
-                PersonValidator.correctEmailFormat(c.getEmail()),
-                PersonValidator.correctPhoneNumberFormat(c.getPhoneNumber()),
-                verifyNonNullElements(c.getAddressList()),
-                verifyNonNullElements(c.getCreditCardList()));
+                correctNameFormat(c.getFirstName()),
+                correctNameFormat(c.getLastName()),
+                correctEmailFormat(c.getEmail()),
+                correctPhoneNumberFormat(c.getPhoneNumber()),
+                c.getAddressList(),
+                c.getCreditCardList());
     }
 
     public static Customer fromDeleted(Customer c) {
-        //var checked = from(c);
+        var checked = from(c);
         return new Customer(
-                c.getId(),
-                c.getFirstName(),
-                c.getLastName(),
-                c.getEmail(),
-                c.getPhoneNumber(),
-                new ArrayList<>(c.getAddressList()),
-                new ArrayList<>(c.getCreditCardList()));
+                checked.getId(),
+                checked.getFirstName(),
+                checked.getLastName(),
+                checked.getEmail(),
+                checked.getPhoneNumber(),
+                checked.getAddressList(),
+                checked.getCreditCardList());
     }
 
 }

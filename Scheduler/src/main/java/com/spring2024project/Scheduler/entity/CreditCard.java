@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.spring2024project.Scheduler.customValidatorTags.ValidMonth;
 import com.spring2024project.Scheduler.customValidatorTags.ValidYearRange;
 import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
-import com.spring2024project.Scheduler.exception.AddressValidationException;
-import com.spring2024project.Scheduler.exception.ValidationException;
-import com.spring2024project.Scheduler.validatingMethods.CreditCardValidator;
+import com.spring2024project.Scheduler.exception.*;
+
 import jakarta.persistence.*;
 import lombok.*;
+
+import static com.spring2024project.Scheduler.validatingMethods.CreditCardValidator.*;
+import static com.spring2024project.Scheduler.exception.ValidationException.Cause.*;
 
 import javax.validation.constraints.*;
 
@@ -24,6 +26,8 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @Cacheable
+@ToString(exclude = {"customer"})
+@EqualsAndHashCode(exclude = {"id", "customer"})
 public class CreditCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,32 +47,30 @@ public class CreditCard {
     private int expYear;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "billingAddress")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_address_id")
     private Address billingAddress;
 
-    // Version field for optimistic locking
-    @Version
-    private Long version;
-
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
-    private Customer customer = Customer.defaultCustomer();
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_customer_id")
+    private Customer customer;
 
-    private CreditCard(String number, int expMonth, int expYear, Address billingAddress) {
+    private CreditCard(String number, int expMonth, int expYear, Address billingAddress, Customer customer) {
         this.number = number;
         this.expMonth = expMonth;
         this.expYear = expYear;
         this.billingAddress = billingAddress;
+        this.customer = customer;
     }
 
-    private CreditCard(int id, String number, int expMonth, int expYear, Address billingAddress) {
+    private CreditCard(int id, String number, int expMonth, int expYear, Address billingAddress, Customer customer) {
         this.id = id;
         this.number = number;
         this.expMonth = expMonth;
         this.expYear = expYear;
         this.billingAddress = billingAddress;
+        this.customer = customer;
     }
 
     /**
@@ -76,7 +78,7 @@ public class CreditCard {
      * @return An empty CreditCard instance.
      */
     public static CreditCard emptyCreditCard() {
-        return new CreditCard(0,"",0, 0, Address.emptyAddress());
+        return new CreditCard(0,"",0, 0, Address.emptyAddress(), Customer.defaultCustomer());
     }
 
     /**
@@ -87,10 +89,11 @@ public class CreditCard {
      */
     public static CreditCard from(CreditCard c) {
         return new CreditCard(
-                CreditCardValidator.correctCCNumberFormat(c.getNumber()),
-                CreditCardValidator.verifyMonth(c.getExpMonth()),
-                CreditCardValidator.verifyYearInRange(c.getExpYear(), 5),
-                Objects.requireNonNull(c.getBillingAddress()));
+                correctCCNumberFormat(c.getNumber()),
+                verifyMonth(c.getExpMonth()),
+                verifyYearInRange(c.getExpYear(), 5),
+                Address.from(c.getBillingAddress()),
+                c.getCustomer());
     }
 
     /**
@@ -101,12 +104,13 @@ public class CreditCard {
      * @return A new Credit Card with a valid address
      */
     public static CreditCard checkedFrom(CreditCard c, ZipCodeValidatorTag v) {
-        if (!v.isValidAddress(Objects.requireNonNull(c).getBillingAddress())) {
+        var newCC = from(c);
+        if (!v.isValidAddress(Objects.requireNonNull(newCC).getBillingAddress())) {
             throw new IllegalArgumentException(
                     new AddressValidationException(
-                            c.getBillingAddress(), ValidationException.Cause.NONEXISTING));
+                            c.getBillingAddress(), NONEXISTING));
         }
-        return from(c);
+        return newCC;
     }
 
     /**
@@ -121,7 +125,8 @@ public class CreditCard {
                 checked.getNumber(),
                 checked.getExpMonth(),
                 checked.getExpYear(),
-                checked.getBillingAddress());
+                checked.getBillingAddress(),
+                checked.getCustomer());
     }
 
 }

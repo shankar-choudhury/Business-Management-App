@@ -49,7 +49,7 @@ public class ZipCodeValidatorTag implements ConstraintValidator<ValidZipCode, St
      * @return true if the zip code matches the city and state, false otherwise.
      */
     public boolean isValidAddress(Address addressToCheck) {
-        //Objects.requireNonNull(addressToCheck);
+        Objects.requireNonNull(addressToCheck);
         verifyNonNullEmptyOrBlank(
                 addressToCheck.getZipcode(),
                 addressToCheck.getCity(),
