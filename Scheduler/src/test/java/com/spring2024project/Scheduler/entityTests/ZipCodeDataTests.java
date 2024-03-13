@@ -1,4 +1,4 @@
-package com.spring2024project.Scheduler;
+package com.spring2024project.Scheduler.entityTests;
 
 import com.spring2024project.Scheduler.entity.ZipCodeData;
 import org.junit.Test;

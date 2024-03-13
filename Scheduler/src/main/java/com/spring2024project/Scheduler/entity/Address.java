@@ -25,6 +25,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 @Cacheable
 @ToString(exclude = {"creditCardList", "customer"})
 @EqualsAndHashCode(exclude = {"id", "customer","creditCardList"}/*of = {"buildingNumber", "street", "city", "state", "zipcode"}*/)

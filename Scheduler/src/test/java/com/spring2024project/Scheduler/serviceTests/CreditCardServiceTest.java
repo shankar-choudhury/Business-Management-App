@@ -1,4 +1,4 @@
-package com.spring2024project.Scheduler;
+package com.spring2024project.Scheduler.serviceTests;
 
 import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
 import com.spring2024project.Scheduler.entity.Address;

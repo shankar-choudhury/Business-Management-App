@@ -1,5 +1,6 @@
-package com.spring2024project.Scheduler;
+package com.spring2024project.Scheduler.entityTests;
 
+import com.spring2024project.Scheduler.SchedulerApplication;
 import com.spring2024project.Scheduler.entity.ZipCodeData;
 import com.spring2024project.Scheduler.repository.ZipCodeDataRepository;
 import com.spring2024project.Scheduler.service.ZipCodeDataLoaderService;

@@ -1,5 +1,6 @@
-package com.spring2024project.Scheduler;
+package com.spring2024project.Scheduler.entityTests;
 
+import com.spring2024project.Scheduler.SchedulerApplication;
 import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
 import com.spring2024project.Scheduler.entity.Address;
 import com.spring2024project.Scheduler.exception.*;

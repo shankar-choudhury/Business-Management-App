@@ -25,6 +25,8 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 @Cacheable
 @ToString(exclude = {"customer"})
 @EqualsAndHashCode(exclude = {"id", "customer"})
@@ -57,15 +59,6 @@ public class CreditCard {
     private Customer customer;
 
     private CreditCard(String number, int expMonth, int expYear, Address billingAddress, Customer customer) {
-        this.number = number;
-        this.expMonth = expMonth;
-        this.expYear = expYear;
-        this.billingAddress = billingAddress;
-        this.customer = customer;
-    }
-
-    private CreditCard(int id, String number, int expMonth, int expYear, Address billingAddress, Customer customer) {
-        this.id = id;
         this.number = number;
         this.expMonth = expMonth;
         this.expYear = expYear;
