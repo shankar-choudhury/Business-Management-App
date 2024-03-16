@@ -87,6 +87,7 @@ public class AddressService implements BaseService<Address> {
             var oldCopy = delete(id);
             var newCopy = ar.save(updated);
             updateAssociatedEntities(oldCopy, newCopy);
+            return newCopy;
         }
         return original;
     }

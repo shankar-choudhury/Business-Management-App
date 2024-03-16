@@ -29,7 +29,7 @@ import java.util.List;
 @Builder
 @Cacheable
 @ToString(exclude = {"creditCardList", "customer"})
-@EqualsAndHashCode(exclude = {"id", "customer","creditCardList"}/*of = {"buildingNumber", "street", "city", "state", "zipcode"}*/)
+@EqualsAndHashCode(exclude = {"id", "customer","creditCardList"})
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,8 +67,7 @@ public class Address {
     @OneToMany(
             mappedBy = "billingAddress",
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            orphanRemoval = true
+            fetch = FetchType.LAZY
     )
     private List<CreditCard> creditCardList;
 

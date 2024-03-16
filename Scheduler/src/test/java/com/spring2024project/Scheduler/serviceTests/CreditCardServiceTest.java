@@ -4,6 +4,7 @@ import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
 import com.spring2024project.Scheduler.entity.Address;
 import com.spring2024project.Scheduler.entity.CreditCard;
 import com.spring2024project.Scheduler.entity.Customer;
+import com.spring2024project.Scheduler.exception.AddressValidationException;
 import com.spring2024project.Scheduler.exception.StringValidationException;
 import com.spring2024project.Scheduler.repository.AddressRepository;
 import com.spring2024project.Scheduler.repository.CustomerRepository;
@@ -18,7 +19,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.LinkedList;
+
 import static com.spring2024project.Scheduler.exception.ValidationException.Cause.FORMAT;
+import static com.spring2024project.Scheduler.exception.ValidationException.Cause.NONEXISTING;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
@@ -51,49 +55,53 @@ public class CreditCardServiceTest {
         owner.setEmail("sxc1782@gmail.com");
         owner.setPhoneNumber("6036677968");
 
-        validAddress = new Address();
-        validAddress.setId(4);
-        validAddress.setBuildingNumber("1");
-        validAddress.setStreet("cedric st");
-        validAddress.setCity("hanover");
-        validAddress.setState("new hampshire");
-        validAddress.setZipcode("03755");
+        validAddress = Address.builder()
+                .buildingNumber("1")
+                .street("cedric st")
+                .city("hanover")
+                .state("new hampshire")
+                .zipcode("03755")
+                .build();
 
-        secondValidAddress = new Address();
-        secondValidAddress.setBuildingNumber("17");
-        secondValidAddress.setStreet("cedrices st");
-        secondValidAddress.setCity("norwich");
-        secondValidAddress.setState("vermont");
-        secondValidAddress.setZipcode("05055");
+        secondValidAddress = Address.builder()
+                .buildingNumber("17")
+                .street("cedrices st")
+                .city("norwich")
+                .state("vermont")
+                .zipcode("05055")
+                .build();
 
-        invalidAddress = new Address();
-        invalidAddress.setBuildingNumber("4");
-        invalidAddress.setStreet("cedric st");
-        invalidAddress.setCity("Lebanon");
-        invalidAddress.setState("new hampshire");
-        invalidAddress.setZipcode("03755");
+        invalidAddress = Address.builder()
+                .buildingNumber("4")
+                .street("cedric st")
+                .city("Lebanon")
+                .state("new hampshire")
+                .zipcode("03755")
+                .build();
 
-        validCC = new CreditCard();
-        validCC.setId(1);
-        validCC.setNumber("4400665614591913");
-        validCC.setExpMonth(6);
-        validCC.setExpYear(2028);
-        validCC.setBillingAddress(validAddress);
-        validCC.setCustomer(owner);
+        validCC = CreditCard.builder()
+                .number("4400665614591913")
+                .expMonth(6)
+                .expYear(2028)
+                .billingAddress(validAddress)
+                .customer(owner)
+                .build();
 
-        invalidCC = new CreditCard();
-        invalidCC.setNumber("1234567890123456");
-        invalidCC.setExpMonth(6);
-        invalidCC.setExpYear(2028);
-        invalidCC.setBillingAddress(validAddress);
-        invalidCC.setCustomer(owner);
+        invalidCC = CreditCard.builder()
+                .number("1234567890123456")
+                .expMonth(6)
+                .expYear(2028)
+                .billingAddress(validAddress)
+                .customer(owner)
+                .build();
 
-        invalidAddressCC = new CreditCard();
-        invalidAddressCC.setNumber("4400665614591913");
-        invalidAddressCC.setExpMonth(6);
-        invalidAddressCC.setExpYear(2028);
-        invalidAddressCC.setBillingAddress(invalidAddress);
-        invalidAddressCC.setCustomer(owner);
+        invalidAddressCC = CreditCard.builder()
+                .number("4400665614591913")
+                .expMonth(6)
+                .expYear(2028)
+                .billingAddress(invalidAddress)
+                .customer(owner)
+                .build();
 
         ar.deleteAll();
         cr.deleteAll();
@@ -133,9 +141,22 @@ public class CreditCardServiceTest {
         var original = ccs.create(validCC);
         validCC.setBillingAddress(secondValidAddress);
         var updated = ccs.update(original.getId(), validCC);
-        var l = ccs.getAll();
+        var l = new LinkedList<>(ccs.getAll());
         assertNotEquals(original, updated);
         assertEquals(updated, l.getFirst());
+    }
+
+    @Transactional
+    @Test
+    public void testInvalidUpdateCC() {
+        var original = ccs.create(validCC);
+        validCC.setBillingAddress(invalidAddress);
+        var exception = assertThrows(IllegalArgumentException.class, () -> ccs.update(original.getId(), validCC));
+        assertAll(
+                () -> assertNotNull(exception),
+                () -> assertTrue(exception.getCause() instanceof AddressValidationException),
+                () -> assertEquals(NONEXISTING, ((AddressValidationException) exception.getCause()).cause())
+        );
     }
 
 }

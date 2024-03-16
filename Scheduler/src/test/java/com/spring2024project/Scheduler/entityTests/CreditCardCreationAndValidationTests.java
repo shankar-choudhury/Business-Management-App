@@ -49,11 +49,6 @@ public class CreditCardCreationAndValidationTests {
                 .build();
     }
 
-    // Helper method to create an Address instance for testing
-    private Address createTestAddress() {
-        return Address.emptyAddress();
-    }
-
     // Test case for CreditCard::from with a valid CreditCard instance
     @Test
     public void testFromValidCreditCard() {

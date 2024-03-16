@@ -32,21 +32,21 @@ public class AddressCreationAndValidationTests {
 
     @Before
     public void setUp() {
-        testAddress = new Address();
-        testAddress.setId(1);
-        testAddress.setBuildingNumber("35");
-        testAddress.setStreet("School St");
-        testAddress.setCity("Hanover");
-        testAddress.setState("NH");
-        testAddress.setZipcode("03755");
+        testAddress = Address.builder()
+                .buildingNumber("35")
+                .street("School St")
+                .city("Hanover")
+                .state("NH")
+                .zipcode("03755")
+                .build();
 
-        secondTestAddress = new Address();
-        secondTestAddress.setId(2);
-        secondTestAddress.setBuildingNumber("35");
-        secondTestAddress.setStreet("School St");
-        secondTestAddress.setCity("Detroit");
-        secondTestAddress.setState("MI");
-        secondTestAddress.setZipcode("48202");
+        secondTestAddress = Address.builder()
+                .buildingNumber("35")
+                .street("School St")
+                .city("Detroit")
+                .state("MI")
+                .zipcode("48202")
+                .build();
     }
 
     @Test
@@ -280,7 +280,7 @@ public class AddressCreationAndValidationTests {
     }
 
     @Test
-    public void testIncorrectZipCoedCityMapping() {
+    public void testIncorrectZipCodeCityMapping() {
         testAddress.setCity("lebanon");
         assertNoMappingZipToCity(NONEXISTING);
     }

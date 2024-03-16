@@ -1,6 +1,7 @@
 package com.spring2024project.Scheduler.validatingMethods;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.validator.routines.EmailValidator;
 
@@ -9,10 +10,11 @@ import static com.spring2024project.Scheduler.validatingMethods.StringValidator.
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PersonValidator {
+    @Getter
     public enum PersonValidationPattern {
         VALID_NAME_PATTERN("\\p{Alpha}+",
                 "Matches a valid name containing alphabetic characters only. Examples: 'John', 'Alice', 'Smith'"),
-        VALID_PHONE_NUMBER_PATTERN("^(\\(?(\\d{3})\\)?[-.\\s]?)?\\d{3}[-.\\s]?\\d{4}$",
+        VALID_PHONE_NUMBER_PATTERN("^(\\(?\\d{3}\\)?[-.\\s]?)?\\d{3}[-.\\s]?\\d{4}$",
                 "Matches a valid phone number in various formats. Examples: '123-456-7890', '(123) 456 7890', '123.456.7890'");
 
         private final String regex;
@@ -23,13 +25,6 @@ public class PersonValidator {
             this.description = description;
         }
 
-        public String getRegex() {
-            return regex;
-        }
-
-        public String getDescription() {
-            return description;
-        }
     }
 
     public static String correctNameFormat(String name) {
@@ -42,5 +37,9 @@ public class PersonValidator {
 
     public static String correctPhoneNumberFormat(String phoneNumber) {
         return validateString(phoneNumber, p -> p.matches(PersonValidationPattern.VALID_PHONE_NUMBER_PATTERN.getRegex()), FORMAT);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(EmailValidator.getInstance().isValid("sxc123@case.edu"));
     }
 }

@@ -5,6 +5,7 @@ import com.spring2024project.Scheduler.exception.AddressValidationException;
 import com.spring2024project.Scheduler.repository.AddressRepository;
 import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
 import com.spring2024project.Scheduler.service.AddressService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,20 +34,23 @@ public class AddressServiceTest {
 
     @BeforeEach
     public void setUp() {
-        validAddress = new Address();
-        validAddress.setId(1);
-        validAddress.setBuildingNumber("1");
-        validAddress.setStreet("cedric st");
-        validAddress.setCity("hanover");
-        validAddress.setState("new hampshire");
-        validAddress.setZipcode("03755");
+        validAddress = Address.builder()
+                .buildingNumber("1")
+                .street("cedric st")
+                .city("hanover")
+                .state("new hampshire")
+                .zipcode("03755")
+                .build();
 
-        invalidAddress = new Address();
-        invalidAddress.setBuildingNumber("4");
-        invalidAddress.setStreet("cedric st");
-        invalidAddress.setCity("Lebanon");
-        invalidAddress.setState("new hampshire");
-        invalidAddress.setZipcode("03755");
+        invalidAddress = Address.builder()
+                .buildingNumber("4")
+                .street("cedric st")
+                .city("Lebanon")
+                .state("new hampshire")
+                .zipcode("03755")
+                .build();
+
+        ar.deleteAll();
     }
 
     @Test
@@ -68,32 +72,37 @@ public class AddressServiceTest {
         );
     }
 
+    @Transactional
     @Test
     public void testGetAddress() {
         var formatted = Address.from(validAddress);
         Address createdAddress = as.create(validAddress);
-        Address fetchedAddress = as.getById(1);
+
+        Address fetchedAddress = as.getById(createdAddress.getId());
+
         assertEquals(createdAddress, fetchedAddress);
         assertEquals(formatted, fetchedAddress);
     }
 
+    @Transactional
     @Test
     public void testValidUpdateAddress() {
-        as.create(validAddress);
+        var created = as.create(validAddress);
         validAddress.setZipcode("03766");
         validAddress.setCity("lebanon");
         var formatted = Address.from(validAddress);
-        Address updatedAddress = as.update(1,validAddress);
+        Address updatedAddress = as.update(created.getId(),validAddress);
 
         assertEquals(formatted, updatedAddress);
     }
 
     @Test
     public void testInvalidUpdateAddress() {
-        as.create(validAddress);
+        var created = as.create(validAddress);
         validAddress.setZipcode("03766");
         validAddress.setCity("Nashua");
-        var exception = assertThrows(IllegalArgumentException.class, () -> as.update(1,validAddress));
+
+        var exception = assertThrows(IllegalArgumentException.class, () -> as.update(created.getId(), validAddress));
         assertAll(
                 () -> assertNotNull(exception), // Ensure the exception is not null
                 () -> assertTrue(exception.getCause() instanceof AddressValidationException), // Check the type of the cause

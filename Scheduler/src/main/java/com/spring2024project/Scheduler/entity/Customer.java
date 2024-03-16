@@ -1,7 +1,6 @@
 package com.spring2024project.Scheduler.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.spring2024project.Scheduler.validatingMethods.PersonValidator;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,6 +9,7 @@ import static com.spring2024project.Scheduler.validatingMethods.PersonValidator.
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents a Customer, with their required details for business management
@@ -24,6 +24,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString(callSuper = true, of = {})
 public final class Customer extends Person {
     @JsonManagedReference
@@ -63,12 +64,16 @@ public final class Customer extends Person {
 
 
     public void addAddress(Address address) {
-        this.addressList.add(address);
+        if (Objects.isNull(addressList))
+            addressList = new ArrayList<>();
+        addressList.add(address);
         address.setCustomer(this);
     }
 
     public void addCreditCard(CreditCard creditCard) {
-        this.creditCardList.add(creditCard);
+        if (Objects.isNull(creditCardList))
+            creditCardList = new ArrayList<>();
+        creditCardList.add(creditCard);
         creditCard.setCustomer(this);
     }
 
@@ -94,7 +99,7 @@ public final class Customer extends Person {
     public static Customer fromDeleted(Customer c) {
         var checked = from(c);
         return new Customer(
-                checked.getId(),
+                c.getId(),
                 checked.getFirstName(),
                 checked.getLastName(),
                 checked.getEmail(),

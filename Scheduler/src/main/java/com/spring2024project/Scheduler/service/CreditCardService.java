@@ -22,8 +22,7 @@ import static com.spring2024project.Scheduler.entity.CreditCard.*;
  */
 @Service
 public class CreditCardService implements BaseService<CreditCard>{
-    private final AddressRepository ar;
-    private final CustomerRepository cr;
+
     private final CreditCardRepository ccr;
     private final ZipCodeValidatorTag zt;
 
@@ -32,12 +31,9 @@ public class CreditCardService implements BaseService<CreditCard>{
      * @param cr The CreditCardRepository to be used by the service.
      */
     @Autowired
-    public CreditCardService(AddressRepository ar,
-                             CustomerRepository cr,
-                             CreditCardRepository ccr,
+    public CreditCardService(CreditCardRepository ccr,
                              ZipCodeValidatorTag zt) {
-        this.ar = ar;
-        this.cr = cr;
+
         this.ccr = ccr;
         this.zt = zt;
     }
