@@ -19,13 +19,13 @@ import java.util.Objects;
  */
 @Entity
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"firstName", "lastName", "phoneNumber"})
+        @UniqueConstraint(columnNames = {"firstName", "lastName", "email", "phoneNumber"})
 })
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString(callSuper = true, of = {})
+@ToString(callSuper = true)
 public final class Customer extends Person {
     @JsonManagedReference
     @OneToMany(mappedBy = "customer",
@@ -106,6 +106,17 @@ public final class Customer extends Person {
                 checked.getPhoneNumber(),
                 checked.getAddressList(),
                 checked.getCreditCardList());
+    }
+
+    public boolean equals(Object o) {
+        if (Objects.nonNull(o) && o instanceof Customer) {
+            Customer c = (Customer) o;
+            return c.getFirstName().equals(getFirstName()) &&
+                    c.getLastName().equals(getLastName()) &&
+                    c.getEmail().equals(getEmail()) &&
+                    c.getPhoneNumber().equals(getPhoneNumber());
+        }
+        return false;
     }
 
 }

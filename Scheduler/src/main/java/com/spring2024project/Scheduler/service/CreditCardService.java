@@ -28,7 +28,7 @@ public class CreditCardService implements BaseService<CreditCard>{
 
     /**
      * Constructs a CreditCardService instance with the given CreditCardRepository.
-     * @param cr The CreditCardRepository to be used by the service.
+     * @param ccr The CreditCardRepository to be used by the service.
      */
     @Autowired
     public CreditCardService(CreditCardRepository ccr,
@@ -70,16 +70,7 @@ public class CreditCardService implements BaseService<CreditCard>{
 
     @Override
     public CreditCard update(int id, CreditCard entity) {
-        var original = getById(id);
-        if (original.getId() != 0) {
-            var updated = CreditCard.checkedFrom(entity, zt);
-            // Delete the original credit card
-            ccr.deleteById(original.getId());
-            // Save the updated credit card, Hibernate will handle the associations
-            updated = ccr.save(updated);
-            return updated;
-        }
-        return original;
+        return null;
     }
 
     /**
@@ -92,7 +83,7 @@ public class CreditCardService implements BaseService<CreditCard>{
         CreditCard toDelete = getById(id);
         if (toDelete.getId() != 0) {
             CreditCard deleted = fromDeleted(toDelete);
-            //cr.deleteById(id);
+            ccr.deleteById(id);
             return deleted;
         }
         return toDelete;

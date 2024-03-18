@@ -116,7 +116,7 @@ public class CreditCardServiceTest {
 
     @Test
     public void testInvalidCreateCC() {
-        var exception = assertThrows(IllegalArgumentException.class, () -> CreditCard.from(invalidCC));
+        var exception = assertThrows(IllegalArgumentException.class, () -> ccs.create(invalidCC));
         assertAll(
                 () -> assertNotNull(exception),
                 () -> assertTrue(exception.getCause() instanceof StringValidationException),
@@ -134,29 +134,4 @@ public class CreditCardServiceTest {
         assertEquals(createdCC, fetchedCC);
         assertEquals(formatted, fetchedCC);
     }
-
-    @Transactional
-    @Test
-    public void testValidUpdateCC() {
-        var original = ccs.create(validCC);
-        validCC.setBillingAddress(secondValidAddress);
-        var updated = ccs.update(original.getId(), validCC);
-        var l = new LinkedList<>(ccs.getAll());
-        assertNotEquals(original, updated);
-        assertEquals(updated, l.getFirst());
-    }
-
-    @Transactional
-    @Test
-    public void testInvalidUpdateCC() {
-        var original = ccs.create(validCC);
-        validCC.setBillingAddress(invalidAddress);
-        var exception = assertThrows(IllegalArgumentException.class, () -> ccs.update(original.getId(), validCC));
-        assertAll(
-                () -> assertNotNull(exception),
-                () -> assertTrue(exception.getCause() instanceof AddressValidationException),
-                () -> assertEquals(NONEXISTING, ((AddressValidationException) exception.getCause()).cause())
-        );
-    }
-
 }

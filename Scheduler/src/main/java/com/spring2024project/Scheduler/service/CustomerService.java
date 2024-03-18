@@ -1,5 +1,6 @@
 package com.spring2024project.Scheduler.service;
 
+import com.spring2024project.Scheduler.entity.Address;
 import com.spring2024project.Scheduler.entity.CreditCard;
 import com.spring2024project.Scheduler.entity.Customer;
 import com.spring2024project.Scheduler.repository.AddressRepository;
@@ -7,12 +8,17 @@ import com.spring2024project.Scheduler.repository.CreditCardRepository;
 import com.spring2024project.Scheduler.repository.CustomerRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
 import org.springframework.stereotype.Service;
 
 import static com.spring2024project.Scheduler.entity.Customer.*;
 
+import java.util.AbstractMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * This service class provides functionality to perform CRUD operations on Customer entities.
@@ -21,22 +27,19 @@ import java.util.List;
 @Service
 @Transactional
 public class CustomerService implements BaseService<Customer> {
-    private CustomerRepository cr;
-    private CreditCardRepository ccr;
-    private AddressRepository ar;
-    private final EntityManager em;
+    private final CustomerRepository cr;
+    private final AddressRepository ar;
+    private final CreditCardRepository ccr;
 
     /**
      * Constructs a CustomerService instance with the given CustomerRepository and EntityManager.
      * @param cr The CustomerRepository to be used by the service.
-     * @param em The EntityManager to be used by the service.
      */
     @Autowired
-    public CustomerService(CustomerRepository cr, CreditCardRepository ccr, AddressRepository ar, EntityManager em) {
+    public CustomerService(CustomerRepository cr, AddressRepository ar, CreditCardRepository ccr) {
         this.cr = cr;
-        this.ccr = ccr;
         this.ar = ar;
-        this.em = em;
+        this.ccr = ccr;
     }
 
     /**
@@ -66,11 +69,7 @@ public class CustomerService implements BaseService<Customer> {
     @Override
     public Customer create(Customer entity) {
         var newCustomer = Customer.from(entity);
-        newCustomer.getAddressList().forEach(address -> address.setCustomer(newCustomer));
-        newCustomer.getCreditCardList().forEach(creditCard -> creditCard.setCustomer(newCustomer));
-        Customer mergedCustomer = em.merge(newCustomer);
-        em.flush(); // optional, to ensure changes are immediately persisted
-        return mergedCustomer;
+        return cr.save(newCustomer);
     }
 
     /**
@@ -81,13 +80,35 @@ public class CustomerService implements BaseService<Customer> {
      */
     @Override
     public Customer update(int id, Customer entity) {
-        Customer toUpdate = getById(id);
-        if (toUpdate.getId() != 0) {
-            toUpdate = from(entity);
-            return cr.save(toUpdate);
+        Customer original = getById(id);
+        if (original.getId() != 0) {
+            var updated = Customer.from(entity);
+            var oldCopy = delete(id);
+            var newCopy = cr.save(updated);
+            updateAssociatedEntities(oldCopy, newCopy);
+            return newCopy;
         }
-        return toUpdate;
+        return original;
     }
+
+    private void updateAssociatedEntities(Customer oldCopy, Customer newCopy) {
+        if (Objects.nonNull(oldCopy.getAddressList())) {
+            for (Address address : oldCopy.getAddressList()) {
+                if (Objects.nonNull(address.getCustomer())) {
+                    address.setCustomer(newCopy);
+                    ar.save(address);
+                }
+            }
+        }
+        if (Objects.nonNull(oldCopy.getCreditCardList())) {
+            for (CreditCard creditCard : oldCopy.getCreditCardList()) {
+                creditCard.setCustomer(newCopy);
+                ccr.save(creditCard);
+            }
+        }
+    }
+
+
 
     /**
      * Deletes a customer from the database.
@@ -99,18 +120,9 @@ public class CustomerService implements BaseService<Customer> {
         Customer toDelete = getById(id);
         if (!toDelete.getFirstName().isEmpty()) {
             Customer save = Customer.fromDeleted(toDelete);
-            for (CreditCard creditCard : toDelete.getCreditCardList()) {
-                ccr.delete(creditCard);
-            }
-            // Clear credit card list from customer
-            toDelete.getCreditCardList().clear();
-            // Deassociate customer with their addresses, and then clear their address list
-            toDelete.getAddressList().forEach(
-                    address -> {
-                        address.setCustomer(null);
-                        ar.save(address);});
-            toDelete.getAddressList().clear();
-            // Delete customer.
+            var existingAddresses = save.getAddressList();
+            if (Objects.nonNull(existingAddresses))
+                existingAddresses.forEach(address -> address.setCustomer(null));
             cr.deleteById(id);
             return save;
         }
