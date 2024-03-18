@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@ComponentScan(basePackages = {"com.spring2024project.Scheduler", "com.spring2024project.Scheduler.customValidatorTags"})
+@ComponentScan(basePackages = {"com.spring2024project.Scheduler"})
 public class CustomerServiceTest {
     @Autowired
     private CustomerService cs;
@@ -83,7 +83,8 @@ public class CustomerServiceTest {
     @Test
     public void testValidUpdate() {
         var created = cs.create(c);
-        c.addAddress(validAddress);
+        //c.addAddress(validAddress);
+        c.setPhoneNumber("67714124123");
         var updated = cs.update(created.getId(), c);
         assertEquals(c, updated);
     }

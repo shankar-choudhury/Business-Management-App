@@ -110,4 +110,11 @@ public class AddressServiceTest {
         );
     }
 
+    @Test
+    public void testDeleteAddress() {
+        var created = as.create(validAddress);
+        var deleted = as.delete(created.getId());
+        assertEquals(created, deleted);
+    }
+
 }
