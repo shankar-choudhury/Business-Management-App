@@ -48,22 +48,21 @@ public class CreditCard {
     @ValidYearRange
     private int expYear;
 
-    @JsonBackReference
+    @JsonBackReference(value = "address-creditcards")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_address_id")
     private Address billingAddress;
 
-    @JsonBackReference
+    @JsonBackReference(value = "customer-creditcards")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_customer_id")
     private Customer customer;
 
-    private CreditCard(String number, int expMonth, int expYear, Address billingAddress, Customer customer) {
+    private CreditCard(String number, int expMonth, int expYear, Address billingAddress) {
         this.number = number;
         this.expMonth = expMonth;
         this.expYear = expYear;
         this.billingAddress = billingAddress;
-        this.customer = customer;
     }
 
     /**
@@ -85,8 +84,7 @@ public class CreditCard {
                 correctCCNumberFormat(c.getNumber()),
                 verifyMonth(c.getExpMonth()),
                 verifyYearInRange(c.getExpYear(), 5),
-                Address.from(c.getBillingAddress()),
-                c.getCustomer());
+                Address.from(c.getBillingAddress()));
     }
 
     /**

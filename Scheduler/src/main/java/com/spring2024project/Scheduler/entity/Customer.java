@@ -15,7 +15,6 @@ import java.util.Objects;
  * This class represents a Customer, with their required details for business management
  * TODO: Create abstract classes Person and BaseEntity. Future classes representing people
  * TODO: like office and field employees will extend Person. All Entities will extend BaseEntity.
- *
  */
 @Entity
 @Table(uniqueConstraints = {
@@ -27,28 +26,17 @@ import java.util.Objects;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString(callSuper = true)
 public final class Customer extends Person {
-    @JsonManagedReference
+    @JsonManagedReference(value = "customer-addresses")
     @OneToMany(mappedBy = "customer",
-            cascade = CascadeType.ALL,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH},
             fetch = FetchType.LAZY)
     private List<Address> addressList;
-    @JsonManagedReference
+    @JsonManagedReference(value = "customer-creditcards")
     @OneToMany(mappedBy = "customer",
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
             orphanRemoval = true)
     private List<CreditCard> creditCardList;
-
-    private Customer(String firstName,
-                     String lastName,
-                     String email,
-                     String phoneNumber,
-                     List<Address> addressList,
-                     List<CreditCard> creditCardList) {
-        super(firstName, lastName, email, phoneNumber);
-        this.addressList = addressList;
-        this.creditCardList = creditCardList;
-    }
 
     private Customer(int id,
                      String firstName,
@@ -61,7 +49,6 @@ public final class Customer extends Person {
         this.addressList = addressList;
         this.creditCardList = creditCardList;
     }
-
 
     public void addAddress(Address address) {
         if (Objects.isNull(addressList))
@@ -87,25 +74,11 @@ public final class Customer extends Person {
                 c.getLastName(),
                 c.getEmail(),
                 c.getPhoneNumber());
-        return new Customer(
-                correctNameFormat(c.getFirstName()),
-                correctNameFormat(c.getLastName()),
-                correctEmailFormat(c.getEmail()),
-                correctPhoneNumberFormat(c.getPhoneNumber()),
-                c.getAddressList(),
-                c.getCreditCardList());
-    }
-
-    public static Customer fromDeleted(Customer c) {
-        var checked = from(c);
-        return new Customer(
-                c.getId(),
-                checked.getFirstName(),
-                checked.getLastName(),
-                checked.getEmail(),
-                checked.getPhoneNumber(),
-                checked.getAddressList(),
-                checked.getCreditCardList());
+        correctNameFormat(c.getFirstName());
+        correctNameFormat(c.getLastName());
+        correctEmailFormat(c.getEmail());
+        correctPhoneNumberFormat(c.getPhoneNumber());
+        return c;
     }
 
     public boolean equals(Object o) {

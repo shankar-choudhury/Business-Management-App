@@ -1,16 +1,19 @@
 package com.spring2024project.Scheduler.service;
 
 import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
+import com.spring2024project.Scheduler.entity.Address;
 import com.spring2024project.Scheduler.entity.CreditCard;
 import com.spring2024project.Scheduler.repository.AddressRepository;
 import com.spring2024project.Scheduler.repository.CreditCardRepository;
 import com.spring2024project.Scheduler.repository.CustomerRepository;
 
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.spring2024project.Scheduler.entity.CreditCard.*;
 
@@ -25,6 +28,7 @@ public class CreditCardService implements BaseService<CreditCard>{
 
     private final CreditCardRepository ccr;
     private final ZipCodeValidatorTag zt;
+    private final EntityManager em;
 
     /**
      * Constructs a CreditCardService instance with the given CreditCardRepository.
@@ -32,10 +36,11 @@ public class CreditCardService implements BaseService<CreditCard>{
      */
     @Autowired
     public CreditCardService(CreditCardRepository ccr,
-                             ZipCodeValidatorTag zt) {
-
+                             ZipCodeValidatorTag zt,
+                             EntityManager em) {
         this.ccr = ccr;
         this.zt = zt;
+        this.em = em;
     }
 
     /**
@@ -65,6 +70,11 @@ public class CreditCardService implements BaseService<CreditCard>{
     @Override
     public CreditCard create(CreditCard entity) {
         CreditCard newCard = checkedFrom(entity, zt);
+        // Persist the billing address if it's not yet persisted
+        if (newCard.getBillingAddress().getId() == 0) {
+            em.persist(newCard.getBillingAddress());
+        }
+        // Now save the credit card
         return ccr.save(newCard);
     }
 

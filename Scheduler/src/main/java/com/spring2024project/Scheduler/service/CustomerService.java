@@ -15,6 +15,7 @@ import static com.spring2024project.Scheduler.entity.Customer.*;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * This service class provides functionality to perform CRUD operations on Customer entities.
@@ -48,8 +49,13 @@ public class CustomerService implements BaseService<Customer> {
 
     @Override
     public Customer create(Customer entity) {
-        em.persist(entity);
-        return entity;
+        try {
+            var newCustomer = Customer.from(entity);
+            em.persist(newCustomer);
+            return newCustomer;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create customer", e);
+        }
     }
 
     @Override
@@ -57,7 +63,7 @@ public class CustomerService implements BaseService<Customer> {
         Customer original = getById(id);
         if (original.getId() != 0) {
             entity.setId(id); // Ensure that the ID matches
-            Customer updated = em.merge(entity);
+            Customer updated = em.merge(Customer.from(entity));
             updateAssociatedEntities(original, updated);
             return updated;
         }

@@ -58,12 +58,12 @@ public class Address {
     @ValidZipCode
     private String zipcode;
 
-    @JsonBackReference
+    @JsonBackReference(value = "customer-addresses")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @JsonManagedReference
+    @JsonManagedReference(value = "address-creditcards")
     @OneToMany(
             mappedBy = "billingAddress",
             cascade = CascadeType.ALL,

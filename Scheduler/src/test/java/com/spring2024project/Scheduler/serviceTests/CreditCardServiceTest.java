@@ -84,7 +84,6 @@ public class CreditCardServiceTest {
                 .expMonth(6)
                 .expYear(2028)
                 .billingAddress(validAddress)
-                .customer(owner)
                 .build();
 
         invalidCC = CreditCard.builder()
@@ -92,7 +91,6 @@ public class CreditCardServiceTest {
                 .expMonth(6)
                 .expYear(2028)
                 .billingAddress(validAddress)
-                .customer(owner)
                 .build();
 
         invalidAddressCC = CreditCard.builder()
@@ -100,7 +98,6 @@ public class CreditCardServiceTest {
                 .expMonth(6)
                 .expYear(2028)
                 .billingAddress(invalidAddress)
-                .customer(owner)
                 .build();
 
         ar.deleteAll();
@@ -108,6 +105,7 @@ public class CreditCardServiceTest {
     }
 
     @Test
+    @Transactional
     public void testValidCreateCC() {
         var formatted = CreditCard.from(validCC);
         var createdCC = ccs.create(validCC);

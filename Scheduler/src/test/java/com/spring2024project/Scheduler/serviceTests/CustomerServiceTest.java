@@ -83,8 +83,8 @@ public class CustomerServiceTest {
     @Test
     public void testValidUpdate() {
         var created = cs.create(c);
-        //c.addAddress(validAddress);
-        c.setPhoneNumber("67714124123");
+        c.addAddress(validAddress);
+        //c.setPhoneNumber("6771412412");
         var updated = cs.update(created.getId(), c);
         assertEquals(c, updated);
     }
