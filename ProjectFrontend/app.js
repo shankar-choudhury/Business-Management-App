@@ -14,6 +14,11 @@ new Vue({
             cardNumber: '',
             expMonth: '',
             expYear: '',
+            billingBuildingNumber: '', 
+            billingStreet: '',         
+            billingCity: '',           
+            billingState: '',          
+            billingZipcode: '', 
             createdAddresses: [], 
             createdCards: [], 
         };
@@ -59,55 +64,51 @@ new Vue({
                 alert('Error creating customer. Try debugging error.');
             }
         },
-        async createThisAddress() {
-            try {
-                const response = await axios.post('http://localhost:8080/addresses', {
-                    buildingNumber: this.buildingNumber,
-                    street: this.street,
-                    city: this.city,
-                    state: this.state, 
-                    zipcode: this.zipcode
-                });
-                console.log(response.data);
-                alert('Customer address created successfully');
-                // Create an address object with response data
-                const customerAddress = response.data;
-                // Push onto createdAddress list
-                this.createdAddresses.push(customerAddress); // Fixed here
-                // Reset form fields
-                this.buildingNumber = '';
-                this.street = '';
-                this.city = '';
-                this.state = '';
-                this.zipcode = '';
-                // Hide the modal after successful submission
-                $('#addressModal').modal('hide');
-            } catch (error) {
-                console.error('Error creating address:', error);
-                alert('Error creating customer address. Try debugging error.');
-            }
+        createAddress() {
+            const address = {
+                buildingNumber: this.buildingNumber,
+                street: this.street,
+                city: this.city,
+                state: this.state,
+                zipcode: this.zipcode
+            };
+            // Add newly created address to this customer's address list
+            this.createdAddresses.push(address);
+            // Reset form fields
+            this.buildingNumber = '';
+            this.street = '';
+            this.city = '';
+            this.state = '';
+            this.zipcode = '';
+            // Close modal
+            $('#addressModal').modal('hide');
         },
-        async createCreditCard() {
-            try {
-                const response = await axios.post('http://localhost:8080/credit-cards', {
-                    number: this.cardNumber,
-                    expMonth: this.expMonth,
-                    expYear: this.expYear
-                });
-                console.log(response.data);
-                alert('Credit card created successfully');
-                // Push onto createdCards
-                this.createdCards.push(response.data); // Fixed here
-                // Reset form fields
-                this.cardNumber = '';
-                this.expMonth = '';
-                this.expYear = '';
-                // Hide the modal after successful submission
-                $('#cardModal').modal('hide');
-            } catch (error) {
-                console.error('Error creating credit card:', error);
-                alert('Error creating credit card. Try debugging error.');
-            }
+        createCreditCard() {
+            const creditCard = {
+                number: this.cardNumber,
+                expMonth: this.expMonth,
+                expYear: this.expYear,
+                billingAddress: {
+                    buildingNumber: this.billingBuildingNumber,
+                    street: this.billingStreet,
+                    city: this.billingCity,
+                    state: this.billingState,
+                    zipcode: this.billingZipcode
+                }
+            };
+            // Add newly created credit card to this customer's credit card list
+            this.createdCards.push(creditCard);
+            // Reset form fields
+            this.cardNumber = '';
+            this.expMonth = '';
+            this.expYear = '';
+            this.billingBuildingNumber = '';
+            this.billingStreet = '';
+            this.billingCity = '';
+            this.billingState = '';
+            this.billingZipcode = '';
+            // Close modal
+            $('#cardModal').modal('hide');
         }
     },
 });

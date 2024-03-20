@@ -24,6 +24,7 @@ import static com.spring2024project.Scheduler.entity.CreditCard.*;
  * TODO: CC has many-to-one relationship with Address. Implement same functionality as Customer with CC/Address
  */
 @Service
+@Transactional
 public class CreditCardService implements BaseService<CreditCard>{
 
     private final CreditCardRepository ccr;

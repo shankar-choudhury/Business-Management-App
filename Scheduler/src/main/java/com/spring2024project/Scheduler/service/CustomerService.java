@@ -51,10 +51,26 @@ public class CustomerService implements BaseService<Customer> {
     public Customer create(Customer entity) {
         try {
             var newCustomer = Customer.from(entity);
+            assignCustomerToBillingAddress(newCustomer);
             em.persist(newCustomer);
             return newCustomer;
         } catch (Exception e) {
             throw new RuntimeException("Failed to create customer", e);
+        }
+    }
+
+    private void assignCustomerToBillingAddress(Customer newCustomer) {
+        assert Objects.nonNull(newCustomer);
+        var ccList = newCustomer.getCreditCardList();
+        if (Objects.nonNull(ccList)) {
+            for (var cc : ccList) {
+                var existingAddresses = newCustomer.getAddressList();
+                var billingAddress = cc.getBillingAddress();
+                if (Objects.nonNull(existingAddresses) && existingAddresses.contains(billingAddress))
+                    cc.setBillingAddress(existingAddresses.get(existingAddresses.indexOf(billingAddress)));
+                else
+                    cc.getBillingAddress().setCustomer(newCustomer);
+            }
         }
     }
 
