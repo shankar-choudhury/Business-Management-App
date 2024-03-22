@@ -48,6 +48,13 @@ new Vue({
             this.billingZipcode;
         }
     },
+    mounted() {
+        // Initialize autocomplete for address modal
+        this.initializeAutocomplete('completeAddressInput', this.populateAddressFields);
+        
+        // Initialize autocomplete for billing address in card modal
+        this.initializeAutocomplete('billingCompleteAddressInput', this.populateBillingAddressFields);
+    },
     methods: {
         async validateAndCreateCustomer() {
             if (this.customerFieldsFilled) {
@@ -83,6 +90,58 @@ new Vue({
                 console.error('Error creating customer:', error);
                 alert('Error creating customer. Try debugging error.');
             }
+        },
+        initializeAutocomplete(inputId, callback) {
+            const input = document.getElementById(inputId);
+            const autocomplete = new google.maps.places.Autocomplete(input);
+            autocomplete.addListener('place_changed', () => {
+                const place = autocomplete.getPlace();
+                callback(place);
+            });
+        },
+        populateAddressFields(place) {
+            // Extract relevant address components and populate Vue data properties
+            this.buildingNumber = '';
+            this.street = '';
+            this.city = '';
+            this.state = '';
+            this.zipcode = '';
+
+            place.address_components.forEach(component => {
+                if (component.types.includes('street_number')) {
+                    this.buildingNumber = component.long_name;
+                } else if (component.types.includes('route')) {
+                    this.street = component.long_name;
+                } else if (component.types.includes('locality')) {
+                    this.city = component.long_name;
+                } else if (component.types.includes('administrative_area_level_1')) {
+                    this.state = component.long_name;
+                } else if (component.types.includes('postal_code')) {
+                    this.zipcode = component.long_name;
+                }
+            });
+        },
+        populateBillingAddressFields(place) {
+            // Populate billing address fields in card modal
+            this.billingBuildingNumber = '';
+            this.billingStreet = '';
+            this.billingCity = '';
+            this.billingState = '';
+            this.billingZipcode = '';
+
+            place.address_components.forEach(component => {
+                if (component.types.includes('street_number')) {
+                    this.billingBuildingNumber = component.long_name;
+                } else if (component.types.includes('route')) {
+                    this.billingStreet = component.long_name;
+                } else if (component.types.includes('locality')) {
+                    this.billingCity = component.long_name;
+                } else if (component.types.includes('administrative_area_level_1')) {
+                    this.billingState = component.long_name;
+                } else if (component.types.includes('postal_code')) {
+                    this.billingZipcode = component.long_name;
+                }
+            });
         },
         createAddress() {
             if (!this.addressFieldsFilled) {
