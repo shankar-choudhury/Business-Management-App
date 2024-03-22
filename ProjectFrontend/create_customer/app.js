@@ -25,7 +25,27 @@ new Vue({
     },
     computed: {
         customerFieldsFilled() {
-            return this.firstName && this.lastName && this.email && this.phoneNumber;
+            return this.firstName && 
+            this.lastName && 
+            this.email && 
+            this.phoneNumber;
+        }, 
+        addressFieldsFilled() {
+            return this.buildingNumber && 
+            this.street && 
+            this.city && 
+            this.state && 
+            this.zipcode;
+        },
+        creditCardFieldsFilled() {
+            return this.cardNumber &&
+            this.expMonth &&
+            this.expYear &&
+            this.billingBuildingNumber &&
+            this.billingStreet &&
+            this.billingCity &&
+            this.billingState &&
+            this.billingZipcode;
         }
     },
     methods: {
@@ -65,6 +85,10 @@ new Vue({
             }
         },
         createAddress() {
+            if (!this.addressFieldsFilled) {
+                alert('Please fill in all address fields before adding the address.');
+                return;
+            }
             const address = {
                 buildingNumber: this.buildingNumber,
                 street: this.street,
@@ -74,6 +98,7 @@ new Vue({
             };
             // Add newly created address to this customer's address list
             this.createdAddresses.push(address);
+            alert('Address added successfully');
             // Reset form fields
             this.buildingNumber = '';
             this.street = '';
@@ -84,6 +109,10 @@ new Vue({
             $('#addressModal').modal('hide');
         },
         createCreditCard() {
+            if (!this.creditCardFieldsFilled) {
+                alert('Please fill in all credit card fields, including billing address details, before adding the credit card');
+                return;
+            }
             const creditCard = {
                 number: this.cardNumber,
                 expMonth: this.expMonth,
@@ -98,6 +127,7 @@ new Vue({
             };
             // Add newly created credit card to this customer's credit card list
             this.createdCards.push(creditCard);
+            alert('Credit Card added successfully');
             // Reset form fields
             this.cardNumber = '';
             this.expMonth = '';

@@ -52,23 +52,23 @@
                     <div class="modal-body">
                         <div class="modal-group">
                             <label for="buildingNumberInput">Building Number</label>
-                            <input v-model="buildingNumber" type="number" class="form-control" id="buildingNumberInput" placeholder="Building Number" style="width: 200px;">
+                            <input v-model="buildingNumber" type="number" class="form-control autocomplete" id="buildingNumberInput" placeholder="Building Number" style="width: 200px;">
                         </div>
                         <div class="modal-group">
                             <label for="streetInput">Street</label>
-                            <input v-model="street" type="text" class="form-control" id="streetInput" placeholder="Street" style="width: 200px;">
+                            <input v-model="street" type="text" class="form-control autocomplete" id="streetInput" placeholder="Street" style="width: 200px;">
                         </div>
                         <div class="modal-group">
                             <label for="cityInput">City</label>
-                            <input v-model="city" type="text" class="form-control" id="cityInput" placeholder="City" style="width: 200px;">
+                            <input v-model="city" type="text" class="form-control autocomplete" id="cityInput" placeholder="City" style="width: 200px;">
                         </div>
                         <div class="modal-group">
                             <label for="stateInput">State</label>
-                            <input v-model="state" type="text" class="form-control" id="stateInput" placeholder="State" style="width: 200px;">
+                            <input v-model="state" type="text" class="form-control autocomplete" id="stateInput" placeholder="State" style="width: 200px;">
                         </div>
                         <div class="modal-group">
                             <label for="zipcodeInput">Zip Code</label>
-                            <input v-model="zipcode" type="number" class="form-control" id="zipcodeInput" placeholder="Zip Code" style="width: 200px;">
+                            <input v-model="zipcode" type="number" class="form-control autocomplete" id="zipcodeInput" placeholder="Zip Code" style="width: 200px;">
                         </div>
                     </div>
                     <!-- Modal Footer for addAddress functionality-->
@@ -104,23 +104,23 @@
                         <!-- Additional fields for billing address -->
                         <div class="modal-group">
                             <label for="billingBuildingNumberInput">Building Number</label>
-                            <input v-model="billingBuildingNumber" type="number" class="form-control" id="billingBuildingNumberInput" placeholder="Billing Building Number" style="width: 200px;">
+                            <input v-model="billingBuildingNumber" type="number" class="form-control autocomplete" id="billingBuildingNumberInput" placeholder="Billing Building Number" style="width: 200px;">
                         </div>
                         <div class="modal-group">
                             <label for="billingStreetInput">Street</label>
-                            <input v-model="billingStreet" type="text" class="form-control" id="billingStreetInput" placeholder="Billing Street" style="width: 200px;">
+                            <input v-model="billingStreet" type="text" class="form-control autocomplete" id="billingStreetInput" placeholder="Billing Street" style="width: 200px;">
                         </div>
                         <div class="modal-group">
                             <label for="billingCityInput">City</label>
-                            <input v-model="billingCity" type="text" class="form-control" id="billingCityInput" placeholder="Billing City" style="width: 200px;">
+                            <input v-model="billingCity" type="text" class="form-control autocomplete" id="billingCityInput" placeholder="Billing City" style="width: 200px;">
                         </div>
                         <div class="modal-group">
                             <label for="billingStateInput">State</label>
-                            <input v-model="billingState" type="text" class="form-control" id="billingStateInput" placeholder="Billing State" style="width: 200px;">
+                            <input v-model="billingState" type="text" class="form-control autocomplete" id="billingStateInput" placeholder="Billing State" style="width: 200px;">
                         </div>
                         <div class="modal-group">
                             <label for="billingZipcodeInput">Zip Code</label>
-                            <input v-model="billingZipcode" type="number" class="form-control" id="billingZipcodeInput" placeholder="Billing Zip Code" style="width: 200px;">
+                            <input v-model="billingZipcode" type="number" class="form-control autocomplete" id="billingZipcodeInput" placeholder="Billing Zip Code" style="width: 200px;">
                         </div>
                     </div>
                     <!-- Modal Footer for addCreditCard functionality -->
@@ -140,7 +140,9 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
     <!-- Axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <!-- My app.s file-->
+    <!-- My app.js file-->
     <script src="app.js"></script>
+    <!-- Google Maps Autocomplete -->
+    <script src="maps_autocomplete.js"></script>
 </body>
 </html>
