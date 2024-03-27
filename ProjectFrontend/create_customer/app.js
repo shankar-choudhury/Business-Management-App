@@ -12,15 +12,15 @@ new Vue({
             state: '',
             zipcode: '',
             cardNumber: '',
-            expMonth: '',
-            expYear: '',
-            billingBuildingNumber: '', 
-            billingStreet: '',         
-            billingCity: '',           
-            billingState: '',          
-            billingZipcode: '', 
-            createdAddresses: [], 
-            createdCards: [], 
+            expMonth: '',               
+            expYear: '',                
+            billingBuildingNumber: '',  
+            billingStreet: '',          
+            billingCity: '',            
+            billingState: '',           
+            billingZipcode: '',         
+            createdAddresses: [],       
+            createdCards: [],           
         };
     },
     computed: {
@@ -46,17 +46,24 @@ new Vue({
             this.billingCity &&
             this.billingState &&
             this.billingZipcode;
+        },
+        isPhoneNumberValid() {
+            return /^(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/.test(this.phoneNumber);
         }
     },
     mounted() {
         // Initialize autocomplete for address modal
         this.initializeAutocomplete('completeAddressInput', this.populateAddressFields);
-        
+
         // Initialize autocomplete for billing address in card modal
         this.initializeAutocomplete('billingCompleteAddressInput', this.populateBillingAddressFields);
     },
     methods: {
         async validateAndCreateCustomer() {
+            if (!this.isPhoneNumberValid) {
+                alert('Please enter a valid phone number.');
+                return;
+            }
             if (this.customerFieldsFilled) {
                 // If all fields are filled, create the customer
                 await this.createCustomer();
