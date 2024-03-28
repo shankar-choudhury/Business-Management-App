@@ -41,13 +41,17 @@
                                 <label for="selectedPhoneNumber">Phone Number</label>
                                 <input type="text" class="form-control" id="selectedPhoneNumber" :value="selectedCustomer.phoneNumber" @input="updatePhoneNumber($event.target.value)">
                             </div>
-                            <!-- Cancel button to revert changes -->
-                            <button type="button" class="btn btn-secondary" @click="cancelEdit">Cancel</button>
                         </div>
+                        
                         <!-- Buttons -->
-                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addressModal">Modify Address</button>
-                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#cardModal">Modify Card</button>
-                        <button type="submit" class="btn btn-primary" :disabled="!customerFieldsFilled">Save Changes</button>
+                        <!-- Modify Address Modal Button -->
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addressModifyModal" :disabled="!selectedCustomer">Modify Address</button>
+
+                        <!-- Modify Credit Card Modal Button -->
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#cardModal" :disabled="!selectedCustomer">Modify Credit Card</button>
+
+                        <!-- Save Changes Button -->
+                        <button type="submit" class="btn btn-primary" :disabled="!customerFieldsFilled || !selectedCustomer">Save Changes</button>
                     </form>
                 </div>
                 <!-- Customer Selection Panel -->
@@ -64,6 +68,51 @@
                             {{ customer.firstName }} {{ customer.lastName }} - {{ customer.email }} - {{ customer.phoneNumber }}
                         </li>
                     </ul>
+                </div>
+                <!-- Modify Addresses Modal -->
+                <div class="modal" id="addressModifyModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Modify Addresses</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Display addresses here -->
+                                <ul class="list-group">
+                                    <li class="list-group-item" v-for="address in addresses" :key="address.id">
+                                        <!-- Display address details here -->
+                                        {{ address.buildingNumber }} {{ address.street }}, {{ address.city }}, {{ address.state }} {{ address.zipcode }}
+                                    </li>
+                                </ul>
+                                <!-- Form to modify address -->
+                                <form @submit.prevent="updateAddress">
+                                    <div class="mb-3">
+                                        <label for="newBuildingNumber" class="form-label">Building Number</label>
+                                        <input type="text" class="form-control" id="newBuildingNumber" v-model="newAddress.buildingNumber">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="newStreet" class="form-label">Street</label>
+                                        <input type="text" class="form-control" id="newStreet" v-model="newAddress.street">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="newCity" class="form-label">City</label>
+                                        <input type="text" class="form-control" id="newCity" v-model="newAddress.city">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="newState" class="form-label">State</label>
+                                        <input type="text" class="form-control" id="newState" v-model="newAddress.state">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="newZipcode" class="form-label">Zipcode</label>
+                                        <input type="text" class="form-control" id="newZipcode" v-model="newAddress.zipcode">
+                                    </div>
+                                    <!-- Add more input fields for other address details -->
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
