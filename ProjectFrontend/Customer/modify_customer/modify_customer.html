@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modify Customer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="row">
+                <!-- Customer Search Form -->
+                <div class="col-md-6">
+                    <h1>Modify Customer</h1>
+                    <form @submit.prevent="validateAndUpdateCustomer">
+                        <!-- Form inputs -->
+                        <div class="form-group">
+                            <label for="fullNameInput">Search for Customer</label>
+                            <input v-model="fullName" @keyup.enter="fetchCustomers" type="text" class="form-control" id="fullNameInput" placeholder="Enter customer's full name" style="width: 300px;">
+                            <!-- Dropdown menu for matching customers -->
+                            <div v-if="showDropdown && customers.length" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a v-for="customer in customers" @click="selectCustomer(customer)" class="dropdown-item">{{ customer.firstName }} {{ customer.lastName }} - {{ customer.email }} - {{ customer.phoneNumber }}</a>
+                            </div>
+                        </div>
+                        <!-- Invisible fields to display selected customer's information -->
+                        <div v-if="selectedCustomer">
+                            <div class="form-group">
+                                <label for="selectedFirstName">First Name</label>
+                                <input type="text" class="form-control" id="selectedFirstName" :value="selectedCustomer.firstName" @input="updateFirstName($event.target.value)">
+                            </div>
+                            <div class="form-group">
+                                <label for="selectedLastName">Last Name</label>
+                                <input type="text" class="form-control" id="selectedLastName" :value="selectedCustomer.lastName" @input="updateLastName($event.target.value)">
+                            </div>
+                            <div class="form-group">
+                                <label for="selectedEmail">Email address</label>
+                                <input type="email" class="form-control" id="selectedEmail" :value="selectedCustomer.email" @input="updateEmail($event.target.value)">
+                            </div>
+                            <div class="form-group">
+                                <label for="selectedPhoneNumber">Phone Number</label>
+                                <input type="text" class="form-control" id="selectedPhoneNumber" :value="selectedCustomer.phoneNumber" @input="updatePhoneNumber($event.target.value)">
+                            </div>
+                            <!-- Cancel button to revert changes -->
+                            <button type="button" class="btn btn-secondary" @click="cancelEdit">Cancel</button>
+                        </div>
+                        <!-- Buttons -->
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addressModal">Modify Address</button>
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#cardModal">Modify Card</button>
+                        <button type="submit" class="btn btn-primary" :disabled="!customerFieldsFilled">Save Changes</button>
+                    </form>
+                </div>
+                <!-- Customer Selection Panel -->
+                <div class="col-md-6">
+                    <h2>Customer List</h2>
+                    <div v-if="selectedCustomer">
+                        <p><strong>Selected Customer:</strong></p>
+                        <p>{{ selectedCustomerCopy.firstName }} {{ selectedCustomerCopy.lastName }}</p>
+                        <p>{{ selectedCustomerCopy.email }}</p>
+                        <p>{{ selectedCustomerCopy.phoneNumber }}</p>
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item" v-for="customer in customers" @click="selectCustomer(customer)" :key="customer.id">
+                            {{ customer.firstName }} {{ customer.lastName }} - {{ customer.email }} - {{ customer.phoneNumber }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Boostrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- My app.js file-->
+    <script src="app.js"></script>
+</body>
+</html>

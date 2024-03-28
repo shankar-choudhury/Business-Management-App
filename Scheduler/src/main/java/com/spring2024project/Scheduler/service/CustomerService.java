@@ -47,6 +47,10 @@ public class CustomerService implements BaseService<Customer> {
         return cr.findById(id).orElse(defaultCustomer());
     }
 
+    public List<Customer> findByFirstAndLastName(String firstName, String lastName) {
+        return cr.findByFirstNameAndLastName(firstName, lastName);
+    }
+
     @Override
     public Customer create(Customer entity) {
         try {

@@ -2,6 +2,7 @@ package com.spring2024project.Scheduler.controller;
 
 import com.spring2024project.Scheduler.entity.Customer;
 import com.spring2024project.Scheduler.service.BaseService;
+import com.spring2024project.Scheduler.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +18,14 @@ import java.util.List;
 @RequestMapping("/customers")
 public class CustomerController implements BaseController<Customer>{
 
-    private final BaseService<Customer> customerService;
+    private final CustomerService customerService;
 
     /**
      * Constructor for CustomerController.
      * @param customerService The service responsible for handling Customer-related operations.
      */
     @Autowired
-    public CustomerController(BaseService<Customer> customerService) {
+    public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
 
@@ -50,6 +51,13 @@ public class CustomerController implements BaseController<Customer>{
         Customer customer = customerService.getById(id);
         return customer.getFirstName().isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(customer, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Customer>> getByFirstAndLastName(@RequestParam String firstName, @RequestParam String lastName) {
+        List<Customer> customers = customerService.findByFirstAndLastName(firstName, lastName);
+        return customers.isEmpty() ?
+                new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
     /**

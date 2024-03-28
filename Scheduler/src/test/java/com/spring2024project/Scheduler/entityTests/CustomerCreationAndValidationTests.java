@@ -67,7 +67,7 @@ public class CustomerCreationAndValidationTests {
             fail("No exception should have been thrown");
         }
 
-        var validPhoneNumbers = List.of("(123) 456-7890", "(123)456-7890", "123-456-7890", "123.456.7890", "123 456 7890", "1234567890");
+        var validPhoneNumbers = List.of("(123) 456-7890", "(123)456-7890", "123-456-7890", "123.456.7890", "123 456 7890", "9876543210");
         for (var pN : validPhoneNumbers) {
             try {
                 c.setPhoneNumber(pN);
@@ -99,7 +99,7 @@ public class CustomerCreationAndValidationTests {
                 () -> assertNotNull(e),
                 () -> assertTrue(e.getCause() instanceof StringValidationException),
                 () -> assertEquals(FORMAT, ((StringValidationException) e.getCause()).cause()),
-                () -> assertEquals("choudh#ryr", ((StringValidationException) e.getCause()).getBadString())
+                () -> assertEquals("choudh#ry", ((StringValidationException) e.getCause()).getBadString())
         );
     }
 

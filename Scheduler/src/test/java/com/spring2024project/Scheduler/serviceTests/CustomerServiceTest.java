@@ -16,6 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -83,10 +85,13 @@ public class CustomerServiceTest {
     @Test
     public void testValidUpdate() {
         var created = cs.create(c);
-        c.addAddress(validAddress);
-        //c.setPhoneNumber("6771412412");
+        //c.addAddress(validAddress);
+        c.addCreditCard(cc);
+        c.setPhoneNumber("6771412412");
         var updated = cs.update(created.getId(), c);
         assertEquals(c, updated);
+        assertEquals(c.getCreditCardList().get(0).getCustomer().getPhoneNumber(), "6771412412");
+        assertEquals(((List<CreditCard>) ccr.findAll()).get(0).getCustomer().getPhoneNumber(), "6771412412");
     }
 
     @Test

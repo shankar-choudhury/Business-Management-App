@@ -24,7 +24,6 @@ public class PersonValidator {
             this.regex = regex;
             this.description = description;
         }
-
     }
 
     public static String correctNameFormat(String name) {

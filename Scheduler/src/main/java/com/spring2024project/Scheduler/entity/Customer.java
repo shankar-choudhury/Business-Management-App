@@ -36,7 +36,13 @@ public final class Customer extends Person {
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
             orphanRemoval = true)
-    private List<CreditCard> creditCardList;
+    private List<CreditCard> creditCardList = new ArrayList<>();
+
+    public void setCreditCardList(List<CreditCard> creditCardList) {
+        this.creditCardList.clear();
+        if (Objects.nonNull(creditCardList))
+            this.creditCardList.addAll(creditCardList);
+    }
 
     private Customer(int id,
                      String firstName,
@@ -82,8 +88,7 @@ public final class Customer extends Person {
     }
 
     public boolean equals(Object o) {
-        if (Objects.nonNull(o) && o instanceof Customer) {
-            Customer c = (Customer) o;
+        if (Objects.nonNull(o) && o instanceof Customer c) {
             return c.getFirstName().equals(getFirstName()) &&
                     c.getLastName().equals(getLastName()) &&
                     c.getEmail().equals(getEmail()) &&
