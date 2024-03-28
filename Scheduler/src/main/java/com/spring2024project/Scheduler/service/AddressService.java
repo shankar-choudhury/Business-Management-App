@@ -91,6 +91,7 @@ public class AddressService implements BaseService<Address> {
         Address original = getById(id);
         if (original.getId() != 0) {
             var updated = Address.from(entity, v);
+            updated.setCustomer(original.getCustomer());
             var oldCopy = delete(id);
             var newCopy = ar.save(updated);
             updateAssociatedEntities(oldCopy, newCopy);
@@ -107,7 +108,6 @@ public class AddressService implements BaseService<Address> {
             customer.getAddressList().add(updatedAddress);
             cr.save(customer);
         }
-
         List<CreditCard> creditCards = originalAddress.getCreditCardList();
         if (creditCards != null) {
             // Update the address in the associated credit card entities

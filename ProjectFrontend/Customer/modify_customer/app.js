@@ -84,6 +84,7 @@ new Vue({
             axios.put(`http://localhost:8080/customers/${this.selectedCustomer.id}`, this.selectedCustomer)
                 .then(response => {
                     console.log('Customer updated:', response.data);
+                    alert('Customer updated successfully.');
                     // Optionally, you can display a success message or perform any other action upon successful update
                     this.resetForm(); // Reset editing flag after updating
                 })
@@ -126,7 +127,7 @@ new Vue({
                 axios.put(`http://localhost:8080/addresses/${this.newAddress.id}`, this.newAddress)
                     .then(response => {
                         console.log('Address updated:', response.data);
-                        // Optionally, you can display a success message or perform any other action upon successful update
+                        alert('Address updated successfully.');
                         // Reset form and reload addresses
                         this.newAddress = {
                             buildingNumber: '',
@@ -135,7 +136,9 @@ new Vue({
                             state: '',
                             zipcode: ''
                         };
-                        // Call a method to reload addresses if needed
+                        this.resetAddressSelection(); // Reset the address selection
+                        $('#addressModifyModal').modal('hide'); // Close the modal
+                        this.resetForm(); // Reset the main page
                     })
                     .catch(error => {
                         console.error('Error updating address:', error);
