@@ -73,6 +73,13 @@ public class AddressService implements BaseService<Address> {
         return ar.save(address);
     }
 
+    public void validateAndNormalizeAddress(Address address) {
+        var normalized = Address.from(address, v);
+        address.setCity(normalized.getCity());
+        address.setState(normalized.getState());
+        address.setZipcode(normalized.getZipcode());
+    }
+
     /**
      * Updates an existing address in the database.
      * @param id The ID of the address to update.

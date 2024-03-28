@@ -28,13 +28,15 @@ public class CustomerService implements BaseService<Customer> {
     private final AddressRepository ar;
     private final CreditCardRepository ccr;
     private final EntityManager em;
+    private final AddressService addressService;
 
     @Autowired
-    public CustomerService(CustomerRepository cr, AddressRepository ar, CreditCardRepository ccr, EntityManager entityManager) {
+    public CustomerService(CustomerRepository cr, AddressRepository ar, CreditCardRepository ccr, EntityManager entityManager, AddressService addressService) {
         this.cr = cr;
         this.ar = ar;
         this.ccr = ccr;
         this.em = entityManager;
+        this.addressService = addressService;
     }
 
     @Override
@@ -59,6 +61,11 @@ public class CustomerService implements BaseService<Customer> {
     public Customer create(Customer entity) {
         try {
             var newCustomer = Customer.from(entity);
+            if (Objects.nonNull(newCustomer.getAddressList())) {
+                for (Address address : newCustomer.getAddressList()) {
+                    addressService.validateAndNormalizeAddress(address);
+                }
+            }
             assignCustomerToBillingAddress(newCustomer);
             em.persist(newCustomer);
             return newCustomer;

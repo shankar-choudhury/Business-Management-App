@@ -15,6 +15,7 @@ new Vue({
             addresses: [],
             selectedAddress: null,
             newAddress: { 
+                id: '',
                 buildingNumber: '',
                 street: '',
                 city: '',
@@ -107,12 +108,14 @@ new Vue({
         selectAddress(address) {
             // Assign the selected address to the newAddress object
             this.newAddress = {
+                id: address.id,
                 buildingNumber: address.buildingNumber,
                 street: address.street,
                 city: address.city,
                 state: address.state,
                 zipcode: address.zipcode
             };
+            console.log(this.newAddress);
             // Set the selectedAddress property for reference
             this.selectedAddress = address;
         },
@@ -120,7 +123,7 @@ new Vue({
             // Make sure new address is not empty
             if (this.newAddress.buildingNumber && this.newAddress.street && this.newAddress.city && this.newAddress.state && this.newAddress.zipcode) {
                 // Assuming you have an API endpoint to update the address, modify the URL accordingly
-                axios.put(`http://localhost:8080/addresses/${this.selectedCustomer.id}`, this.newAddress)
+                axios.put(`http://localhost:8080/addresses/${this.newAddress.id}`, this.newAddress)
                     .then(response => {
                         console.log('Address updated:', response.data);
                         // Optionally, you can display a success message or perform any other action upon successful update
