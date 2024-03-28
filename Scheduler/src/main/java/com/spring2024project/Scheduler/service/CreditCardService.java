@@ -29,6 +29,7 @@ public class CreditCardService implements BaseService<CreditCard>{
 
     private final CreditCardRepository ccr;
     private final ZipCodeValidatorTag zt;
+    private final AddressService as;
     private final EntityManager em;
 
     /**
@@ -38,9 +39,11 @@ public class CreditCardService implements BaseService<CreditCard>{
     @Autowired
     public CreditCardService(CreditCardRepository ccr,
                              ZipCodeValidatorTag zt,
+                             AddressService as,
                              EntityManager em) {
         this.ccr = ccr;
         this.zt = zt;
+        this.as = as;
         this.em = em;
     }
 
@@ -71,12 +74,14 @@ public class CreditCardService implements BaseService<CreditCard>{
     @Override
     public CreditCard create(CreditCard entity) {
         CreditCard newCard = checkedFrom(entity, zt);
-        // Persist the billing address if it's not yet persisted
-        if (newCard.getBillingAddress().getId() == 0) {
-            em.persist(newCard.getBillingAddress());
+        Address billingAddress = newCard.getBillingAddress();
+        if (billingAddress.getId() == 0) {
+            var formatted = Address.from(billingAddress, zt);
+            newCard.setBillingAddress(formatted);
+            // Now save the credit card
+            return ccr.save(newCard);
         }
-        // Now save the credit card
-        return ccr.save(newCard);
+        return CreditCard.emptyCreditCard();
     }
 
     @Override
@@ -94,6 +99,8 @@ public class CreditCardService implements BaseService<CreditCard>{
         CreditCard toDelete = getById(id);
         if (toDelete.getId() != 0) {
             CreditCard deleted = fromDeleted(toDelete);
+            toDelete.setBillingAddress(null);
+            em.flush();
             ccr.deleteById(id);
             return deleted;
         }

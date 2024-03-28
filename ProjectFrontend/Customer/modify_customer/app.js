@@ -21,7 +21,9 @@ new Vue({
                 city: '',
                 state: '',
                 zipcode: ''
-            }
+            },
+            creditcards: [],
+            selectedCreditCard: null,
         };
     },
     computed: {
@@ -77,6 +79,7 @@ new Vue({
             this.selectedCustomer = JSON.parse(JSON.stringify(customer));
             this.selectedCustomerCopy = JSON.parse(JSON.stringify(customer));
             this.addresses = customer.addressList;
+            this.creditcards = customer.creditCardList;
             this.isEditing = true; // Set editing flag to true when a customer is selected
             this.showDropdown = false;    
         },
@@ -136,16 +139,38 @@ new Vue({
                             state: '',
                             zipcode: ''
                         };
-                        this.resetAddressSelection(); // Reset the address selection
-                        $('#addressModifyModal').modal('hide'); // Close the modal
-                        this.resetForm(); // Reset the main page
+                        this.resetAddressSelection(); 
+                        $('#addressModifyModal').modal('hide'); 
+                        this.resetForm(); 
                     })
                     .catch(error => {
                         console.error('Error updating address:', error);
-                        // Optionally, you can display an error message or perform any other action upon unsuccessful update
                     });
             } else {
                 alert('Please fill in all address fields before submitting.');
+            }
+        },
+        selectCreditCard(creditCard) {
+            this.selectedCreditCard = creditCard;
+        },
+        addCreditCard() {
+            // Implement functionality to add a credit card
+            // This could involve opening a form inside the modal to add a new credit card
+        },
+        deleteCreditCard() {
+            if (this.selectedCreditCard) {
+                axios.delete(`http://localhost:8080/credit-cards/${this.selectedCreditCard.id}`)
+                    .then(response => {
+                        console.log('Credit card deleted:', response.data);
+                        alert('Credit card deleted successfully.');
+                        // Remove the deleted credit card from the creditcards array
+                        this.creditcards = this.creditcards.filter(card => card.id !== this.selectedCreditCard.id);
+                        this.selectedCreditCard = null;
+                    })
+                    .catch(error => {
+                        console.error('Error deleting credit card:', error);
+                        alert('An error occurred while deleting the credit card.');
+                    });
             }
         },
         resetAddressSelection() {

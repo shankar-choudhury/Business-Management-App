@@ -122,6 +122,34 @@
                         </div>
                     </div>
                 </div>
+                <!-- Modify Credit Card Modal -->
+                <div class="modal" id="cardModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Modify Credit Cards</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Customer's Credit Cards:</h5>
+                                        <ul class="list-group">
+                                            <li class="list-group-item" v-for="creditCard in creditcards" @click="selectCreditCard(creditCard)" :key="creditCard.id">
+                                                <!-- Display credit card details here -->
+                                                {{ creditCard.number }} - {{ creditCard.expMonth }}/{{ creditCard.expYear }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-primary mt-3" @click="addCreditCard">Add Credit Card</button>
+                                        <button type="button" class="btn btn-danger mt-2" @click="deleteCreditCard" :disabled="!selectedCreditCard">Delete Credit Card</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

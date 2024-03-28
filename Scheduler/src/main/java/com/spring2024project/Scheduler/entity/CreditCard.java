@@ -49,12 +49,12 @@ public class CreditCard {
     private int expYear;
 
     @JsonBackReference(value = "address-creditcards")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "fk_address_id")
     private Address billingAddress;
 
     @JsonBackReference(value = "customer-creditcards")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "fk_customer_id")
     private Customer customer;
 
