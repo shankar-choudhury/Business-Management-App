@@ -84,7 +84,14 @@ public final class Customer extends Person {
         correctNameFormat(c.getLastName());
         correctEmailFormat(c.getEmail());
         correctPhoneNumberFormat(c.getPhoneNumber());
+
+        c.setFirstName(reformatName(c.getFirstName()));
+        c.setLastName(reformatName(c.getLastName()));
         return c;
+    }
+
+    private static String reformatName(String str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 
     public boolean equals(Object o) {

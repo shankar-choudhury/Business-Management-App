@@ -48,7 +48,11 @@ public class CustomerService implements BaseService<Customer> {
     }
 
     public List<Customer> findByFirstAndLastName(String firstName, String lastName) {
-        return cr.findByFirstNameAndLastName(firstName, lastName);
+        return cr.findByFirstNameAndLastName(reformatName(firstName), reformatName(lastName));
+    }
+
+    private static String reformatName(String str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 
     @Override

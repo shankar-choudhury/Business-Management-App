@@ -38,7 +38,5 @@ public class PersonValidator {
         return validateString(phoneNumber, p -> p.matches(PersonValidationPattern.VALID_PHONE_NUMBER_PATTERN.getRegex()), FORMAT);
     }
 
-    public static void main(String[] args) {
-        System.out.println(EmailValidator.getInstance().isValid("sxc123@case.edu"));
-    }
+
 }

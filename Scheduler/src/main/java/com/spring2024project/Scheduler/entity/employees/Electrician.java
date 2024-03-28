@@ -1,5 +1,6 @@
 package com.spring2024project.Scheduler.entity.employees;
 
+import com.spring2024project.Scheduler.constantValues.ElectricianPermissions;
 import com.spring2024project.Scheduler.constantValues.OfficeAccessPermissions;
 import com.spring2024project.Scheduler.entity.Address;
 import jakarta.persistence.Entity;
@@ -17,6 +18,6 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString(callSuper = true)
 public class Electrician extends Employee {
-    private OfficeAccessPermissions level;
+    private ElectricianPermissions level;
     private String specialties;
 }
