@@ -104,6 +104,18 @@ new Vue({
                 alert('Please fill in all customer fields before submitting.');
             }
         },
+        selectAddress(address) {
+            // Assign the selected address to the newAddress object
+            this.newAddress = {
+                buildingNumber: address.buildingNumber,
+                street: address.street,
+                city: address.city,
+                state: address.state,
+                zipcode: address.zipcode
+            };
+            // Set the selectedAddress property for reference
+            this.selectedAddress = address;
+        },
         async updateAddress() {
             // Make sure new address is not empty
             if (this.newAddress.buildingNumber && this.newAddress.street && this.newAddress.city && this.newAddress.state && this.newAddress.zipcode) {
@@ -129,6 +141,16 @@ new Vue({
             } else {
                 alert('Please fill in all address fields before submitting.');
             }
+        },
+        resetAddressSelection() {
+            this.selectedAddress = null;
+            this.newAddress = {
+                buildingNumber: '',
+                street: '',
+                city: '',
+                state: '',
+                zipcode: ''
+            };
         },
         resetForm() {
             this.fullName = '';
