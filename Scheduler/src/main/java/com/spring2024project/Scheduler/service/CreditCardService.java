@@ -77,7 +77,11 @@ public class CreditCardService implements BaseService<CreditCard>{
         Address billingAddress = newCard.getBillingAddress();
         if (billingAddress.getId() == 0) {
             var formatted = Address.from(billingAddress, zt);
-            newCard.setBillingAddress(formatted);
+            var addresses = as.getAll();
+            if (Objects.nonNull(addresses) && addresses.contains(formatted))
+                newCard.setBillingAddress(addresses.get(addresses.indexOf(formatted)));
+            else
+                newCard.setBillingAddress(formatted);
             // Now save the credit card
             return ccr.save(newCard);
         }

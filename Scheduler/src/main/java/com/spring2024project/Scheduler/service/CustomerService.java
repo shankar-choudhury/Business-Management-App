@@ -9,6 +9,7 @@ import com.spring2024project.Scheduler.repository.CustomerRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import static com.spring2024project.Scheduler.entity.Customer.*;
@@ -66,6 +67,11 @@ public class CustomerService implements BaseService<Customer> {
                     addressService.validateAndNormalizeAddress(address);
                 }
             }
+            if (Objects.nonNull(newCustomer.getCreditCardList())) {
+                for (var cc : newCustomer.getCreditCardList()) {
+                    addressService.validateAndNormalizeAddress(cc.getBillingAddress());
+                }
+            }
             assignCustomerToBillingAddress(newCustomer);
             em.persist(newCustomer);
             return newCustomer;
@@ -94,26 +100,33 @@ public class CustomerService implements BaseService<Customer> {
         Customer original = getById(id);
         if (original.getId() != 0) {
             entity.setId(id); // Ensure that the ID matches
-            Customer updated = em.merge(Customer.from(entity));
-            updateAssociatedEntities(original, updated);
-            return updated;
+            updateCustomerCreditCards(id, entity.getCreditCardList());
+            return em.merge(Customer.from(entity));
         }
         return original;
     }
 
-    private void updateAssociatedEntities(Customer oldCopy, Customer newCopy) {
-        if (Objects.nonNull(oldCopy.getAddressList())) {
-            for (Address address : oldCopy.getAddressList()) {
-                if (Objects.nonNull(address.getCustomer())) {
-                    address.setCustomer(newCopy);
-                    em.merge(address);
+    public void updateCustomerCreditCards(int customerId, List<CreditCard> creditCards) {
+        Customer customer = cr.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + customerId));
+        if (Objects.nonNull(creditCards)) {
+            for (CreditCard creditCard : creditCards) {
+                // Associate credit card with customer
+                customer.addCreditCard(creditCard);
+                // Associate billing address with credit card
+                Address billingAddress = creditCard.getBillingAddress();
+                var existingAddresses = addressService.getAll();
+                if (existingAddresses.contains(billingAddress)) {
+                    creditCard.setBillingAddress(existingAddresses.get(existingAddresses.indexOf(billingAddress)));
                 }
-            }
-        }
-        if (Objects.nonNull(oldCopy.getCreditCardList())) {
-            for (CreditCard creditCard : oldCopy.getCreditCardList()) {
-                creditCard.setCustomer(newCopy);
-                em.merge(creditCard);
+                var customersAddresses = customer.getAddressList();
+                // Ensure the billing address is also associated with the customer
+                if (Objects.nonNull(customersAddresses) && !customersAddresses.contains(billingAddress)) {
+                    customer.addAddress(creditCard.getBillingAddress());
+                }
+                // Save credit card
+                creditCard.setCustomer(customer);
+                ccr.save(creditCard);
             }
         }
     }

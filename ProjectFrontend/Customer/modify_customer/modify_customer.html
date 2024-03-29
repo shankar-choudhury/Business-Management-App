@@ -133,6 +133,10 @@
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-md-6">
+                                        <button type="button" class="btn btn-primary mt-3" @click="showAddCreditCardModal">Add Credit Card</button>
+                                        <button type="button" class="btn btn-danger mt-2" @click="deleteCreditCard" :disabled="!selectedCreditCard">Delete Credit Card</button>
+                                    </div>
+                                    <div class="col-md-6">
                                         <h5>Customer's Credit Cards:</h5>
                                         <ul class="list-group">
                                             <li class="list-group-item" v-for="creditCard in creditcards" @click="selectCreditCard(creditCard)" :key="creditCard.id">
@@ -141,11 +145,63 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    <div class="col-md-6">
-                                        <button type="button" class="btn btn-primary mt-3" @click="addCreditCard">Add Credit Card</button>
-                                        <button type="button" class="btn btn-danger mt-2" @click="deleteCreditCard" :disabled="!selectedCreditCard">Delete Credit Card</button>
-                                    </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Credit Card Modal -->
+                <div class="modal" id="addCreditCardModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add Credit Card</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Content for adding credit card -->
+                                <div class="modal-group">
+                                    <label for="cardNumberInput">Card Number</label>
+                                    <input v-model="cardNumber" type="number" class="form-control" id="cardNumberInput" placeholder="Card Number" style="width: 200px;">
+                                </div>
+                                <div class="modal-group">
+                                    <label for="expMonthInput">Expiration Month</label>
+                                    <input v-model="expMonth" type="number" class="form-control" id="expMonthInput" placeholder="Expiration Month" style="width: 200px;">
+                                </div>
+                                <div class="modal-group">
+                                    <label for="expYearInput">Expiration Year</label>
+                                    <input v-model="expYear" type="number" class="form-control" id="expYearInput" placeholder="Expiration Year" style="width: 200px;">
+                                </div>
+                                <!-- Additional fields for billing address -->
+                                <div class="modal-group">
+                                    <label for="billingCompleteAddressInput">Search for Address</label> 
+                                    <input type="text" class="form-control autocomplete" id="billingCompleteAddressInput" placeholder="Search for Address" style="width: 100%;">
+                                </div>
+                                <div class="modal-group">
+                                    <label for="billingBuildingNumberInput">Building Number</label>
+                                    <input v-model="billingBuildingNumber" type="number" class="form-control autocomplete" id="billingBuildingNumberInput" placeholder="Billing Building Number" style="width: 200px;">
+                                </div>
+                                <div class="modal-group">
+                                    <label for="billingStreetInput">Street</label>
+                                    <input v-model="billingStreet" type="text" class="form-control autocomplete" id="billingStreetInput" placeholder="Billing Street" style="width: 200px;">
+                                </div>
+                                <div class="modal-group">
+                                    <label for="billingCityInput">City</label>
+                                    <input v-model="billingCity" type="text" class="form-control autocomplete" id="billingCityInput" placeholder="Billing City" style="width: 200px;">
+                                </div>
+                                <div class="modal-group">
+                                    <label for="billingStateInput">State</label>
+                                    <input v-model="billingState" type="text" class="form-control autocomplete" id="billingStateInput" placeholder="Billing State" style="width: 200px;">
+                                </div>
+                                <div class="modal-group">
+                                    <label for="billingZipcodeInput">Zip Code</label>
+                                    <input v-model="billingZipcode" type="number" class="form-control autocomplete" id="billingZipcodeInput" placeholder="Billing Zip Code" style="width: 200px;">
+                                </div>
+                                <!-- Include the content you provided for adding credit card modal here -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" @click="addCreditCard">Save</button>
                             </div>
                         </div>
                     </div>

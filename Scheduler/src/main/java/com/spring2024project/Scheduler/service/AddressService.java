@@ -8,6 +8,8 @@ import com.spring2024project.Scheduler.repository.AddressRepository;
 import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
 import com.spring2024project.Scheduler.repository.CreditCardRepository;
 import com.spring2024project.Scheduler.repository.CustomerRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ public class AddressService implements BaseService<Address> {
     private final AddressRepository ar;
     private final CustomerRepository cr;
     private final CreditCardRepository ccr;
+    private final EntityManager em;
     private ZipCodeValidatorTag v;
 
     /**
@@ -36,10 +39,12 @@ public class AddressService implements BaseService<Address> {
     public AddressService(AddressRepository addressRepository,
                           CustomerRepository customerRepository,
                           CreditCardRepository creditCardRepository,
+                          EntityManager em,
                           ZipCodeValidatorTag zipCodeValidatorTag) {
         this.ar = addressRepository;
         this.cr = customerRepository;
         this.ccr = creditCardRepository;
+        this.em = em;
         this.v = zipCodeValidatorTag;
     }
 
@@ -73,7 +78,10 @@ public class AddressService implements BaseService<Address> {
         return ar.save(address);
     }
 
+    @Transactional
     public void validateAndNormalizeAddress(Address address) {
+        // Ensure that the Address entity is managed
+        em.merge(address);
         var normalized = Address.from(address, v);
         address.setCity(normalized.getCity());
         address.setState(normalized.getState());

@@ -1,5 +1,6 @@
 package com.spring2024project.Scheduler.controller;
 
+import com.spring2024project.Scheduler.entity.CreditCard;
 import com.spring2024project.Scheduler.entity.Customer;
 import com.spring2024project.Scheduler.service.BaseService;
 import com.spring2024project.Scheduler.service.CustomerService;
@@ -84,6 +85,22 @@ public class CustomerController implements BaseController<Customer>{
         Customer updatedCustomer = customerService.update(id, customer);
         return updatedCustomer.getFirstName().isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(updatedCustomer, HttpStatus.OK);
+    }
+
+    /**
+     * Create a new credit card for the specified customer.
+     * @param id The ID of the customer to associate the credit card with.
+     * @param creditCards The CreditCard object to create.
+     * @return ResponseEntity containing the created CreditCard object.
+     */
+    @PutMapping("/{id}/credit-cards")
+    public ResponseEntity<String> updateCustomerCreditCards(@PathVariable int id, @RequestBody List<CreditCard> creditCards) {
+        try {
+            customerService.updateCustomerCreditCards(id, creditCards);
+            return ResponseEntity.ok("Credit cards updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating credit cards: " + e.getMessage());
+        }
     }
 
     /**

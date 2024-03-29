@@ -1,5 +1,6 @@
 package com.spring2024project.Scheduler.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,6 +21,7 @@ import java.util.Objects;
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"firstName", "lastName", "email", "phoneNumber"})
 })
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Getter
 @Setter
 @NoArgsConstructor

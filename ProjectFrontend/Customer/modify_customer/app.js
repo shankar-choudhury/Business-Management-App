@@ -24,6 +24,14 @@ new Vue({
             },
             creditcards: [],
             selectedCreditCard: null,
+            cardNumber: '',
+            expMonth: '',
+            expYear: '',
+            billingBuildingNumber: '',
+            billingStreet: '',
+            billingCity: '',
+            billingState: '',
+            billingZipcode: ''
         };
     },
     computed: {
@@ -45,7 +53,6 @@ new Vue({
                 var searchLastName = firstAndLastName[1];
                 axios.get(`http://localhost:8080/customers/search?firstName=${searchFirstName}&lastName=${searchLastName}`)
                     .then(response => {
-                        console.log('Response data:', response.data);
                         this.customers = response.data;
                         this.showDropdown = true;
                     })
@@ -75,26 +82,33 @@ new Vue({
             this.lastName = customer.lastName;
             this.email = customer.email;
             this.phoneNumber = customer.phoneNumber;
-            // Deep copy of the customer object
             this.selectedCustomer = JSON.parse(JSON.stringify(customer));
             this.selectedCustomerCopy = JSON.parse(JSON.stringify(customer));
             this.addresses = customer.addressList;
             this.creditcards = customer.creditCardList;
-            this.isEditing = true; // Set editing flag to true when a customer is selected
+            this.isEditing = true;
             this.showDropdown = false;    
         },
         async updateCustomer() {
-            axios.put(`http://localhost:8080/customers/${this.selectedCustomer.id}`, this.selectedCustomer)
-                .then(response => {
-                    console.log('Customer updated:', response.data);
-                    alert('Customer updated successfully.');
-                    // Optionally, you can display a success message or perform any other action upon successful update
-                    this.resetForm(); // Reset editing flag after updating
-                })
-                .catch(error => {
-                    console.error('Error updating customer:', error);
-                    // Optionally, you can display an error message or perform any other action upon unsuccessful update
-                });
+            // Check if the credit card list has been modified
+            if (JSON.stringify(this.selectedCustomer.creditCardList) === JSON.stringify(this.selectedCustomerCopy.creditCardList)) {
+                alert('No changes were made to the credit card list.');
+                return;
+            }
+            axios.put(`http://localhost:8080/customers/${this.selectedCustomer.id}`, {
+                firstName: this.selectedCustomer.firstName,
+                lastName: this.selectedCustomer.lastName,
+                email: this.selectedCustomer.email,
+                phoneNumber: this.selectedCustomer.phoneNumber,
+                creditCardList: this.selectedCustomer.creditCardList,
+            })
+            .then(response => {
+                alert('Customer updated successfully.');
+                this.resetForm();
+            })
+           .catch(error => {
+                console.error('Error updating credit cards:', error);
+            });
         },
         async validateAndUpdateCustomer() {
             if (!this.isPhoneNumberValid) {
@@ -102,15 +116,12 @@ new Vue({
                 return;
             }
             if (this.customerFieldsFilled) {
-                // If all fields are filled, create the customer
                 await this.updateCustomer();
             } else {
-                // If any field is empty, show an alert
                 alert('Please fill in all customer fields before submitting.');
             }
         },
         selectAddress(address) {
-            // Assign the selected address to the newAddress object
             this.newAddress = {
                 id: address.id,
                 buildingNumber: address.buildingNumber,
@@ -119,51 +130,59 @@ new Vue({
                 state: address.state,
                 zipcode: address.zipcode
             };
-            console.log(this.newAddress);
-            // Set the selectedAddress property for reference
             this.selectedAddress = address;
         },
         async updateAddress() {
-            // Make sure new address is not empty
-            if (this.newAddress.buildingNumber && this.newAddress.street && this.newAddress.city && this.newAddress.state && this.newAddress.zipcode) {
-                // Assuming you have an API endpoint to update the address, modify the URL accordingly
-                axios.put(`http://localhost:8080/addresses/${this.newAddress.id}`, this.newAddress)
-                    .then(response => {
-                        console.log('Address updated:', response.data);
-                        alert('Address updated successfully.');
-                        // Reset form and reload addresses
-                        this.newAddress = {
-                            buildingNumber: '',
-                            street: '',
-                            city: '',
-                            state: '',
-                            zipcode: ''
-                        };
-                        this.resetAddressSelection(); 
-                        $('#addressModifyModal').modal('hide'); 
-                        this.resetForm(); 
-                    })
-                    .catch(error => {
-                        console.error('Error updating address:', error);
-                    });
-            } else {
-                alert('Please fill in all address fields before submitting.');
-            }
         },
         selectCreditCard(creditCard) {
             this.selectedCreditCard = creditCard;
         },
         addCreditCard() {
-            // Implement functionality to add a credit card
-            // This could involve opening a form inside the modal to add a new credit card
+            const newCreditCard = {
+                number: this.cardNumber,
+                expMonth: this.expMonth,
+                expYear: this.expYear,
+                billingAddress: {
+                    buildingNumber: this.billingBuildingNumber,
+                    street:  this.billingStreet,
+                    city: this.billingCity,
+                    state: this.billingState, 
+                    zipcode: this.billingZipcode
+                }
+            }
+
+            // Check if the new credit card number already exists
+            const existingCreditCard = this.creditcards.find(card => card.number === newCreditCard.number);
+            if (existingCreditCard) {
+                alert('Credit card with the same number already exists.');
+                return; // Exit the function without adding the credit card
+            }
+
+            axios.post('http://localhost:8080/credit-cards', newCreditCard)
+            .then(response => {
+                const createdCard = response.data;
+                this.creditcards = this.creditcards || [];
+                this.creditcards.push(createdCard);
+                this.selectedCustomer.creditCardList = this.selectedCustomer.creditCardList || [];
+                this.selectedCustomer.creditCardList.push(newCreditCard);
+                console.log(this.selectedCustomer.creditCardList);
+                alert('Credit card added successfully.');
+                this.resetCreditCardForm();
+                $('#addCreditCardModal').modal('hide');
+            })
+            .catch(error => {
+                console.error('Error adding credit card', error);
+                alert('An error occurred while addong the credit card.');
+            })
+        },
+        showAddCreditCardModal() {
+            $('#addCreditCardModal').modal('show');
         },
         deleteCreditCard() {
             if (this.selectedCreditCard) {
                 axios.delete(`http://localhost:8080/credit-cards/${this.selectedCreditCard.id}`)
                     .then(response => {
-                        console.log('Credit card deleted:', response.data);
                         alert('Credit card deleted successfully.');
-                        // Remove the deleted credit card from the creditcards array
                         this.creditcards = this.creditcards.filter(card => card.id !== this.selectedCreditCard.id);
                         this.selectedCreditCard = null;
                     })
@@ -182,6 +201,16 @@ new Vue({
                 state: '',
                 zipcode: ''
             };
+        },
+        resetCreditCardForm() {
+            this.cardNumber = '';
+            this.expMonth = '';
+            this.expYear = '';
+            this.billingBuildingNumber = '';
+            this.billingStreet = '';
+            this.billingCity = '';
+            this.billingState = '';
+            this.billingZipcode = '';
         },
         resetForm() {
             this.fullName = '';
