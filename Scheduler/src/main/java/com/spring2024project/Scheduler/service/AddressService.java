@@ -81,7 +81,7 @@ public class AddressService implements BaseService<Address> {
     @Transactional
     public void validateAndNormalizeAddress(Address address) {
         // Ensure that the Address entity is managed
-        em.merge(address);
+        //em.merge(address);
         var normalized = Address.from(address, v);
         address.setCity(normalized.getCity());
         address.setState(normalized.getState());

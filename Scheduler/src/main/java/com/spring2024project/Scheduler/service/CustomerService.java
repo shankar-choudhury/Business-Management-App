@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import static com.spring2024project.Scheduler.entity.Customer.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -67,36 +68,39 @@ public class CustomerService implements BaseService<Customer> {
     public Customer create(Customer entity) {
         try {
             var newCustomer = Customer.from(entity);
+            // Check for existing addresses and associate them with the customer
+            List<Address> existingAddresses = addressService.getAll();
             if (Objects.nonNull(newCustomer.getAddressList())) {
-                for (Address address : newCustomer.getAddressList()) {
+                var customerAddressList = new ArrayList<>(newCustomer.getAddressList());
+                for (Address address : customerAddressList) {
                     addressService.validateAndNormalizeAddress(address);
+                    if (existingAddresses.contains(address)) {
+                        var existingAddress = existingAddresses.get(existingAddresses.indexOf(address));
+                        existingAddress.setCustomer(newCustomer);
+                        newCustomer.getAddressList().remove(address);
+                    } else {
+                        address.setCustomer(newCustomer);
+                    }
                 }
             }
+            // Associate credit cards with billing addresses
             if (Objects.nonNull(newCustomer.getCreditCardList())) {
-                for (var cc : newCustomer.getCreditCardList()) {
-                    addressService.validateAndNormalizeAddress(cc.getBillingAddress());
+                for (CreditCard cc : newCustomer.getCreditCardList()) {
+                    Address billingAddress = cc.getBillingAddress();
+                    addressService.validateAndNormalizeAddress(billingAddress);
+                    if (existingAddresses.contains(billingAddress)) {
+                        Address existingAddress = existingAddresses.get(existingAddresses.indexOf(billingAddress));
+                        existingAddress.setCustomer(newCustomer);
+                        cc.setBillingAddress(existingAddress);
+                    } else {
+                        billingAddress.setCustomer(newCustomer);
+                    }
                 }
             }
-            assignCustomerToBillingAddress(newCustomer);
-            em.persist(newCustomer);
+            em.merge(newCustomer);
             return newCustomer;
         } catch (Exception e) {
             throw new RuntimeException("Failed to create customer", e);
-        }
-    }
-
-    private void assignCustomerToBillingAddress(Customer newCustomer) {
-        assert Objects.nonNull(newCustomer);
-        var ccList = newCustomer.getCreditCardList();
-        if (Objects.nonNull(ccList)) {
-            for (var cc : ccList) {
-                var existingAddresses = newCustomer.getAddressList();
-                var billingAddress = cc.getBillingAddress();
-                if (Objects.nonNull(existingAddresses) && existingAddresses.contains(billingAddress))
-                    cc.setBillingAddress(existingAddresses.get(existingAddresses.indexOf(billingAddress)));
-                else
-                    cc.getBillingAddress().setCustomer(newCustomer);
-            }
         }
     }
 
