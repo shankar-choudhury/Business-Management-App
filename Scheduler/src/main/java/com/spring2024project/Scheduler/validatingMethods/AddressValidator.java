@@ -16,7 +16,7 @@ public class AddressValidator {
      * Enum containing regex patterns for address validation.
      */
     public enum AddressValidationPattern {
-        VALID_STREET_PATTERN("^(?!(\\S+\\s+){11})(?!.*\\b\\w{11,}\\b)[\\w',.\"{}]{1,10}(?:\\s+[\\w',.\"{}]{1,10}){0,9}$",
+        VALID_STREET_PATTERN("^(?!(\\S+\\s+){10})(?!.*\\b\\w{25,}\\b)[\\w',.\"{}]{1,25}(?:\\s+[\\w',.\"{}]{1,25}){0,9}$",
                 "Matches a valid street name with optional street suffixes. Examples: '123 Main St', '45 Elm Avenue', '1001 Oak Blvd'"),
         VALID_CITY_PATTERN("^[a-zA-Z\\u0080-\\u024F]+(?:. |-| |')*([1-9a-zA-Z\\u0080-\\u024F]+(?:. |-| |'))*[a-zA-Z\\u0080-\\u024F]*$",
                 "Matches a valid city name. Examples: 'New York', 'Los Angeles', 'San Francisco'"),

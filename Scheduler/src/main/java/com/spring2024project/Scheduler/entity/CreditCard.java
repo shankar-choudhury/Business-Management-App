@@ -21,7 +21,9 @@ import java.util.Objects;
  * TODO: Customer has many-to-one relationship with Address, ensure functionality is demonstrated with CRUD operations
  */
 @Entity
-@Table(name = "credit_card")
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"number", "expMonth", "expYear"})
+})
 @Getter
 @Setter
 @NoArgsConstructor

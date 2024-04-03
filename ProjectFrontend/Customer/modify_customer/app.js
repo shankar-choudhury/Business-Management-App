@@ -90,17 +90,18 @@ new Vue({
             this.showDropdown = false;    
         },
         async updateCustomer() {
-            // Check if the credit card list has been modified
-            if (JSON.stringify(this.selectedCustomer.creditCardList) === JSON.stringify(this.selectedCustomerCopy.creditCardList)) {
-                alert('No changes were made to the credit card list.');
-                return;
-            }
+           // Check if the credit card list has been modified
+           // if (JSON.stringify(this.selectedCustomer.creditCardList) === JSON.stringify(this.selectedCustomerCopy.creditCardList)) {
+           //     alert('No changes were made to the credit card list.');
+           //     return;
+           // }
             axios.put(`http://localhost:8080/customers/${this.selectedCustomer.id}`, {
                 firstName: this.selectedCustomer.firstName,
                 lastName: this.selectedCustomer.lastName,
                 email: this.selectedCustomer.email,
                 phoneNumber: this.selectedCustomer.phoneNumber,
-                creditCardList: this.selectedCustomer.creditCardList,
+                addressList: this.selectedCustomer.addressList, 
+                creditCardList: this.selectedCustomer.creditCardList
             })
             .then(response => {
                 alert('Customer updated successfully.');
@@ -108,6 +109,7 @@ new Vue({
             })
            .catch(error => {
                 console.error('Error updating credit cards:', error);
+                this.creditcards.pop();
             });
         },
         async validateAndUpdateCustomer() {
@@ -116,7 +118,15 @@ new Vue({
                 return;
             }
             if (this.customerFieldsFilled) {
-                await this.updateCustomer();
+                try {
+                    await this.updateCustomer();
+                    // If updateCustomer succeeds, reset addCreditCard modal fields
+                    this.resetCreditCardForm();
+                } catch (error) {
+                    console.error('Error updating customer:', error);
+                    alert('An error occurred while updating the customer.');
+                    // If updateCustomer fails, remove newly added credit card from creditcards list
+                }
             } else {
                 alert('Please fill in all customer fields before submitting.');
             }
@@ -132,10 +142,73 @@ new Vue({
             };
             this.selectedAddress = address;
         },
-        async updateAddress() {
+        updateAddress() {
+            // Check if a valid address is selected
+            if (!this.selectedAddress) {
+                alert('Please select an address to update.');
+                return;
+            }
+        
+            // Find the index of the selected address in the addressList of selectedCustomer
+            const index = this.selectedCustomer.addressList.findIndex(address => address.id === this.selectedAddress.id);
+
+            // Check if the address is found
+            if (index === -1) {
+                alert('Selected address not found in selected customer\'s address list.');
+                return;
+            }
+
+            // Update the address in the addressList of selectedCustomer directly from the input fields
+            this.selectedCustomer.addressList[index].buildingNumber = this.newAddress.buildingNumber;
+            this.selectedCustomer.addressList[index].street = this.newAddress.street;
+            this.selectedCustomer.addressList[index].city = this.newAddress.city;
+            this.selectedCustomer.addressList[index].state = this.newAddress.state;
+            this.selectedCustomer.addressList[index].zipcode = this.newAddress.zipcode;
+
+            const addressListIndex = this.addresses.findIndex(address => address.id === this.selectedAddress.id);
+            this.addresses[addressListIndex].buildingNumber = this.newAddress.buildingNumber;
+            this.addresses[addressListIndex].street = this.newAddress.street;
+            this.addresses[addressListIndex].city = this.newAddress.city;
+            this.addresses[addressListIndex].state = this.newAddress.state;
+            this.addresses[addressListIndex].zipcode = this.newAddress.zipcode;
+        
+            this.resetAddressSelection();
+            
+            alert('Address updated successfully.');
+            console.log(this.selectedCustomer.addressList[index]);
         },
+        deleteAddress() {
+            if (this.selectedAddress) {
+                console.log(this.selectedAddress.id);
+                axios.delete(`http://localhost:8080/addresses/${this.selectedAddress.id}`)
+                .then(response => {
+                    alert('Address deleted successfully.');
+                    this.selectedCustomer.addressList = this.addresses.filter(address => address.id != this.selectedAddress.id);
+                    this.addresses = this.addresses.filter(address => address.id !== this.selectedAddress.id);
+
+                    // Remove associated credit cards from the creditcards array
+                    this.creditcards = this.creditcards.filter(card => {
+                    // Check if the credit card has a billing address and if it matches the deleted address
+                        return card.billingAddress && 
+                        card.billingAddress.id !== this.selectedAddress.id;
+                    });
+                    this.selectedCustomer.creditCardList = this.selectedCustomer.creditCardList.filter(card => {
+                        return card.billingAddress &&
+                        card.billingAddress.id !== this.selectedAddress.id;
+                    })
+
+                    this.selectedAddress = null;
+                    console.log(this.addresses);
+                })
+                .catch(error => {
+                    console.error('Error deleting address:', error);
+                    alert('An error occurred while deleting the credit card.');
+                });
+            }
+        }, 
         selectCreditCard(creditCard) {
             this.selectedCreditCard = creditCard;
+            console.log(creditCard);
         },
         addCreditCard() {
             const newCreditCard = {
@@ -158,22 +231,15 @@ new Vue({
                 return; // Exit the function without adding the credit card
             }
 
-            axios.post('http://localhost:8080/credit-cards', newCreditCard)
-            .then(response => {
-                const createdCard = response.data;
-                this.creditcards = this.creditcards || [];
-                this.creditcards.push(createdCard);
-                this.selectedCustomer.creditCardList = this.selectedCustomer.creditCardList || [];
-                this.selectedCustomer.creditCardList.push(newCreditCard);
-                console.log(this.selectedCustomer.creditCardList);
-                alert('Credit card added successfully.');
-                this.resetCreditCardForm();
-                $('#addCreditCardModal').modal('hide');
-            })
-            .catch(error => {
-                console.error('Error adding credit card', error);
-                alert('An error occurred while addong the credit card.');
-            })
+            this.creditcards = this.creditcards || [];
+            this.creditcards.push(newCreditCard);
+            this.selectedCustomer.creditCardList = this.selectedCustomer.creditCardList || [];
+            this.selectedCustomer.creditCardList.push(newCreditCard);
+            console.log(this.selectedCustomer.creditCardList);
+            console.log(this.creditcards);
+            alert('Credit card added successfully.');
+            this.resetCreditCardForm();
+            $('#addCreditCardModal').modal('hide');
         },
         showAddCreditCardModal() {
             $('#addCreditCardModal').modal('show');
@@ -185,6 +251,7 @@ new Vue({
                         alert('Credit card deleted successfully.');
                         this.creditcards = this.creditcards.filter(card => card.id !== this.selectedCreditCard.id);
                         this.selectedCreditCard = null;
+                        console.log(response);
                     })
                     .catch(error => {
                         console.error('Error deleting credit card:', error);

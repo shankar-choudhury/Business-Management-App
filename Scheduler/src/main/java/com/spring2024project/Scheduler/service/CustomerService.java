@@ -1,5 +1,6 @@
 package com.spring2024project.Scheduler.service;
 
+import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
 import com.spring2024project.Scheduler.entity.Address;
 import com.spring2024project.Scheduler.entity.CreditCard;
 import com.spring2024project.Scheduler.entity.Customer;
@@ -26,18 +27,22 @@ import java.util.stream.Collectors;
 @Transactional
 public class CustomerService implements BaseService<Customer> {
     private final CustomerRepository cr;
-    private final AddressRepository ar;
-    private final CreditCardRepository ccr;
     private final EntityManager em;
     private final AddressService addressService;
+    private final CreditCardService ccs;
+    private final ZipCodeValidatorTag zt;
 
     @Autowired
-    public CustomerService(CustomerRepository cr, AddressRepository ar, CreditCardRepository ccr, EntityManager entityManager, AddressService addressService) {
+    public CustomerService(CustomerRepository cr,
+                           EntityManager entityManager,
+                           AddressService addressService,
+                           CreditCardService ccs,
+                           ZipCodeValidatorTag zt) {
         this.cr = cr;
-        this.ar = ar;
-        this.ccr = ccr;
         this.em = entityManager;
         this.addressService = addressService;
+        this.ccs = ccs;
+        this.zt = zt;
     }
 
     @Override
@@ -101,7 +106,8 @@ public class CustomerService implements BaseService<Customer> {
         if (original.getId() != 0) {
             entity.setId(id); // Ensure that the ID matches
             updateCustomerCreditCards(id, entity.getCreditCardList());
-            return em.merge(Customer.from(entity));
+            updateCustomerAddresses(id, entity.getAddressList());
+            return cr.save(Customer.from(entity));
         }
         return original;
     }
@@ -112,21 +118,40 @@ public class CustomerService implements BaseService<Customer> {
         if (Objects.nonNull(creditCards)) {
             for (CreditCard creditCard : creditCards) {
                 // Associate credit card with customer
-                customer.addCreditCard(creditCard);
                 // Associate billing address with credit card
                 Address billingAddress = creditCard.getBillingAddress();
                 var existingAddresses = addressService.getAll();
                 if (existingAddresses.contains(billingAddress)) {
                     creditCard.setBillingAddress(existingAddresses.get(existingAddresses.indexOf(billingAddress)));
+                } else {
+                    creditCard.setBillingAddress(Address.from(creditCard.getBillingAddress(), zt));
+                    creditCard.getBillingAddress().setCustomer(customer);
+                    em.merge(creditCard.getBillingAddress());
+                }
+                creditCard.setCustomer(customer);
+            }
+        }
+    }
+
+    public void updateCustomerAddresses(int customerId, List<Address> addresses) {
+        Customer customer = cr.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + customerId));
+        if (Objects.nonNull(addresses)) {
+            for (var address : addresses) {
+                // Check address for proper format, and then associate with customer
+                var checkedAddress = Address.from(address, zt);
+                var existingAddresses = addressService.getAll();
+                if (!existingAddresses.contains(address)) {
+                    em.merge(address);
                 }
                 var customersAddresses = customer.getAddressList();
-                // Ensure the billing address is also associated with the customer
-                if (Objects.nonNull(customersAddresses) && !customersAddresses.contains(billingAddress)) {
-                    customer.addAddress(creditCard.getBillingAddress());
+                // Ensure the address is also associated with the customer
+                if (Objects.nonNull(customersAddresses) && !customersAddresses.contains(address)) {
+                    customer.addAddress(address);
                 }
                 // Save credit card
-                creditCard.setCustomer(customer);
-                ccr.save(creditCard);
+                address.setCustomer(customer);
+                em.merge(address);
             }
         }
     }

@@ -41,7 +41,7 @@ public class Address {
     private String buildingNumber;
 
     @Column
-    @Pattern(regexp = "\\d*[ ](?:[A-Za-z0-9.-]+[ ]?)+(?:Avenue|Lane|Road|Boulevard|Drive|Street|Ave|Dr|Rd|Blvd|Ln|St)\\.?",
+    @Pattern(regexp = "^(?!(\\S+\\s+){10})(?!.*\\b\\w{25,}\\b)[\\w',.\"{}]{1,25}(?:\\s+[\\w',.\"{}]{1,25}){0,9}$",
             message = "This allows a fairly large range of street names")
     private String street;
 
