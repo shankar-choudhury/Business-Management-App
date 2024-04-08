@@ -31,7 +31,15 @@ new Vue({
             billingStreet: '',
             billingCity: '',
             billingState: '',
-            billingZipcode: ''
+            billingZipcode: '',
+            isAddressSelected: false, 
+            newAddress: { 
+                buildingNumber: '',
+                street: '',
+                city: '',
+                state: '',
+                zipcode: ''
+            },
         };
     },
     computed: {
@@ -43,7 +51,16 @@ new Vue({
         },
         isPhoneNumberValid() {
             return /^(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/.test(this.phoneNumber);
-        } 
+        },
+        isAddressFilled() {
+            return (
+                this.newAddress.buildingNumber &&
+                this.newAddress.street &&
+                this.newAddress.city &&
+                this.newAddress.state &&
+                this.newAddress.zipcode
+            );
+        }
     },
     methods: {
         fetchCustomers() {
@@ -90,11 +107,6 @@ new Vue({
             this.showDropdown = false;    
         },
         async updateCustomer() {
-           // Check if the credit card list has been modified
-           // if (JSON.stringify(this.selectedCustomer.creditCardList) === JSON.stringify(this.selectedCustomerCopy.creditCardList)) {
-           //     alert('No changes were made to the credit card list.');
-           //     return;
-           // }
             axios.put(`http://localhost:8080/customers/${this.selectedCustomer.id}`, {
                 firstName: this.selectedCustomer.firstName,
                 lastName: this.selectedCustomer.lastName,
@@ -141,6 +153,35 @@ new Vue({
                 zipcode: address.zipcode
             };
             this.selectedAddress = address;
+        },
+        addAddress() {
+            // Check if all address fields are filled
+            if (!this.isAddressFilled) {
+                alert('Please fill in all address fields before adding.');
+                return;
+            }
+
+            // Push the new address to selectedCustomer's addressList
+            this.selectedCustomer.addressList.push({
+                buildingNumber: this.newAddress.buildingNumber,
+                street: this.newAddress.street,
+                city: this.newAddress.city,
+                state: this.newAddress.state,
+                zipcode: this.newAddress.zipcode
+            });
+
+            // Reset the newAddress object and address selection
+            this.resetNewAddress();
+            alert('Address added successfully.');
+        },
+        resetNewAddress() {
+            this.newAddress = {
+                buildingNumber: '',
+                street: '',
+                city: '',
+                state: '',
+                zipcode: ''
+            };
         },
         updateAddress() {
             // Check if a valid address is selected

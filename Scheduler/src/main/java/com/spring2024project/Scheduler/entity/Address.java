@@ -46,8 +46,6 @@ public class Address {
     private String street;
 
     @Column
-    @Pattern(regexp = "^[a-zA-Z\\u0080-\\u024F]+(?:. |-| |')*([1-9a-zA-Z\\u0080-\\u024F]+(?:. |-| |'))*[a-zA-Z\\u0080-\\u024F]*$",
-            message = "This is an intentionally broad matching, as cities come in all types of names")
     private String city;
 
     @Column
@@ -100,9 +98,6 @@ public class Address {
      * Creates a new Address instance from an existing one using a ZipCodeValidator. This method should be used primarily
      * to check that the zipcode of an address is a correct one, i.e it exists and it contains a mapping to a city and state
      * that corresponds with this Address's city and state.
-     * // TODO: Add functionality so that when creating an address, a temporary address is created, and then is checked for
-     * // TODO: correct zipcode-city-state mapping. If correct, add address to database. If not correct, save fields back
-     * // TODO: into text boxes of window, destroy address, and prompt user to try again with a correct zipcode-city-state mapping.
      * @param a The existing Address instance.
      * @param validator The ZipCodeValidator to use.
      * @return A new Address instance.

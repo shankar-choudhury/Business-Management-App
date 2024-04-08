@@ -18,7 +18,7 @@ new Vue({
             billingStreet: '',          
             billingCity: '',            
             billingState: '',           
-            billingZipcode: '',         
+            billingZipcode: '',      
             createdAddresses: [],       
             createdCards: [],           
         };
@@ -79,8 +79,8 @@ new Vue({
                     lastName: this.lastName,
                     email: this.email,
                     phoneNumber: this.phoneNumber,
-                    addressList: this.createdAddresses, // Send the list of addresses directly
-                    creditCardList: this.createdCards   // Send the list of credit cards directly
+                    addressList: this.createdAddresses, 
+                    creditCardList: this.createdCards   
                 };
         
                 const response = await axios.post('http://localhost:8080/customers', customerData);
@@ -179,19 +179,22 @@ new Vue({
                 alert('Please fill in all credit card fields, including billing address details, before adding the credit card');
                 return;
             }
+            const newBillingAddress = {
+                buildingNumber: this.billingBuildingNumber,
+                street: this.billingStreet,
+                city: this.billingCity,
+                state: this.billingState,
+                zipcode: this.billingZipcode
+            };
+        
             const creditCard = {
                 number: this.cardNumber,
                 expMonth: this.expMonth,
                 expYear: this.expYear,
-                billingAddress: {
-                    buildingNumber: this.billingBuildingNumber,
-                    street: this.billingStreet,
-                    city: this.billingCity,
-                    state: this.billingState,
-                    zipcode: this.billingZipcode
-                }
+                billingAddress: newBillingAddress
             };
-            // Add newly created credit card to this customer's credit card list
+        
+            // Add the credit card to the customer's credit card list
             this.createdCards.push(creditCard);
             alert('Credit Card added successfully');
             // Reset form fields
@@ -203,6 +206,7 @@ new Vue({
             this.billingCity = '';
             this.billingState = '';
             this.billingZipcode = '';
+        
             // Close modal
             $('#cardModal').modal('hide');
         }

@@ -4,8 +4,6 @@ import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
 import com.spring2024project.Scheduler.entity.Address;
 import com.spring2024project.Scheduler.entity.CreditCard;
 import com.spring2024project.Scheduler.entity.Customer;
-import com.spring2024project.Scheduler.repository.AddressRepository;
-import com.spring2024project.Scheduler.repository.CreditCardRepository;
 import com.spring2024project.Scheduler.repository.CustomerRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -18,7 +16,6 @@ import static com.spring2024project.Scheduler.entity.Customer.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * This service class provides functionality to perform CRUD operations on Customer entities.
@@ -29,19 +26,19 @@ import java.util.stream.Collectors;
 public class CustomerService implements BaseService<Customer> {
     private final CustomerRepository cr;
     private final EntityManager em;
-    private final AddressService addressService;
+    private final AddressService as;
     private final CreditCardService ccs;
     private final ZipCodeValidatorTag zt;
 
     @Autowired
     public CustomerService(CustomerRepository cr,
                            EntityManager entityManager,
-                           AddressService addressService,
+                           AddressService as,
                            CreditCardService ccs,
                            ZipCodeValidatorTag zt) {
         this.cr = cr;
         this.em = entityManager;
-        this.addressService = addressService;
+        this.as = as;
         this.ccs = ccs;
         this.zt = zt;
     }
@@ -68,36 +65,48 @@ public class CustomerService implements BaseService<Customer> {
     public Customer create(Customer entity) {
         try {
             var newCustomer = Customer.from(entity);
+
             // Check for existing addresses and associate them with the customer
-            List<Address> existingAddresses = addressService.getAll();
+            List<Address> existingAddresses = as.getAll();
+            List<Address> customerAddresses = new ArrayList<>(); // New list to hold addresses associated with the customer
+
             if (Objects.nonNull(newCustomer.getAddressList())) {
                 var customerAddressList = new ArrayList<>(newCustomer.getAddressList());
                 for (Address address : customerAddressList) {
-                    addressService.validateAndNormalizeAddress(address);
+                    as.validateAndNormalizeAddress(address);
                     if (existingAddresses.contains(address)) {
                         var existingAddress = existingAddresses.get(existingAddresses.indexOf(address));
                         existingAddress.setCustomer(newCustomer);
-                        newCustomer.getAddressList().remove(address);
+                        customerAddresses.add(existingAddress); // Add existing address to the list of customer addresses
                     } else {
                         address.setCustomer(newCustomer);
+                        customerAddresses.add(address); // Add new address to the list of customer addresses
                     }
                 }
             }
+
             // Associate credit cards with billing addresses
             if (Objects.nonNull(newCustomer.getCreditCardList())) {
                 for (CreditCard cc : newCustomer.getCreditCardList()) {
                     Address billingAddress = cc.getBillingAddress();
-                    addressService.validateAndNormalizeAddress(billingAddress);
+                    as.validateAndNormalizeAddress(billingAddress);
                     if (existingAddresses.contains(billingAddress)) {
                         Address existingAddress = existingAddresses.get(existingAddresses.indexOf(billingAddress));
                         existingAddress.setCustomer(newCustomer);
                         cc.setBillingAddress(existingAddress);
                     } else {
                         billingAddress.setCustomer(newCustomer);
+                        customerAddresses.add(billingAddress); // Add new billing address to the list of customer addresses
                     }
                 }
             }
+
+            // Set the list of addresses associated with the customer
+            newCustomer.setAddressList(customerAddresses);
+
+            // Merge the customer entity
             em.merge(newCustomer);
+
             return newCustomer;
         } catch (Exception e) {
             throw new RuntimeException("Failed to create customer", e);
@@ -124,7 +133,7 @@ public class CustomerService implements BaseService<Customer> {
                 // Associate credit card with customer
                 // Associate billing address with credit card
                 Address billingAddress = creditCard.getBillingAddress();
-                var existingAddresses = addressService.getAll();
+                var existingAddresses = as.getAll();
                 if (existingAddresses.contains(billingAddress)) {
                     creditCard.setBillingAddress(existingAddresses.get(existingAddresses.indexOf(billingAddress)));
                 } else {
@@ -144,7 +153,7 @@ public class CustomerService implements BaseService<Customer> {
             for (var address : addresses) {
                 // Check address for proper format, and then associate with customer
                 var checkedAddress = Address.from(address, zt);
-                var existingAddresses = addressService.getAll();
+                var existingAddresses = as.getAll();
                 if (!existingAddresses.contains(address)) {
                     em.merge(address);
                 }

@@ -46,4 +46,8 @@ public abstract class Person {
                     "6. 1234567890\n" +
                     "Or have as many spaces between the digits")
     private String phoneNumber;
+
+    public static String reformatName(String str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+    }
 }

@@ -1,17 +1,19 @@
 package com.spring2024project.Scheduler.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 /**
  * Entity class representing a generator. Generator will be associated with a Customer and Job.
  * @Author Shankar Choudhury
- * TODO: Create a many-to-one relationship with a customer and a job
  */
 @Entity
 @Table(name = "generator")
 @Getter
 @Setter
+@NoArgsConstructor
 public final class Generator {
 
     @Id
@@ -24,24 +26,17 @@ public final class Generator {
     @Column
     private int kWSize;
 
-    @Column
-    private String installInstructions;
-
-    /**
-     * Default constructor for Generator class.
-     */
-    public Generator(){};
+    @ManyToOne
+    private Job associatedJob;
 
     /**
      * Constructor for Generator class with parameters.
      * @param manufacturer The manufacturer of the generator.
      * @param kWSize The size of the generator in kW.
-     * @param installInstructions Installation instructions for the generator.
      */
-    private Generator(String manufacturer, int kWSize, String installInstructions) {
+    private Generator(String manufacturer, int kWSize) {
         this.manufacturer = manufacturer;
         this.kWSize = kWSize;
-        this.installInstructions = installInstructions;
     }
 
     /**
@@ -55,7 +50,6 @@ public final class Generator {
         this.id = id;
         this.manufacturer = manufacturer;
         this.kWSize = kWSize;
-        this.installInstructions = installInstructions;
     }
 
     /**
@@ -63,7 +57,7 @@ public final class Generator {
      * @return A default Generator instance.
      */
     public static Generator defaultGenerator() {
-        return new Generator("",0,"");
+        return new Generator("",0);
     }
 
     /**
@@ -72,7 +66,7 @@ public final class Generator {
      * @return A new Generator instance.
      */
     public static Generator from(Generator g) {
-        return new Generator(g.getManufacturer(), g.getKWSize(), g.getInstallInstructions());
+        return new Generator(g.getManufacturer(), g.getKWSize());
     }
 
 }
