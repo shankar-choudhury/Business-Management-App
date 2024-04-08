@@ -1,6 +1,5 @@
 package com.spring2024project.Scheduler.entity.employees;
 
-import com.spring2024project.Scheduler.constantValues.ElectricianPermissions;
 import com.spring2024project.Scheduler.entity.Address;
 import com.spring2024project.Scheduler.entity.Job;
 import jakarta.persistence.*;
@@ -23,16 +22,17 @@ import static com.spring2024project.Scheduler.validatingMethods.EmployeeValidato
 @ToString(callSuper = true)
 public class Electrician extends Employee {
 
-    private Electrician(ElectricianPermissions level, List<Job> jobs,
-                        int salary, Address homeAddress,
-                        int id, String firstName, String lastName,
-                        String email, String phoneNumber) {
+    @ManyToMany(mappedBy = "electricians")
+    List<Job> jobs;
+
+    private Electrician(int id, int salary, Address homeAddress,
+                        String firstName, String lastName,
+                        String email, String phoneNumber, List<Job> jobs) {
         super(salary, homeAddress, id, firstName, lastName, email, phoneNumber);
-        this.level = level;
         this.jobs = jobs;
     }
 
-    // Validate and normalize address in Electrician service 
+    // Validate and normalize address in Electrician service
     public static Electrician from(Electrician e) {
         verifyNonNullEmptyOrBlank(
                 e.getFirstName(),
@@ -44,6 +44,7 @@ public class Electrician extends Employee {
         correctEmailFormat(e.getEmail());
         correctPhoneNumberFormat(e.getPhoneNumber());
         validSalary(e.getSalary());
+        unassociatedAddress(e.getHomeAddress());
 
         e.setFirstName(reformatName(e.getFirstName()));
         e.setLastName(reformatName(e.getLastName()));
@@ -51,9 +52,7 @@ public class Electrician extends Employee {
         return e;
     }
 
-    @Column
-    private ElectricianPermissions level;
-
-    @ManyToMany(mappedBy = "electricians")
-    List<Job> jobs;
+    public static Electrician emptyElectrician() {
+        return new Electrician(0,0, Address.emptyAddress(), "", "", "", "", List.of());
+    }
 }

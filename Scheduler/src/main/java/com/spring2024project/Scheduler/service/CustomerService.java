@@ -61,6 +61,7 @@ public class CustomerService implements BaseService<Customer> {
         return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 
+    // Test creating customer with existing address with customer reference being null
     @Override
     public Customer create(Customer entity) {
         try {
@@ -76,8 +77,10 @@ public class CustomerService implements BaseService<Customer> {
                     as.validateAndNormalizeAddress(address);
                     if (existingAddresses.contains(address)) {
                         var existingAddress = existingAddresses.get(existingAddresses.indexOf(address));
-                        existingAddress.setCustomer(newCustomer);
-                        customerAddresses.add(existingAddress); // Add existing address to the list of customer addresses
+                        if (Objects.nonNull(existingAddress.getCustomer())) {
+                            existingAddress.setCustomer(newCustomer);
+                            customerAddresses.add(existingAddress); // Add existing address to the list of customer addresses
+                        }
                     } else {
                         address.setCustomer(newCustomer);
                         customerAddresses.add(address); // Add new address to the list of customer addresses
