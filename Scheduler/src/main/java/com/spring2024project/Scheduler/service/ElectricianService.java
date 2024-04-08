@@ -1,8 +1,6 @@
 package com.spring2024project.Scheduler.service;
 
-import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
 import com.spring2024project.Scheduler.entity.Address;
-import com.spring2024project.Scheduler.entity.Customer;
 import com.spring2024project.Scheduler.entity.employees.Electrician;
 import com.spring2024project.Scheduler.repository.ElectricianRepository;
 import jakarta.persistence.EntityManager;
@@ -22,6 +20,7 @@ public class ElectricianService implements BaseService<Electrician> {
         this.as = as;
         this.em = em;
     }
+
     @Override
     public List<Electrician> getAll() {
         return (List<Electrician>) er.findAll();
@@ -67,6 +66,6 @@ public class ElectricianService implements BaseService<Electrician> {
         Electrician toDelete = getById(id);
         if (toDelete.getId() != 0)
             er.deleteById(id);
-        return toDelete; 
+        return toDelete;
     }
 }
