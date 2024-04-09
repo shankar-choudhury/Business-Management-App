@@ -64,7 +64,7 @@ public class GeneratorService implements BaseService<Generator> {
     @Override
     public Generator update(int id, Generator generator) {
         Generator toUpdate = getById(id);
-        if (toUpdate.getKWSize() != 0) {
+        if (toUpdate.getId() != 0) {
             toUpdate = from(generator);
             gr.save(toUpdate);
         }
@@ -79,10 +79,9 @@ public class GeneratorService implements BaseService<Generator> {
     @Override
     public Generator delete(int id) {
         Generator toDelete = getById(id);
-        if (toDelete.getKWSize() != 0) {
-            Generator save = from(toDelete);
+        if (toDelete.getId() != 0) {
             gr.deleteById(id);
-            return save;
+            return toDelete;
         }
         return toDelete;
     }

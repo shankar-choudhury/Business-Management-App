@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/electricians")
 public class ElectricianController implements BaseController<Electrician> {
 
     private final ElectricianService es;

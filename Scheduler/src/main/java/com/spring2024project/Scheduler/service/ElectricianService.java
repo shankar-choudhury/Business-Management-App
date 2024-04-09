@@ -4,10 +4,14 @@ import com.spring2024project.Scheduler.entity.Address;
 import com.spring2024project.Scheduler.entity.employees.Electrician;
 import com.spring2024project.Scheduler.repository.ElectricianRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
+@Transactional
 public class ElectricianService implements BaseService<Electrician> {
 
     private final ElectricianRepository er;
@@ -33,18 +37,14 @@ public class ElectricianService implements BaseService<Electrician> {
 
     @Override
     public Electrician create(Electrician entity) {
-
         try {
             var newElectrician = Electrician.from(entity);
-
-            // Check for existing addresses and associate them with the customer
-            List<Address> existingAddresses = as.getAll();
-            var homeAddress = entity.getHomeAddress();
+            var homeAddress = newElectrician.getHomeAddress();
             as.validateAndNormalizeAddress(homeAddress);
-            newElectrician.setHomeAddress(homeAddress);
+            var created = as.create(homeAddress);
+            newElectrician.setHomeAddress(as.getById(created.getId()));
 
-            // Merge the customer entity
-            em.merge(newElectrician);
+            er.save(newElectrician);
 
             return newElectrician;
         } catch (Exception e) {
@@ -55,8 +55,11 @@ public class ElectricianService implements BaseService<Electrician> {
     @Override
     public Electrician update(int id, Electrician entity) {
         Electrician original = getById(id);
-        if (original.getId() != 0)
-            return er.save(Electrician.from(entity));
+        if (original.getId() != 0) {
+            var updated = Electrician.from(entity);
+            updated.setId(original.getId());
+            return er.save(updated);
+        }
         else
             return original;
     }

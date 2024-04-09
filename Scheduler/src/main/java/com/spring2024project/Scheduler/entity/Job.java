@@ -7,6 +7,9 @@ import lombok.*;
 
 import java.util.List;
 import java.time.LocalDate;
+import java.util.Objects;
+
+import static com.spring2024project.Scheduler.validatingMethods.ListValidator.*;
 
 @Entity
 @Getter
@@ -32,10 +35,10 @@ public class Job {
     private List<Electrician> electricians;
 
     @Column
-    private LocalDate start;
+    private LocalDate startDate;
 
     @Column
-    private LocalDate end;
+    private LocalDate endDate;
 
     @OneToOne
     @JoinColumn(name = "address_id")
@@ -43,4 +46,26 @@ public class Job {
 
     @Column
     private boolean isComplete;
+
+    private Job(Customer customer, Address jobAddress, List<Electrician> electricians, LocalDate startDate) {
+        this.customer = customer;
+        this.jobAddress = jobAddress;
+        this.electricians = electricians;
+        this.startDate = startDate;
+    }
+
+    public Job from(Job entity) {
+        return new Job(
+                Customer.from(entity.getCustomer()),
+                entity.getJobAddress(),
+                verifyNoElementsMatch(
+                        verifyNonNullElements(
+                            verifyNonEmpty(
+                                    verifyNonNull(entity.getElectricians()))),
+                        electrician -> {
+                            if (Objects.nonNull(electrician.getJobs()))
+                                return electrician.getJobs().stream().noneMatch(job -> job.getStartDate().equals(entity.getStartDate()));
+                            else return true;}),
+                entity.getStartDate());
+    }
 }

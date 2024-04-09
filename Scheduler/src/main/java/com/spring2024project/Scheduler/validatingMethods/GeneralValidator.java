@@ -30,7 +30,7 @@ public final class GeneralValidator {
      * @return The validated integer value if it satisfies the condition.
      * @throws IllegalArgumentException if the integer value does not satisfy the condition.
      */
-    static Integer validInt(int integer, Predicate<Integer> validCondition) {
+    public static Integer validInt(int integer, Predicate<Integer> validCondition) {
         return validCondition.test(integer) ? integer : throwException(integer);
     }
 

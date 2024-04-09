@@ -1,9 +1,10 @@
 package com.spring2024project.Scheduler.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import static com.spring2024project.Scheduler.validatingMethods.StringValidator.*;
+import static com.spring2024project.Scheduler.validatingMethods.GeneralValidator.*;
 
 /**
  * Entity class representing a generator. Generator will be associated with a Customer and Job.
@@ -27,7 +28,8 @@ public final class Generator {
     private int kWSize;
 
     @ManyToOne
-    private Job associatedJob;
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
     /**
      * Constructor for Generator class with parameters.
@@ -35,19 +37,6 @@ public final class Generator {
      * @param kWSize The size of the generator in kW.
      */
     private Generator(String manufacturer, int kWSize) {
-        this.manufacturer = manufacturer;
-        this.kWSize = kWSize;
-    }
-
-    /**
-     * Constructor for Generator class with parameters including ID.
-     * @param id The ID of the generator.
-     * @param manufacturer The manufacturer of the generator.
-     * @param kWSize The size of the generator in kW.
-     * @param installInstructions Installation instructions for the generator.
-     */
-    private Generator(int id, String manufacturer, int kWSize, String installInstructions) {
-        this.id = id;
         this.manufacturer = manufacturer;
         this.kWSize = kWSize;
     }
@@ -66,7 +55,11 @@ public final class Generator {
      * @return A new Generator instance.
      */
     public static Generator from(Generator g) {
-        return new Generator(g.getManufacturer(), g.getKWSize());
+        return new Generator(
+                verifyNonNullEmptyOrBlank(g.getManufacturer()),
+                validInt(g.getKWSize(), kw -> kw > 0 && kw < 5000));
     }
+
+
 
 }
