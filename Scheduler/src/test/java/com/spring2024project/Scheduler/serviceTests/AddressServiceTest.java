@@ -1,10 +1,10 @@
 package com.spring2024project.Scheduler.serviceTests;
 
-import com.spring2024project.Scheduler.entity.Address;
+import com.spring2024project.Scheduler.entityFunctionalities.address.Address;
 import com.spring2024project.Scheduler.exception.AddressValidationException;
-import com.spring2024project.Scheduler.repository.AddressRepository;
+import com.spring2024project.Scheduler.entityFunctionalities.address.AddressRepository;
 import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
-import com.spring2024project.Scheduler.service.AddressService;
+import com.spring2024project.Scheduler.entityFunctionalities.address.AddressService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

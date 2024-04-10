@@ -1,8 +1,8 @@
 package com.spring2024project.Scheduler.entityTests;
 
-import com.spring2024project.Scheduler.entity.Address;
-import com.spring2024project.Scheduler.entity.CreditCard;
-import com.spring2024project.Scheduler.entity.Customer;
+import com.spring2024project.Scheduler.entityFunctionalities.address.Address;
+import com.spring2024project.Scheduler.entityFunctionalities.creditcard.CreditCard;
+import com.spring2024project.Scheduler.entityFunctionalities.people.customer.Customer;
 import com.spring2024project.Scheduler.exception.StringValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

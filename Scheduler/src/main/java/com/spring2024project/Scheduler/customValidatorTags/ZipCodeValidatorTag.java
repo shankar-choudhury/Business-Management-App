@@ -1,7 +1,7 @@
 package com.spring2024project.Scheduler.customValidatorTags;
 
-import com.spring2024project.Scheduler.entity.Address;
-import com.spring2024project.Scheduler.repository.ZipCodeDataRepository;
+import com.spring2024project.Scheduler.entityFunctionalities.address.Address;
+import com.spring2024project.Scheduler.entityFunctionalities.zipCodeData.ZipCodeDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

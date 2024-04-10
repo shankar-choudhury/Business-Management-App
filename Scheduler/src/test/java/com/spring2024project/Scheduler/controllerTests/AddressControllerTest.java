@@ -1,7 +1,7 @@
 package com.spring2024project.Scheduler.controllerTests;
-import com.spring2024project.Scheduler.controller.AddressController;
-import com.spring2024project.Scheduler.entity.Address;
-import com.spring2024project.Scheduler.service.BaseService;
+import com.spring2024project.Scheduler.entityFunctionalities.address.AddressController;
+import com.spring2024project.Scheduler.entityFunctionalities.address.Address;
+import com.spring2024project.Scheduler.entityFunctionalities.BaseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

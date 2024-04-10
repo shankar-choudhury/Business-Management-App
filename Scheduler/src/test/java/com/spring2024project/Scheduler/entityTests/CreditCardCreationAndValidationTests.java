@@ -6,8 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
-import com.spring2024project.Scheduler.entity.Address;
-import com.spring2024project.Scheduler.entity.CreditCard;
+import com.spring2024project.Scheduler.entityFunctionalities.address.Address;
+import com.spring2024project.Scheduler.entityFunctionalities.creditcard.CreditCard;
 import com.spring2024project.Scheduler.exception.AddressValidationException;
 
 import org.junit.jupiter.api.Test;

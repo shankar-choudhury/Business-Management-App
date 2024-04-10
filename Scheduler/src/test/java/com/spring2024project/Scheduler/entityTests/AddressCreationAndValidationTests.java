@@ -2,13 +2,12 @@ package com.spring2024project.Scheduler.entityTests;
 
 import com.spring2024project.Scheduler.SchedulerApplication;
 import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
-import com.spring2024project.Scheduler.entity.Address;
+import com.spring2024project.Scheduler.entityFunctionalities.address.Address;
 import com.spring2024project.Scheduler.exception.*;
 import com.spring2024project.Scheduler.exception.ValidationException.Cause;
 
-import static com.spring2024project.Scheduler.constantValues.State.getState;
 import static com.spring2024project.Scheduler.exception.ValidationException.Cause.*;
-import static com.spring2024project.Scheduler.entity.Address.*;
+import static com.spring2024project.Scheduler.entityFunctionalities.address.Address.*;
 
 import org.junit.Before;
 import org.junit.Test;

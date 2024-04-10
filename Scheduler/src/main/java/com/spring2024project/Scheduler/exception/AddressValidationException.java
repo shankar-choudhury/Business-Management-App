@@ -1,6 +1,6 @@
 package com.spring2024project.Scheduler.exception;
 
-import com.spring2024project.Scheduler.entity.Address;
+import com.spring2024project.Scheduler.entityFunctionalities.address.Address;
 import lombok.Getter;
 
 @Getter

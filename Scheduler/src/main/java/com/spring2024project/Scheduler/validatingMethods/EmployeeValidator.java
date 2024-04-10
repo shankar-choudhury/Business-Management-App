@@ -1,6 +1,6 @@
 package com.spring2024project.Scheduler.validatingMethods;
 
-import com.spring2024project.Scheduler.entity.Address;
+import com.spring2024project.Scheduler.entityFunctionalities.address.Address;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

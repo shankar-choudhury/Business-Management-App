@@ -1,12 +1,12 @@
 package com.spring2024project.Scheduler.serviceTests;
 
-import com.spring2024project.Scheduler.entity.Address;
-import com.spring2024project.Scheduler.entity.CreditCard;
-import com.spring2024project.Scheduler.entity.Customer;
-import com.spring2024project.Scheduler.repository.AddressRepository;
-import com.spring2024project.Scheduler.repository.CreditCardRepository;
-import com.spring2024project.Scheduler.repository.CustomerRepository;
-import com.spring2024project.Scheduler.service.CustomerService;
+import com.spring2024project.Scheduler.entityFunctionalities.address.Address;
+import com.spring2024project.Scheduler.entityFunctionalities.creditcard.CreditCard;
+import com.spring2024project.Scheduler.entityFunctionalities.people.customer.Customer;
+import com.spring2024project.Scheduler.entityFunctionalities.address.AddressRepository;
+import com.spring2024project.Scheduler.entityFunctionalities.creditcard.CreditCardRepository;
+import com.spring2024project.Scheduler.entityFunctionalities.people.customer.CustomerRepository;
+import com.spring2024project.Scheduler.entityFunctionalities.people.customer.CustomerService;
 
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;

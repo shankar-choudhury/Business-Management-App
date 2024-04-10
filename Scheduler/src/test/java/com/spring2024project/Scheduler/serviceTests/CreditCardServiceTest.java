@@ -1,14 +1,13 @@
 package com.spring2024project.Scheduler.serviceTests;
 
 import com.spring2024project.Scheduler.customValidatorTags.ZipCodeValidatorTag;
-import com.spring2024project.Scheduler.entity.Address;
-import com.spring2024project.Scheduler.entity.CreditCard;
-import com.spring2024project.Scheduler.entity.Customer;
-import com.spring2024project.Scheduler.exception.AddressValidationException;
+import com.spring2024project.Scheduler.entityFunctionalities.address.Address;
+import com.spring2024project.Scheduler.entityFunctionalities.creditcard.CreditCard;
+import com.spring2024project.Scheduler.entityFunctionalities.people.customer.Customer;
 import com.spring2024project.Scheduler.exception.StringValidationException;
-import com.spring2024project.Scheduler.repository.AddressRepository;
-import com.spring2024project.Scheduler.repository.CustomerRepository;
-import com.spring2024project.Scheduler.service.CreditCardService;
+import com.spring2024project.Scheduler.entityFunctionalities.address.AddressRepository;
+import com.spring2024project.Scheduler.entityFunctionalities.people.customer.CustomerRepository;
+import com.spring2024project.Scheduler.entityFunctionalities.creditcard.CreditCardService;
 
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,10 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.LinkedList;
-
 import static com.spring2024project.Scheduler.exception.ValidationException.Cause.FORMAT;
-import static com.spring2024project.Scheduler.exception.ValidationException.Cause.NONEXISTING;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)

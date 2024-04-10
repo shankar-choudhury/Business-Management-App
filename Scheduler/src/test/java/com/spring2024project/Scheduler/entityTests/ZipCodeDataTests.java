@@ -1,6 +1,6 @@
 package com.spring2024project.Scheduler.entityTests;
 
-import com.spring2024project.Scheduler.entity.ZipCodeData;
+import com.spring2024project.Scheduler.entityFunctionalities.zipCodeData.ZipCodeData;
 import org.junit.Test;
 
 import java.util.Set;

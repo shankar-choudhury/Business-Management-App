@@ -19,18 +19,13 @@ public class ListValidator {
     /**
      * Verifies that no elements in the list match the given invalid condition.
      * @param toCheck The list to check.
-     * @param invalidCondition The condition to check against. The condition is specified for what the element shouldn't match
-     * @param <T> The type of elements in the list.
+     * @param validCondition The condition to check against. The condition is specified for what the element should match
      * @return The original list if no elements match the condition.
      * @throws IllegalArgumentException with a ListValidationException containing details of the failed validation if
      * any of the elements match the condition.
      */
-    public static <T> List<T> verifyNoElementsMatch(List<T> toCheck, Predicate<T> invalidCondition) {
-        List<T> invalidElementsList = toCheck.stream()
-                .filter(invalidCondition)
-                .collect(Collectors.toList());
-
-        return invalidElementsList.isEmpty() ? toCheck : throwException(toCheck, invalidElementsList, INVALID_ELEMENTS);
+    public static <T> List<T> verifyNoElementsMatch(List<T> toCheck, Predicate<T> validCondition) {
+        return verify(toCheck, list -> toCheck.stream().allMatch(validCondition), INVALID_ELEMENTS);
     }
 
     /**
