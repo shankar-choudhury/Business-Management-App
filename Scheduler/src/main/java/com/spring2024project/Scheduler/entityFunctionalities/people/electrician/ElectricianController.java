@@ -1,6 +1,7 @@
 package com.spring2024project.Scheduler.entityFunctionalities.people.electrician;
 
 import com.spring2024project.Scheduler.entityFunctionalities.BaseController;
+import com.spring2024project.Scheduler.entityFunctionalities.address.AddressDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/electricians")
-public class ElectricianController implements BaseController<Electrician> {
+public class ElectricianController  {
 
     private final ElectricianService es;
 
@@ -18,14 +19,13 @@ public class ElectricianController implements BaseController<Electrician> {
     public ElectricianController(ElectricianService es) {
         this.es = es;
     }
-    @Override
+
     @GetMapping
     public ResponseEntity<List<Electrician>> getAll() {
         var electricians = es.getAll();
         return new ResponseEntity<>(electricians, HttpStatus.FOUND);
     }
 
-    @Override
     @GetMapping("/{id}")
     public ResponseEntity<Electrician> getById(@PathVariable int id) {
         Electrician electrician = es.getById(id);
@@ -35,23 +35,24 @@ public class ElectricianController implements BaseController<Electrician> {
 
     }
 
-    @Override
     @PostMapping
     public ResponseEntity<Electrician> create(@RequestBody Electrician entity) {
-        Electrician electrician = es.create(entity);
-        return new ResponseEntity<>(electrician, HttpStatus.CREATED);
+        Electrician created = es.create(entity);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
-    @Override
-    @PutMapping("/{id}")
-    public ResponseEntity<Electrician> update(@PathVariable int id, @RequestBody Electrician entity) {
-        Electrician updatedElectrician = es.update(id, entity);
-        return updatedElectrician.getId() == 0 ?
-                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
-                new ResponseEntity<>(updatedElectrician, HttpStatus.OK);
+    @PutMapping("/personalDetails/{id}")
+    public ResponseEntity<Electrician> updatePersonalDetails(@PathVariable int id, @RequestBody ElectricianPersonalDetailsDto personalDetailsDto) {
+        Electrician updated = es.updatePersonalDetails(id, personalDetailsDto);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
-    @Override
+    @PutMapping("/homeAddress/{id}")
+    public ResponseEntity<Electrician> updateHomeAddress(@PathVariable int id, @RequestBody AddressDto addressDto) {
+        Electrician updated = es.updateHomeAddress(id, addressDto);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Electrician> delete(@PathVariable int id) {
         Electrician deletedElectrician = es.delete(id);

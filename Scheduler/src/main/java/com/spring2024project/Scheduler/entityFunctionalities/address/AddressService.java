@@ -124,6 +124,15 @@ public class AddressService implements BaseService<Address> {
         }
     }
 
+    public Address updateElectricianAddress(int id, Address entity) {
+        Address original = getById(id);
+        if (original.getId() != 0) {
+            validateAndNormalizeAddress(entity);
+            return ar.save(entity);
+        }
+        throw new RuntimeException("Address could not be found with id: " + id);
+    }
+
     /**
      * Deletes an address from the database.
      * @param id The ID of the address to delete.
