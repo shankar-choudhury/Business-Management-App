@@ -8,7 +8,6 @@ import static com.spring2024project.Scheduler.exception.ValidationException.Caus
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * This class provides methods for validating lists, including checks for null lists, empty lists,
@@ -17,14 +16,14 @@ import java.util.stream.Collectors;
 public class ListValidator {
 
     /**
-     * Verifies that no elements in the list match the given invalid condition.
+     * Verifies that all elements in the list match the specified condition.
      * @param toCheck The list to check.
-     * @param validCondition The condition to check against. The condition is specified for what the element should match
+     * @param validCondition The condition to check against. The condition is specified for what each element should match
      * @return The original list if no elements match the condition.
      * @throws IllegalArgumentException with a ListValidationException containing details of the failed validation if
      * any of the elements match the condition.
      */
-    public static <T> List<T> verifyNoElementsMatch(List<T> toCheck, Predicate<T> validCondition) {
+    public static <T> List<T> verifyAllElementsMatch(List<T> toCheck, Predicate<T> validCondition) {
         return verify(toCheck, list -> toCheck.stream().allMatch(validCondition), INVALID_ELEMENTS);
     }
 

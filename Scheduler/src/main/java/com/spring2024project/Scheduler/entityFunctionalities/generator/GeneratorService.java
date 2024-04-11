@@ -34,6 +34,8 @@ public class GeneratorService implements BaseService<Generator> {
         return (List<Generator>) gr.findAll();
     }
 
+    public List<Generator> getAllById(List<Integer> ids) {return (List<Generator>) gr.findAllById(ids);}
+
     /**
      * Retrieves a generator by its ID from the database.
      * @param id The ID of the generator to retrieve.

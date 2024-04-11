@@ -22,6 +22,7 @@ import static com.spring2024project.Scheduler.validatingMethods.ListValidator.*;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
+@EqualsAndHashCode(exclude = {"id", "electricians"})
 public class Job {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -78,7 +79,7 @@ public class Job {
     }
 
     private static List<Electrician> validateElectricians(Job entity) {
-        return verifyNoElementsMatch(
+        return verifyAllElementsMatch(
                 verifyNonNullElements(
                         verifyNonEmpty(
                                 verifyNonNull(entity.getElectricians()))),

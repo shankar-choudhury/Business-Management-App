@@ -31,7 +31,7 @@ public class JobController {
     }
 
     @PostMapping
-    public ResponseEntity<Job> create(@RequestBody JobCreationDto jobCreationDto) {
+    public ResponseEntity<Job> create(@RequestBody JobDto jobCreationDto) {
         var createdJob = js.create(jobCreationDto);
         return new ResponseEntity<>(createdJob, HttpStatus.CREATED);
     }
