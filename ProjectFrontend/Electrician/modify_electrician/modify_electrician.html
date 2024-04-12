@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modify Electrician</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="row">
+                <!-- Electrician Search Form -->
+                <div class="col-md-6">
+                    <h1>Modify Electrician</h1>
+                    <form @submit.prevent="fetchElectricians">
+                        <!-- Form inputs -->
+                        <div class="form-group">
+                            <label for="fullNameInput">Search for Electrician</label>
+                            <input v-model="fullName" type="text" class="form-control" id="fullNameInput" placeholder="Enter electrician's full name" style="width: 300px;">
+                            <!-- Dropdown menu for matching electricians -->
+                            <div v-if="electricians.length > 0" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a v-for="electrician in electricians" @click="selectElectrician(electrician)" class="dropdown-item">{{ electrician.firstName }} {{ electrician.lastName }} - {{ electrician.email }} - {{ electrician.phoneNumber }}</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- Electrician Selection Panel -->
+                <div class="col-md-6">
+                    <h2>Electrician List</h2>
+                    <ul class="list-group">
+                        <li class="list-group-item" v-for="electrician in electricians" @click="selectElectrician(electrician)" :key="electrician.id">
+                            {{ electrician.firstName }} {{ electrician.lastName }} - {{ electrician.email }} - {{ electrician.phoneNumber }}
+                        </li>
+                    </ul>
+                </div>
+                <!-- Electrician Details -->
+                <div v-if="selectedElectrician">
+                    <h2>Electrician Details</h2>
+                    <div class="form-group">
+                        <label for="selectedFirstName">First Name</label>
+                        <input type="text" class="form-control" id="selectedFirstName" v-model="selectedElectrician.firstName" style="width: 200px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="selectedLastName">Last Name</label>
+                        <input type="text" class="form-control" id="selectedLastName" v-model="selectedElectrician.lastName" style="width: 200px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="selectedEmail">Email address</label>
+                        <input type="email" class="form-control" id="selectedEmail" v-model="selectedElectrician.email" style="width: 200px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="selectedPhoneNumber">Phone Number</label>
+                        <input type="text" class="form-control" id="selectedPhoneNumber" v-model="selectedElectrician.phoneNumber" style="width: 200px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="selectedSalary">Salary</label>
+                        <input type="number" class="form-control" id="selectedSalary" v-model="selectedElectrician.salary" style="width: 200px;">
+                    </div>
+                    <!-- Save Changes Button -->
+                    <button type="button" class="btn btn-primary" @click="saveChanges">Save Changes</button>
+                    <!-- Delete Electrician button -->
+                    <button type="button" class="btn btn-danger" @click="deleteElectrician">Delete Electrician</button>
+                    <!-- Modify Address button -->
+                    <button type="button" class="btn btn-secondary" @click="openModifyAddressModal">Modify Address</button>
+                </div>
+            </div>
+            <!-- Modify Address Modal -->
+            <div class="modal" id="modifyAddressModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Modify Address</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="buildingNumber">Building Number</label>
+                                <input type="text" class="form-control" id="buildingNumber" v-model="address.buildingNumber">
+                            </div>
+                            <div class="form-group">
+                                <label for="street">Street</label>
+                                <input type="text" class="form-control" id="street" v-model="address.street">
+                            </div>
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" class="form-control" id="city" v-model="address.city">
+                            </div>
+                            <div class="form-group">
+                                <label for="state">State</label>
+                                <input type="text" class="form-control" id="state" v-model="address.state">
+                            </div>
+                            <div class="form-group">
+                                <label for="zipcode">Zipcode</label>
+                                <input type="text" class="form-control" id="zipcode" v-model="address.zipcode">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" @click="updateAddress">Update Address</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Boostrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- My app.js file-->
+    <script src="app.js"></script>
+</body>
+</html>

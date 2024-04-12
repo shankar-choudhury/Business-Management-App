@@ -1,6 +1,5 @@
 package com.spring2024project.Scheduler.entityFunctionalities.people.electrician;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.spring2024project.Scheduler.entityFunctionalities.address.Address;
 import com.spring2024project.Scheduler.entityFunctionalities.job.Job;
 import com.spring2024project.Scheduler.entityFunctionalities.people.Employee;
@@ -24,9 +23,8 @@ import static com.spring2024project.Scheduler.validatingMethods.EmployeeValidato
 @ToString(callSuper = true)
 public class Electrician extends Employee {
 
-    @JsonBackReference(value = "jobs-electricians")
-    @ManyToMany(mappedBy = "electricians")
-    List<Job> jobs;
+    @ManyToMany(mappedBy = "electricians", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private List<Job> jobs;
 
     private Electrician(int id, int salary, Address homeAddress,
                         String firstName, String lastName,

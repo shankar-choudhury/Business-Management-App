@@ -5,4 +5,13 @@ record ElectricianPersonalDetailsDto(
         String firstName,
         String lastName,
         String phoneNumber,
-        String email){}
+        String email){
+    public static ElectricianPersonalDetailsDto from (Electrician electrician) {
+        return new ElectricianPersonalDetailsDto(
+                electrician.getSalary(),
+                electrician.getFirstName(),
+                electrician.getLastName(),
+                electrician.getPhoneNumber(),
+                electrician.getEmail());
+    }
+}

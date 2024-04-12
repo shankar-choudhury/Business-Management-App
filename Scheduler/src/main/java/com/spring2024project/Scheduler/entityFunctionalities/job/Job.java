@@ -1,6 +1,7 @@
 package com.spring2024project.Scheduler.entityFunctionalities.job;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.spring2024project.Scheduler.entityFunctionalities.address.Address;
 import com.spring2024project.Scheduler.entityFunctionalities.people.customer.Customer;
@@ -33,8 +34,7 @@ public class Job {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JsonManagedReference(value = "jobs-electricians")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
             name = "job_electrician",
             joinColumns = @JoinColumn(name = "job_id"),

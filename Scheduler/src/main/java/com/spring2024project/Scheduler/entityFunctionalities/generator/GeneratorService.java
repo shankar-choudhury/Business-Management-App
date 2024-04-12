@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import static com.spring2024project.Scheduler.entityFunctionalities.generator.Generator.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service class for managing generators.
@@ -33,6 +34,8 @@ public class GeneratorService implements BaseService<Generator> {
     public List<Generator> getAll() {
         return (List<Generator>) gr.findAll();
     }
+
+    public List<Generator> getAllUnassigned() {return getAll().stream().filter(generator -> !generator.isAssigned()).collect(Collectors.toList());}
 
     public List<Generator> getAllById(List<Integer> ids) {return (List<Generator>) gr.findAllById(ids);}
 

@@ -1,6 +1,5 @@
 package com.spring2024project.Scheduler.entityFunctionalities.people.electrician;
 
-import com.spring2024project.Scheduler.entityFunctionalities.BaseController;
 import com.spring2024project.Scheduler.entityFunctionalities.address.AddressDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +34,13 @@ public class ElectricianController  {
 
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Electrician>> getByFirstAndLastName(@RequestParam String firstName, @RequestParam String lastName) {
+        List<Electrician> electricians = es.findByFirstAndLastName(firstName, lastName);
+        return electricians.isEmpty() ?
+                new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(electricians, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<Electrician> create(@RequestBody Electrician entity) {
         Electrician created = es.create(entity);
@@ -54,9 +60,9 @@ public class ElectricianController  {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Electrician> delete(@PathVariable int id) {
-        Electrician deletedElectrician = es.delete(id);
-        return deletedElectrician.getId() == 0 ?
+    public ResponseEntity<ElectricianPersonalDetailsDto> delete(@PathVariable int id) {
+        var deletedElectrician = es.delete(id);
+        return deletedElectrician.firstName().equals("") ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
                 new ResponseEntity<>(deletedElectrician, HttpStatus.OK);
     }

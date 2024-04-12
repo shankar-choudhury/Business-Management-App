@@ -31,7 +31,7 @@ public final class Generator {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
-    
+
     @Column
     private boolean isAssigned;
 

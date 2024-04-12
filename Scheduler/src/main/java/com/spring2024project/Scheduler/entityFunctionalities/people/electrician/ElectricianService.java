@@ -2,14 +2,13 @@ package com.spring2024project.Scheduler.entityFunctionalities.people.electrician
 
 import com.spring2024project.Scheduler.entityFunctionalities.address.AddressDto;
 import com.spring2024project.Scheduler.entityFunctionalities.address.AddressService;
-import com.spring2024project.Scheduler.entityFunctionalities.job.Job;
-import com.spring2024project.Scheduler.entityFunctionalities.job.JobService;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.spring2024project.Scheduler.entityFunctionalities.people.Person.reformatName;
 
 @Service
 @Transactional
@@ -35,6 +34,10 @@ public class ElectricianService {
 
     public List<Electrician> getAllById(List<Integer> ids) {return (List<Electrician>)er.findAllById(ids);}
 
+    public List<Electrician> findByFirstAndLastName(String firstName, String lastName) {
+        return er.findByFirstNameIgnoreCaseAndLastNameIgnoreCase(firstName, lastName);
+    }
+
     public Electrician create(Electrician entity) {
         try {
             var newElectrician = Electrician.from(entity);
@@ -54,8 +57,8 @@ public class ElectricianService {
     public Electrician updatePersonalDetails(int id, ElectricianPersonalDetailsDto personalDetailsDto) {
         var toUpdate = getById(id);
         toUpdate.setSalary(personalDetailsDto.salary());
-        toUpdate.setFirstName(personalDetailsDto.firstName());
-        toUpdate.setLastName(personalDetailsDto.lastName());
+        toUpdate.setFirstName(reformatName(personalDetailsDto.firstName()));
+        toUpdate.setLastName(reformatName(personalDetailsDto.lastName()));
         toUpdate.setPhoneNumber(personalDetailsDto.phoneNumber());
         toUpdate.setEmail(personalDetailsDto.email());
         return er.save(toUpdate);
@@ -75,10 +78,11 @@ public class ElectricianService {
         return Electrician.emptyElectrician();
     }
 
-    public Electrician delete(int id) {
+    public ElectricianPersonalDetailsDto delete(int id) {
         Electrician toDelete = getById(id);
+        var returnDeleted = ElectricianPersonalDetailsDto.from(toDelete);
         if (toDelete.getId() != 0)
             er.deleteById(id);
-        return toDelete;
+        return returnDeleted;
     }
 }

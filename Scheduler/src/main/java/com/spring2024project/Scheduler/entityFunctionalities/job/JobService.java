@@ -52,6 +52,7 @@ public class JobService {
                     .isComplete(entity.isComplete())
                     .build();
             jobEntity.getCustomer().setGenerators(gs.getAllById(entity.generatorIds()));
+            gs.getAllById(entity.generatorIds()).forEach(generator -> generator.setAssigned(true));
             var newJob = Job.from(jobEntity);
             return jr.save(newJob);
         } catch (Exception e) {

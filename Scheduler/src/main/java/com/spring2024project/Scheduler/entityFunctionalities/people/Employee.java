@@ -1,7 +1,7 @@
 package com.spring2024project.Scheduler.entityFunctionalities.people;
 
 import com.spring2024project.Scheduler.entityFunctionalities.address.Address;
-import com.spring2024project.Scheduler.entityFunctionalities.people.Person;
+
 import jakarta.persistence.*;
 import lombok.*;
 
