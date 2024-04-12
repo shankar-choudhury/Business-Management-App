@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <div id="app">
+        <h1>
+            <div class="header">
+                <label>Create Generator</label>
+            </div>
+        </h1>
+        <form>
+            <!-- Form inputs -->
+            <div class="form-group">
+                <label for="manufacturerInput">Manufacturer</label>
+                <input v-model="manufacturer" type="text" class="form-control" id="manufacturerInput" placeholder="Manufacturer" style="width: 200px;">
+            </div>
+            <div class="form-group">
+                <label for="kWSizeInput">kW Size</label>
+                <input v-model="kWSize" type="number" class="form-control" id="kWSizeInput" placeholder="kW Size" style="width: 200px;">
+            </div>
+        </form>
+        <button type="submit" class="btn btn-primary" @click="createGenerator">Create Generator</button>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Boostrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- My app.js file-->
+    <script src="app.js"></script>
+</body>
+</html>

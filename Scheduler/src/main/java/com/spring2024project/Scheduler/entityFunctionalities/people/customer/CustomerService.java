@@ -134,13 +134,17 @@ public class CustomerService implements BaseService<Customer> {
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + customerId));
         if (Objects.nonNull(creditCards)) {
             for (CreditCard creditCard : creditCards) {
-                // Associate credit card with customer
-                // Associate billing address with credit card
                 Address billingAddress = creditCard.getBillingAddress();
+                as.validateAndNormalizeAddress(billingAddress);
                 var existingAddresses = as.getAll();
-                if (existingAddresses.contains(billingAddress)) {
-                    creditCard.setBillingAddress(existingAddresses.get(existingAddresses.indexOf(billingAddress)));
-                } else {
+                // Check if the billing address already exists
+                var existingAddress = existingAddresses.stream()
+                        .filter(addr -> addr.equals(billingAddress))
+                        .findFirst();
+                if (existingAddress.isPresent())
+                    // Update the credit card to reference the existing address
+                    creditCard.setBillingAddress(existingAddress.get());
+                else {
                     creditCard.setBillingAddress(Address.from(creditCard.getBillingAddress(), zt));
                     creditCard.getBillingAddress().setCustomer(customer);
                     em.merge(creditCard.getBillingAddress());

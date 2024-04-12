@@ -26,7 +26,7 @@ public final class Generator {
     private String manufacturer;
 
     @Column
-    private int kWSize;
+    private Integer kWSize;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -50,7 +50,7 @@ public final class Generator {
      * @return A default Generator instance.
      */
     public static Generator defaultGenerator() {
-        return new Generator("",0);
+        return new Generator("",-1);
     }
 
     /**
@@ -63,7 +63,5 @@ public final class Generator {
                 verifyNonNullEmptyOrBlank(g.getManufacturer()),
                 validInt(g.getKWSize(), kw -> kw > 0 && kw < 5000));
     }
-
-
 
 }

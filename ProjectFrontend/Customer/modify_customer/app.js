@@ -105,6 +105,7 @@ new Vue({
             this.creditcards = customer.creditCardList;
             this.isEditing = true;
             this.showDropdown = false;    
+            console.log(this.addresses);
         },
         async updateCustomer() {
             axios.put(`http://localhost:8080/customers/${this.selectedCustomer.id}`, {
